@@ -1,0 +1,99 @@
+services:
+
+  postgresql:
+    container_name: "Injection-Machine-Database"
+    image: postgres
+    restart: always
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./DBVolume/database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres      
+      POSTGRES_PASSWORD: postgres  
+      POSTGRES_DB: cax 
+    healthcheck:
+      test: pg_isready -d db_prod
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+
+  redis:
+    container_name: "Engel-Redis"
+    image: redis:6.2
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./DBVolume/redis:/data
+    healthcheck:
+      test: redis-cli --raw incr ping
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+
+  # frontend:
+  #   container_name: "Engel-Frontend"
+  #   build: ./frontend
+  #   restart: always
+  #   ports:
+  #     - "8080:80"
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:80"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 5s
+  #   # logging:
+  #   #   driver: "json-file"
+  #   #   options:
+  #   #     max-size: "500m"
+  #   depends_on:
+  #     - backend
+
+  # backend:
+  #   build: ./backend
+  #   restart: always
+  #   ports:
+  #     - "8001:8001"
+  #   environment:
+  #     REDIS_HOST: redis
+  #     REDIS_PORT: 6379
+  #     REDIS_DB: 0
+  #   healthcheck:
+  #     test: curl --fail http://localhost:8001/api/healthcheck || exit 1
+  #   # logging:
+  #   #   driver: "json-file"
+  #   #   options:
+  #   #     max-size: "500m"
+  #   depends_on:
+  #     - redis
+  #     - postgresql
+
+  # backend2:
+  #   container_name: "G20-Backend2"
+  #   build: ./backend
+  #   restart: always
+  #   environment:
+  #     DB_HOST: postgresql
+  #     DB_PORT: 5432
+  #     DB_USER: postgres
+  #     DB_PASS: postgres
+  #     DB_NAME: G20
+  #     REDIS_HOST: redis
+  #     REDIS_PORT: 6379
+  #     REDIS_DB: 0
+  #   healthcheck:
+  #     test: curl --fail http://localhost/api/healthcheck || exit 1
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "500m"
+  #   depends_on:
+  #     - postgresql
+  #     - redis
+
+
+
