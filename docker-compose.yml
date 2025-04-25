@@ -20,7 +20,7 @@ services:
         max-size: "500m"
 
   redis:
-    container_name: "Engel-Redis"
+    container_name: "Redis"
     image: redis:6.2
     restart: always
     ports:

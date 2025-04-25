@@ -13,7 +13,7 @@ class engelagent:
         self.password = password
         self.processactivate = False
         self.worker = ""
-        self.red = redis.Redis(host='localhost',port=6379,db=0)
+        self.red = redis.Redis(host='192.168.1.225',port=6379,db=0)
         self.actpressurecurve = []
         self.actspeedcurve = []
         self.motorpower = []
@@ -273,7 +273,7 @@ class engelagent:
                 self.timeindex =[]
         #Get current time
         current_time        = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-        self.red.set(f'{self.machineid}_updatetiem',current_time)
+        self.red.set(f'{self.machineid}_updatetime',current_time)
         self.red.set(f'{self.machineid}_status',json.dumps(self.machinestatus))
         self.red.set(f'{self.machineid}_feedback',json.dumps(self.machinefeedback))
         self.red.set(f'{self.machineid}_curve',json.dumps(self.machinecurve))

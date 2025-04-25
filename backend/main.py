@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 import uvicorn
 from routers.historyrouter import historyrouter
-
+from routers.realtimedatarouter import realtimedatarouter
 app = FastAPI()
 app.include_router(historyrouter)
-
+app.include_router(realtimedatarouter)
 @app.get("/smc/injectionmachinemes/healthcheck")
 async def healthcheck():
 
