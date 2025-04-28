@@ -4,12 +4,25 @@ import json
 import time
 import redis
 from datetime import datetime
+from sqlalchemy import create_engine,text, Column, Integer, String,DateTime,TEXT,TIMESTAMP
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+Base = declarative_base()
+class injection_machine_db(Base):
+    __tablename__    = "MachineHistory"
+    id               = Column(Integer, primary_key=True)
+    created_at       = Column(TIMESTAMP)
+    machine_name     = Column(TEXT)
+    machine_status  = Column(TEXT)
+    machine_feedback = Column(TEXT)
+    machine_curve    = Column(TEXT)
 class toyoagent:
     def __init__(self,spc_path,redis_host,machineid):
         self.machineid = machineid
         self.previous_count = -1
         self.spc_path       = spc_path
-        self.red = redis.Redis(host=redis_host,port=6379,db=0)
+        self.red = redis.Redis(host='192.168.1.225',port=6379,db=0)
+        self.db=create_engine("postgresql://postgres:postgres@140.135.106.49:5433/InjectionMachineMES")
     def send_monitor_command(self):
         os.system('copy "SESS0000.REQ" "Session\SESS0000.REQ"')
     def get_machine_data(self):
@@ -330,42 +343,42 @@ class toyoagent:
             self.red.set(f'{self.machineid}_updatetiem',current_time)
 
             statusdata = {}
-            statusdata["Ijv_set1"] = machinedata["Ijv_set1"]
-            statusdata["Ijv_set2"] = machinedata["Ijv_set2"]
-            statusdata["Ijv_set3"] = machinedata["Ijv_set3"]
-            statusdata["Ijv_set4"] = machinedata["Ijv_set4"]
-            statusdata["Ijv_set5"] = machinedata["Ijv_set5"]
-            statusdata["Ijv_set6"] = machinedata["Ijv_set6"]
-            statusdata["Ijv_set7"] = machinedata["Ijv_set7"]
-            statusdata["IJPressure_set"] = machinedata["IJPressure_set"]
-            statusdata["VP_pos_set"] = machinedata["VP_pos_set"] 
-            statusdata["IJ_pos_set1"] = machinedata["IJ_pos_set1"] 
-            statusdata["IJ_pos_set2"] = machinedata["IJ_pos_set2"] 
-            statusdata["IJ_pos_set3"] = machinedata["IJ_pos_set3"] 
-            statusdata["IJ_pos_set4"] = machinedata["IJ_pos_set4"] 
-            statusdata["IJ_pos_set5"] = machinedata["IJ_pos_set5"] 
-            statusdata["IJ_pos_set6"] = machinedata["IJ_pos_set6"]
-            statusdata["Barrel_temp_set1"] = machinedata["Barrel_temp_set1"]
-            statusdata["Barrel_temp_set2"] = machinedata["Barrel_temp_set2"]
-            statusdata["Barrel_temp_set3"] = machinedata["Barrel_temp_set3"]
-            statusdata["Barrel_temp_set4"] = machinedata["Barrel_temp_set4"]
-            statusdata["Barrel_temp_set5"] = machinedata["Barrel_temp_set5"]
-            statusdata["Barrel_temp_set6"] = machinedata["Barrel_temp_set6"]
-            statusdata["Ij_Start_pos"] = machinedata["Ij_Start_pos"] 
-            statusdata["Clamping_force_set"] = machinedata["Clamping_force_set"]
-            statusdata["Cooling_time_set"] = machinedata["Cooling_time_set"] 
-            statusdata["Holding_time_set1"] = machinedata["Holding_time_set1"]
-            statusdata["Holding_time_set2"] = machinedata["Holding_time_set2"]
-            statusdata["Holding_time_set3"] = machinedata["Holding_time_set3"]
-            statusdata["Holding_time_set4"] = machinedata["Holding_time_set4"]
-            statusdata["Holding_time_set5"] = machinedata["Holding_time_set5"]
-            statusdata["Holding_time_set6"] = machinedata["Holding_time_set6"]
-            statusdata["Holding_pressure_set1"] = machinedata["Holding_pressure_set1"]
-            statusdata["Holding_pressure_set2"] = machinedata["Holding_pressure_set2"]
-            statusdata["Holding_pressure_set3"] = machinedata["Holding_pressure_set3"]
-            statusdata["Holding_pressure_set4"] = machinedata["Holding_pressure_set4"]
-            statusdata["Holding_pressure_set5"] = machinedata["Holding_pressure_set5"]
-            statusdata["Holding_pressure_set6"] = machinedata["Holding_pressure_set6"]
+            statusdata["Ijv_set1"]       = {"value":machinedata["Ijv_set1"],"edit":"acctivate"}
+            statusdata["Ijv_set2"]       = {"value":machinedata["Ijv_set2"],"edit":"acctivate"}
+            statusdata["Ijv_set3"]       = {"value":machinedata["Ijv_set3"],"edit":"acctivate"}
+            statusdata["Ijv_set4"]       = {"value":machinedata["Ijv_set4"],"edit":"acctivate"}
+            statusdata["Ijv_set5"]       = {"value":machinedata["Ijv_set5"],"edit":"acctivate"}
+            statusdata["Ijv_set6"]       = {"value":machinedata["Ijv_set6"],"edit":"acctivate"}
+            statusdata["Ijv_set7"]       = {"value":machinedata["Ijv_set7"],"edit":"acctivate"}
+            statusdata["IJPressure_set"] = {"value":machinedata["IJPressure_set"],"edit":"acctivate"}
+            statusdata["VP_pos_set"]     = {"value":machinedata["VP_pos_set"],"edit":"acctivate"}
+            statusdata["IJ_pos_set1"]    = {"value":machinedata["IJ_pos_set1"],"edit":"acctivate"}
+            statusdata["IJ_pos_set2"]    = {"value":machinedata["IJ_pos_set2"],"edit":"acctivate"}
+            statusdata["IJ_pos_set3"]    = {"value":machinedata["IJ_pos_set3"],"edit":"acctivate"}
+            statusdata["IJ_pos_set4"]    = {"value":machinedata["IJ_pos_set4"],"edit":"acctivate"}
+            statusdata["IJ_pos_set5"]    = {"value":machinedata["IJ_pos_set5"],"edit":"acctivate"}
+            statusdata["IJ_pos_set6"]    = {"value":machinedata["IJ_pos_set6"],"edit":"acctivate"}
+            statusdata["Barrel_temp_set1"]   = {"value":machinedata["Barrel_temp_set1"],"edit":"acctivate"}
+            statusdata["Barrel_temp_set2"]   = {"value":machinedata["Barrel_temp_set2"],"edit":"acctivate"}
+            statusdata["Barrel_temp_set3"]   = {"value":machinedata["Barrel_temp_set3"],"edit":"acctivate"}
+            statusdata["Barrel_temp_set4"]   = {"value":machinedata["Barrel_temp_set4"],"edit":"acctivate"}
+            statusdata["Barrel_temp_set5"]   = {"value":machinedata["Barrel_temp_set5"],"edit":"acctivate"}
+            statusdata["Barrel_temp_set6"]   = {"value":machinedata["Barrel_temp_set6"],"edit":"acctivate"}
+            statusdata["Ij_Start_pos"]       = {"value":machinedata["Ij_Start_pos"],"edit":"none"}
+            statusdata["Clamping_force_set"] = {"value":machinedata["Clamping_force_set"],"edit":"acctivate"}
+            statusdata["Cooling_time_set"]   = {"value":machinedata["Cooling_time_set"],"edit":"acctivate"}
+            statusdata["Holding_time_set1"]  = {"value":machinedata["Holding_time_set1"],"edit":"acctivate"}
+            statusdata["Holding_time_set2"]  = {"value":machinedata["Holding_time_set2"],"edit":"acctivate"}
+            statusdata["Holding_time_set3"]  = {"value":machinedata["Holding_time_set3"],"edit":"acctivate"}
+            statusdata["Holding_time_set4"]  = {"value":machinedata["Holding_time_set4"],"edit":"acctivate"}
+            statusdata["Holding_time_set5"]  = {"value":machinedata["Holding_time_set5"],"edit":"acctivate"}
+            statusdata["Holding_time_set6"]  = {"value":machinedata["Holding_time_set6"],"edit":"acctivate"}
+            statusdata["Holding_pressure_set1"] = {"value":machinedata["Holding_pressure_set1"],"edit":"acctivate"}
+            statusdata["Holding_pressure_set2"] = {"value":machinedata["Holding_pressure_set2"],"edit":"acctivate"}
+            statusdata["Holding_pressure_set3"] = {"value":machinedata["Holding_pressure_set3"],"edit":"acctivate"}
+            statusdata["Holding_pressure_set4"] = {"value":machinedata["Holding_pressure_set4"],"edit":"acctivate"}
+            statusdata["Holding_pressure_set5"] = {"value":machinedata["Holding_pressure_set5"],"edit":"acctivate"}
+            statusdata["Holding_pressure_set6"] = {"value":machinedata["Holding_pressure_set6"],"edit":"acctivate"}
             self.red.set(f'{self.machineid}_status',json.dumps(statusdata))
 
             feedbackdata ={}
@@ -399,7 +412,8 @@ class toyoagent:
             feedbackdata["Min_ij_speed"] = machinedata["Min_ij_speed"]
             self.red.set(f'{self.machineid}_feedback',json.dumps(feedbackdata))
             # No curve data in TOYO
-            self.red.set(f'{self.machineid}_curve','')
+            curvedata = {}
+            self.red.set(f'{self.machineid}_curve',json.dumps(curvedata))
 
 
             
@@ -409,6 +423,19 @@ class toyoagent:
                 # Determine whether data needs to be uploaded to the database.
                 if self.previous_count != currentcount:
                     print("[Message] Detect machine completed the process, Start to upload data to db ... ")
+                    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+                    Session = sessionmaker(bind=self.db)
+                    session = Session()
+                    insert_sql = injection_machine_DB.__table__.insert().values(
+                        created_at       = current_time,
+                        machine_name     = self.machineid,
+                        machine_status   = json.dumps(statusdata),
+                        machine_feedback = json.dumps(feedbackdata),
+                        machine_curve    = json.dumps(curvedata)
+                    )
+                    session.execute(insert_sql)
+                    session.commit()
+                    session.close()
                     self.previous_count=currentcount
         except Exception as e:
             print(f"[Error] Collect data process crash ... Reason {e}")

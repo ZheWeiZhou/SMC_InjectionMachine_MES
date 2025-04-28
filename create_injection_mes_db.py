@@ -12,7 +12,7 @@ class MachineHistory(Base):
     id = Column(Integer,primary_key=True)
     created_at = Column(DateTime(timezone = False), server_default=func.now())
     machine_name = Column(String)
-    machine_setting = Column(String)
+    machine_status = Column(String)
     machine_feedback = Column(String)
     machine_curve = Column(String)
 
