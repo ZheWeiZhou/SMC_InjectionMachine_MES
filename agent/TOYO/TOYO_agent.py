@@ -340,7 +340,7 @@ class toyoagent:
             print("[Message] Upload realtime data to redis ... ")
 
             current_time        = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-            self.red.set(f'{self.machineid}_updatetiem',current_time)
+            self.red.set(f'{self.machineid}_updatetime',current_time)
 
             statusdata = {}
             statusdata["Ijv_set1"]       = {"value":machinedata["Ijv_set1"],"edit":"acctivate"}

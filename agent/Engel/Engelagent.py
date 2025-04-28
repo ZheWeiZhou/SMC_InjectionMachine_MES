@@ -1,5 +1,6 @@
 from opcua import Client
 from opcua import ua
+import pika
 import redis
 import numpy as np
 from datetime import datetime
@@ -8,6 +9,7 @@ import json
 from sqlalchemy import create_engine,text, Column, Integer, String,DateTime,TEXT,TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import threading
 
 Base = declarative_base()
 class injection_machine_db(Base):
@@ -21,6 +23,9 @@ class injection_machine_db(Base):
 
 class engelagent:
     def __init__(self,machineaddress,user,password,machineid):
+        self.rabbitmq_account = "cax"
+        self.rabbitmq_password = "cax521"
+        self.hostip = "192.168.1.225"
         self.machineid = machineid
         self.machineaddress = machineaddress
         self.user = user
@@ -38,6 +43,29 @@ class engelagent:
         self.machinefeedback = {}
         self.machinecurve   = {}
         self.db=create_engine("postgresql://postgres:postgres@140.135.106.49:5433/InjectionMachineMES")
+        self.nodemap = {
+            "barrel_temp1_set":"ns=1;i=164",
+            "barrel_temp2_set":"ns=1;i=220",
+            "barrel_temp3_set":"ns=1;i=276",
+            "barrel_temp4_set":"ns=1;i=332",
+            "barrel_temp5_set":"ns=1;i=388",
+            "barrel_temp6_set":"ns=1;i=444",
+            "holding_time1_set":"ns=5;i=57",
+            "holding_pressure1_set":"ns=5;i=52",
+            "holding_time2_set":"ns=5;i=58",
+            "holding_pressure2_set":"ns=5;i=53",
+            "holding_time3_set":"ns=5;i=59",
+            "holding_pressure3_set":"ns=5;i=54",
+            "holding_time4_set":"ns=5;i=60",
+            "holding_pressure4_set":"ns=5;i=55",
+            "injection_volume1":"ns=5;i=63",
+            "injection_volume2":"ns=5;i=48",
+            "injection_volume3":"ns=5;i=49",
+            "injection_volume4":"ns=5;i=50",
+            "injection_volume5":"ns=5;i=51"
+
+
+        }
         
     def connect(self):  
         url="opc.tcp://"+self.machineaddress
@@ -47,9 +75,35 @@ class engelagent:
             self.worker.set_password(self.password)
             self.worker.connect()
             print("[MESSAGE] Success connect to Engel")
+            def callback(ch, method, properties, body):
+                command = json.loads(body.decode())
+                self.parametersetting(command["Target"],command["Value"])
+            
+            def start_controller():
+                connection = pika.BlockingConnection(pika.ConnectionParameters(
+                    host=self.hostip,
+                    credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_password)
+                ))
+                channel = connection.channel()
+                channel.queue_declare(queue=self.machineid)
+                channel.basic_consume(queue=self.machineid,
+                        on_message_callback=callback,
+                        auto_ack=True)
+                channel.start_consuming()
+            controller_thread = threading.Thread(target=start_controller)
+            controller_thread.start()
+            print("[MESSAGE] Activate Rabbit MQ ..")
         except:
             print("[ERROR] Connect to Engel fail")
     
+    def parametersetting(self,target,value):
+        access_node = list(self.nodemap.keys())
+        if target in access_node:
+            nodeid = self.nodemap[target]
+            value  = float(value) 
+            self.worker.get_node(nodeid).set_value(ua.Variant(value, ua.VariantType.Float))
+        
+
     def productpredict(self,input):
         print("[MESSAGE] Start to predict product quality")
         modelinput=np.array([input])
@@ -162,7 +216,7 @@ class engelagent:
             actijpressure = self.worker.get_node("ns=5;i=114").get_value()
             self.actpressurecurve.append(actijpressure)
             # #Collect real time IJ speed
-            actijspeed=self.worker.get_node("ns=5;i=115").get_value()
+            actijspeed = self.worker.get_node("ns=5;i=115").get_value()
             self.actspeedcurve.append(actijspeed)
             # Get ACT motor power
             actmotorpower = self.worker.get_node("ns=5;i=118").get_value()
@@ -175,8 +229,6 @@ class engelagent:
             self.machinecurve["actspeedcurve"]    = self.actspeedcurve
             self.machinecurve["motorpower"]       = self.motorpower
             self.machinecurve["heaterpower"]      = self.heaterpower
-
-
 
         else:
             self.machinestatus['machine'] = {"value":"stay","edit":"none"}

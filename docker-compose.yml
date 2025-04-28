@@ -34,6 +34,17 @@ services:
       options:
         max-size: "500m"
 
+  rabbitmq:
+    container_name: "rabbitmq"
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"    # AMQP port
+      - "15672:15672"  # Web GUI 
+    environment:
+      RABBITMQ_DEFAULT_USER: cax
+      RABBITMQ_DEFAULT_PASS: cax521
+    restart: always
+    
   # frontend:
   #   container_name: "Engel-Frontend"
   #   build: ./frontend
