@@ -7,24 +7,85 @@ from datetime import datetime
 from sqlalchemy import create_engine,text, Column, Integer, String,DateTime,TEXT,TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import threading
+import pika
 Base = declarative_base()
 class injection_machine_db(Base):
     __tablename__    = "MachineHistory"
     id               = Column(Integer, primary_key=True)
     created_at       = Column(TIMESTAMP)
     machine_name     = Column(TEXT)
-    machine_status  = Column(TEXT)
+    machine_status   = Column(TEXT)
     machine_feedback = Column(TEXT)
     machine_curve    = Column(TEXT)
 class toyoagent:
-    def __init__(self,spc_path,redis_host,machineid):
+    def __init__(self,spc_path,machineid):
+        self.rabbitmq_account = "cax"
+        self.rabbitmq_password = "cax521"
         self.machineid = machineid
         self.previous_count = -1
         self.spc_path       = spc_path
+        self.hostip = "192.168.1.225"
         self.red = redis.Redis(host='192.168.1.225',port=6379,db=0)
         self.db=create_engine("postgresql://postgres:postgres@140.135.106.49:5433/InjectionMachineMES")
+        self.nodemap ={
+            "Ijv_set1":"@SetVelInj_V_0[1]",
+            "Ijv_set2":"@SetVelInj_V_1[1]",
+            "Ijv_set3":"@SetVelInj_V_2[1]",
+            "Ijv_set4":"@SetVelInj_V_3[1]",
+            "Ijv_set5":"@SetVelInj_V_4[1]",
+            "Ijv_set6":"@SetVelInj_V_5[1]",
+            "Ijv_set7":"@SetVelInj_V_6[1]",
+            "IJPressure_set":" @SetPrsInj_P_9[1]",
+            "VP_pos_set":"@SetStrInj_S_10[1]",
+            "Ij_pos_set0":"SetStrPlst[1]",
+            "Ij_pos_set1":"@SetStrInj_S_1[1]",
+            "Ij_pos_set2":"@SetStrInj_S_2[1]",
+            "Ij_pos_set3":"@SetStrInj_S_3[1]",
+            "Ij_pos_set4":"@SetStrInj_S_4[1]",
+            "Ij_pos_set5":"@SetStrInj_S_5[1]",
+            "Ij_pos_set6":"@SetStrInj_S_6[1]",
+            "Barrel_temp_set1":"SetTmpBrlZn[1,1]",
+            "Barrel_temp_set2":"SetTmpBrlZn[1,2]",
+            "Barrel_temp_set3":"SetTmpBrlZn[1,3]",
+            "Barrel_temp_set4":"SetTmpBrlZn[1,4]",
+            "Barrel_temp_set5":"SetTmpBrlZn[1,5]",
+            "Barrel_temp_set6":"SetTmpBrlZn[1,6]",
+            "Clamping_force_set":"SetFrcClp",
+            "Cooling_time_set":"@SetTimCnt_CoolTim",
+            "Holding_time_set1":"@SetTimHld_T_1[1]",
+            "Holding_time_set2":"@SetTimHld_T_2[1]",
+            "Holding_time_set3":"@SetTimHld_T_3[1]",
+            "Holding_time_set4":"@SetTimHld_T_4[1]",
+            "Holding_time_set5":"@SetTimHld_T_5[1]",
+            "Holding_time_set6":"@SetTimHld_T_6[1]",
+            "Holding_pressure_set1":"@SetPrsInj_P_1[1]",
+            "Holding_pressure_set2":"@SetPrsInj_P_2[1]",
+            "Holding_pressure_set3":"@SetPrsInj_P_3[1]",
+            "Holding_pressure_set4":"@SetPrsInj_P_4[1]",
+            "Holding_pressure_set5":"@SetPrsInj_P_5[1]",
+            "Holding_pressure_set6":"@SetPrsInj_P_6[1]",
+        }
     def send_monitor_command(self):
         os.system('copy "SESS0000.REQ" "Session\SESS0000.REQ"')
+        def callback(ch, method, properties, body):
+                command = json.loads(body.decode())
+                self.parametersetting(command["Target"],command["Value"])
+            
+        def start_controller():
+                connection = pika.BlockingConnection(pika.ConnectionParameters(
+                    host=self.hostip,
+                    credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_password)
+                ))
+                channel = connection.channel()
+                channel.queue_declare(queue=self.machineid)
+                channel.basic_consume(queue=self.machineid,
+                        on_message_callback=callback,
+                        auto_ack=True)
+                channel.start_consuming()
+        controller_thread = threading.Thread(target=start_controller)
+        controller_thread.start()
+        print("[MESSAGE] Activate Rabbit MQ ..")
     def get_machine_data(self):
         data = {
                     "date":'',
@@ -61,7 +122,7 @@ class toyoagent:
                     "Act_Barrel_temp5":'',
                     "Act_Barrel_temp6":'',
                     "Act_Cushion_pos":'',
-                    "Ij_Start_pos":'',
+                    "Ij_pos_set0":'',
                     "Clamping_force_set":'',
                     "Cooling_time_set":'',
                     "Max_ij_pressure":'',
@@ -140,6 +201,26 @@ class toyoagent:
             print(f"[Error] Get Data Fail Reason : {e}")
             pass
         return data
+    
+    # 響應Rabbit MQ的task更改機台參數
+    def parametersetting(self,target,value):
+        access_node = list(self.nodemap.keys())
+        if target in access_node:
+            nodeid = self.nodemap[target]
+            with open('SET.JOB','r') as file:
+                first_line  = file.readline()
+            with open('SET.JOB','w') as file:
+                file.write(first_line)
+            # CREATE NEW SET JOB
+            with open('SET.JOB','a') as file:
+                new_line = f"SET {nodeid} {value}\n"
+                file.write(new_line)
+            # Send command
+            setlog_path = 'data\SET.log'
+            if os.path.exists(setlog_path):
+                os.remove('data\SET.log')
+            os.system('copy "SESS0001.REQ" "Session\SESS0001.REQ"')
+
     def set_injection_pos(self,pos):
         '''
         SetStrPlst[1]
@@ -352,6 +433,7 @@ class toyoagent:
             statusdata["Ijv_set7"]       = {"value":machinedata["Ijv_set7"],"edit":"acctivate"}
             statusdata["IJPressure_set"] = {"value":machinedata["IJPressure_set"],"edit":"acctivate"}
             statusdata["VP_pos_set"]     = {"value":machinedata["VP_pos_set"],"edit":"acctivate"}
+            statusdata["Ij_pos_set0"]    = {"value":machinedata["Ij_pos_set0"],"edit":"none"}
             statusdata["IJ_pos_set1"]    = {"value":machinedata["IJ_pos_set1"],"edit":"acctivate"}
             statusdata["IJ_pos_set2"]    = {"value":machinedata["IJ_pos_set2"],"edit":"acctivate"}
             statusdata["IJ_pos_set3"]    = {"value":machinedata["IJ_pos_set3"],"edit":"acctivate"}
@@ -364,7 +446,6 @@ class toyoagent:
             statusdata["Barrel_temp_set4"]   = {"value":machinedata["Barrel_temp_set4"],"edit":"acctivate"}
             statusdata["Barrel_temp_set5"]   = {"value":machinedata["Barrel_temp_set5"],"edit":"acctivate"}
             statusdata["Barrel_temp_set6"]   = {"value":machinedata["Barrel_temp_set6"],"edit":"acctivate"}
-            statusdata["Ij_Start_pos"]       = {"value":machinedata["Ij_Start_pos"],"edit":"none"}
             statusdata["Clamping_force_set"] = {"value":machinedata["Clamping_force_set"],"edit":"acctivate"}
             statusdata["Cooling_time_set"]   = {"value":machinedata["Cooling_time_set"],"edit":"acctivate"}
             statusdata["Holding_time_set1"]  = {"value":machinedata["Holding_time_set1"],"edit":"acctivate"}
@@ -442,7 +523,7 @@ class toyoagent:
             pass
             
 if __name__ == "__main__":
-    agent       = toyoagent('data/spc.dat','localhost','TOYO')
+    agent       = toyoagent('data/spc.dat','TOYO')
     agent.send_monitor_command()
     # agent.set_injection_pos([105.00,27.00])
     # agent.set_injection_speed([100.0,100.0])
