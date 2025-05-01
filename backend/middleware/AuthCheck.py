@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 db_url = "postgresql://postgres:postgres@127.0.0.1:5433/cax"
 engine = create_engine(db_url)
 
-whitelist = ["/smc/injectionmachinemes/healthcheck", "/smc/injectionmachinemes/realtimedata"]
+whitelist = ["/smc/injectionmachinemes/healthcheck", "/smc/injectionmachinemes/realtimedata","/smc/injectionmachinemes/user/login"]
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         
