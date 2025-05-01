@@ -1,12 +1,18 @@
 from fastapi import FastAPI
 import uvicorn
+from middleware.AuthCheck import AuthMiddleware
 from routers.historyrouter import historyrouter
 from routers.realtimedatarouter import realtimedatarouter
 from routers.commandrouter import commandrouter
+from routers.userrouter import userrouter
 app = FastAPI()
+app.add_middleware(AuthMiddleware)
+
 app.include_router(historyrouter)
 app.include_router(realtimedatarouter)
 app.include_router(commandrouter)
+app.include_router(userrouter)
+
 @app.get("/smc/injectionmachinemes/healthcheck")
 async def healthcheck():
 

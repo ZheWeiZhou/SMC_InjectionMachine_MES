@@ -17,7 +17,7 @@ logging.basicConfig(
 
 commandrouter = APIRouter()
 
-db_url = "postgresql://postgres:postgres@140.135.106.49:5433/cax"
+db_url = "postgresql://postgres:postgres@127.0.0.1:5433/cax"
 engine = create_engine(db_url)
 Base = declarative_base()
 
@@ -45,7 +45,7 @@ async def insertdata(requestData:machine_contorl_requestBody):
     
     try:
         connection = pika.BlockingConnection(pika.ConnectionParameters(
-            host='locallhost',
+            host='127.0.0.1',
             credentials=pika.PlainCredentials(rabbitmq_account, rabbitmq_pass)
         ))
         channel = connection.channel()
@@ -57,7 +57,8 @@ async def insertdata(requestData:machine_contorl_requestBody):
                       body=commandbody)
         connection.close()
         returnData = {"status": "success"}
-    except:
+    except Exception as e:
+        print(e)
         logging.error("Save machine data to db failed ...")
         pass
     return returnData

@@ -13,7 +13,7 @@ logging.basicConfig(
     format='%(levelname)s - %(asctime)s - %(message)s'
 )
 
-red = redis.Redis(host='140.135.106.49',port=6379,db=0)
+red = redis.Redis(host='127.0.0.1',port=6379,db=0)
 realtimedatarouter = APIRouter()
 
 @realtimedatarouter.get("/smc/injectionmachinemes/realtimedata/{machineid}")
@@ -37,7 +37,7 @@ async def insertdata(machineid:str):
         resdata = {"Online":online,"machinestatus":machinestatus,"machinefeedback":machinefeedback,"machinecurve":machinecurve}
         returnData = {"status": "success","Data":resdata}
     except:
-        logging.error("Save machine data to db failed ...")
+        logging.error("Get machine real time data API crashed ...")
         pass
     return returnData
 
