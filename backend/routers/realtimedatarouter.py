@@ -13,7 +13,7 @@ logging.basicConfig(
     format='%(levelname)s - %(asctime)s - %(message)s'
 )
 
-red = redis.Redis(host='127.0.0.1',port=6379,db=0)
+red = redis.Redis(host='Redis',port=6379,db=0)
 realtimedatarouter = APIRouter()
 
 @realtimedatarouter.get("/smc/injectionmachinemes/realtimedata/{machineid}")

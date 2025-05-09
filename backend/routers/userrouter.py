@@ -16,7 +16,7 @@ logging.basicConfig(
 
 userrouter = APIRouter()
 
-db_url = "postgresql://postgres:postgres@127.0.0.1:5433/cax"
+db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
 engine = create_engine(db_url)
 Base = declarative_base()
 

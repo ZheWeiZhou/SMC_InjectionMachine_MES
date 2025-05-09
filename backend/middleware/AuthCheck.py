@@ -5,7 +5,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from fastapi.responses import JSONResponse
-db_url = "postgresql://postgres:postgres@127.0.0.1:5433/cax"
+db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
 engine = create_engine(db_url)
 
 whitelist = ["/smc/injectionmachinemes/healthcheck", "/smc/injectionmachinemes/realtimedata","/smc/injectionmachinemes/user/login"]
