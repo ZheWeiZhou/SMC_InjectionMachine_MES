@@ -10,7 +10,7 @@ from sqlalchemy import create_engine,text, Column, Integer, String,DateTime,TEXT
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import threading
-
+print("Hello")
 Base = declarative_base()
 class injection_machine_db(Base):
     __tablename__    = "MachineHistory"
@@ -42,7 +42,7 @@ class engelagent:
         self.machinestatus   = {}
         self.machinefeedback = {}
         self.machinecurve   = {}
-        self.db=create_engine("postgresql://postgres:postgres@140.135.106.49:5433/InjectionMachineMES")
+        self.db=create_engine("postgresql://postgres:postgres@192.168.1.225:5432/InjectionMachineMES")
         self.nodemap = {
             "barrel_temp1_set":"ns=1;i=164",
             "barrel_temp2_set":"ns=1;i=220",
@@ -103,7 +103,8 @@ class engelagent:
             controller_thread = threading.Thread(target=start_controller)
             controller_thread.start()
             print("[MESSAGE] Activate Rabbit MQ ..")
-        except:
+        except Exception as e:
+            print(e)
             print("[ERROR] Connect to Engel fail")
     
     def parametersetting(self,target,value):
@@ -373,6 +374,8 @@ if __name__ == "__main__":
     Engel.connect()
     while True:
       try:
+        with open("healthcheck.txt", "w+") as file:
+            file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         Engel.collectdata()
       except Exception as e:
           print(e)    

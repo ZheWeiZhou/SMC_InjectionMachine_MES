@@ -1,0 +1,23 @@
+services:
+
+  engelagent:
+    container_name: "EngelAgent"
+    build: ./Engel
+    restart: always
+    # environment:
+    #   API_HOST: ${API_HOST}
+    #   API_PORT: ${API_PORT}
+    #   API_TOKEN: ${API_TOKEN}
+    #   PLC_HOST: 172.16.10.10
+    #   TANK_ID: ${TANK_ID}
+    #   LOG_DIR: "/logs"
+    #   REDIS_STRING: "redis://redis:6379/0"
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-size: "500m"
+
+
+
+
+
