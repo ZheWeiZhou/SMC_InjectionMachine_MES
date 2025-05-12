@@ -11,14 +11,17 @@ engine = create_engine(db_url)
 whitelist = ["/smc/injectionmachinemes/healthcheck", "/smc/injectionmachinemes/realtimedata","/smc/injectionmachinemes/user/login"]
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        #  CORS 預檢請求不驗證 Token
+        if request.method == "OPTIONS":
+            return await call_next(request)
         
         if any(request.url.path.startswith(prefix) for prefix in whitelist):
             return await call_next(request)
         
-        token = request.headers.get("AccessToken")
+        token = request.headers.get("accesstoken")
         returnData = {"status":"error","Message":""}
         if not token:
-            print("[DEBUG] Middle Ware Reject Request (No AccessToken)")
+            print("[DEBUG] Middle Ware Reject Request (No accesstoken)")
             returnData["Message"] = "Token is required"
             print("[DEBUG] Create Error Message")
             return JSONResponse(

@@ -58,15 +58,19 @@ async def getconnectionstatus():
             result = connection.execute(text(sql))
             for row in result:
                 machinename = row[0]
-                updatetime = red.get(f'{machinename}_updatetime').decode('utf-8')
-                datetime_obj = datetime.strptime(updatetime, "%Y-%m-%d %H:%M:%S.%f")
-                current_time = datetime.now()
-                time_difference = current_time - datetime_obj
-                seconds_diff = time_difference.total_seconds()
-                online = "Online"
-                if seconds_diff > 5:
+                try:
+                    updatetime = red.get(f'{machinename}_updatetime').decode('utf-8')
+                    datetime_obj = datetime.strptime(updatetime, "%Y-%m-%d %H:%M:%S.%f")
+                    current_time = datetime.now()
+                    time_difference = current_time - datetime_obj
+                    seconds_diff = time_difference.total_seconds()
+                    online = "Online"
+                    if seconds_diff > 5:
+                        online = "Offline"
+                    resdata[machinename] = online
+                except:
                     online = "Offline"
-                resdata[machinename] = online
+                    resdata[machinename] = online
         returnData = {"status": "success","Data":resdata}
     except Exception as e:
         print(e)
