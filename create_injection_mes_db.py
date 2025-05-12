@@ -5,7 +5,7 @@ from sqlalchemy.sql import func
 from datetime import datetime
 import uuid
 import bcrypt 
-engine = create_engine("postgresql://postgres:postgres@127.0.0.1:5433/cax", echo=True)
+engine = create_engine("postgresql://postgres:postgres@127.0.0.1:5432/cax", echo=True)
 Base = declarative_base()
 
 class MachineHistory(Base):
@@ -25,6 +25,14 @@ class UserConfig(Base):
     useraccount   = Column(String)
     userpassword  = Column(String)
     token         = Column(String)
+
+class Machinelist(Base):
+    __tablename__ = 'Machinelist'
+    id            = Column(Integer,primary_key=True)
+    created_at    = Column(DateTime(timezone = False), server_default=func.now())
+    machinename   = Column(String)
+    activate      = Column(String)
+
 
 # Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)

@@ -10,7 +10,6 @@ from sqlalchemy import create_engine,text, Column, Integer, String,DateTime,TEXT
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import threading
-print("Hello")
 Base = declarative_base()
 class injection_machine_db(Base):
     __tablename__    = "MachineHistory"

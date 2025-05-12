@@ -5,7 +5,7 @@ RUN apt-get -yqq update; apt-get -yqq install curl
 COPY ./requirements.txt /workspace/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /workspace/requirements.txt
 
-COPY ./Engelagent.py /workspace/Engelagent.py
+COPY ./Engel_80agent.py /workspace/Engel_80agent.py
 COPY ./healthcheck.sh /workspace/healthcheck.sh
 RUN chmod +x /workspace/healthcheck.sh
 WORKDIR /workspace
@@ -13,4 +13,4 @@ WORKDIR /workspace
 
 HEALTHCHECK --interval=10s CMD ["/workspace/healthcheck.sh"]
 
-CMD ["python", "Engelagent.py"]
+CMD ["python", "Engel_80agent.py"]
