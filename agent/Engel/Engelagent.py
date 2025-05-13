@@ -135,69 +135,84 @@ class engelagent:
         # Check processstatus
         processstatus                      = self.worker.get_node("ns=1;i=77").get_value()
         # barrel temp
-        barrel_temp1_set                        = self.worker.get_node("ns=1;i=164").get_value()
-        self.machinestatus["barrel_temp1_set"]  = {"value":barrel_temp1_set,"edit":"acctivate"}
-        barrel_temp1_real                       = self.worker.get_node("ns=1;i=173").get_value()
-        self.machinestatus["barrel_temp1_real"] = {"value":barrel_temp1_real,"edit":"none"}
-        barrel_temp2_set                        = self.worker.get_node("ns=1;i=220").get_value()
-        self.machinestatus["barrel_temp2_set"]  = {"value":barrel_temp2_set,"edit":"acctivate"}
-        barrel_temp2_real                       = self.worker.get_node("ns=1;i=229").get_value()
-        self.machinestatus["barrel_temp2_real"] = {"value":barrel_temp2_real,"edit":"none"}
-        barrel_temp3_set                        = self.worker.get_node("ns=1;i=276").get_value()
-        self.machinestatus["barrel_temp3_set"]  = {"value":barrel_temp3_set,"edit":"acctivate"}
-        barrel_temp3_real                       = self.worker.get_node("ns=1;i=285").get_value()
-        self.machinestatus["barrel_temp3_real"] = {"value":barrel_temp3_real,"edit":"none"}
-        barrel_temp4_set                        = self.worker.get_node("ns=1;i=332").get_value()
-        self.machinestatus["barrel_temp4_set"]  = {"value":barrel_temp4_set,"edit":"acctivate"}
-        barrel_temp4_real                       = self.worker.get_node("ns=1;i=341").get_value()
-        self.machinestatus["barrel_temp4_real"] = {"value":barrel_temp4_real,"edit":"none"}
-        barrel_temp5_set                        = self.worker.get_node("ns=1;i=388").get_value()
-        self.machinestatus["barrel_temp5_set"]  = {"value":barrel_temp5_set,"edit":"acctivate"}
-        barrel_temp5_real                       = self.worker.get_node("ns=1;i=397").get_value()
-        self.machinestatus["barrel_temp5_real"] = {"value":barrel_temp5_real,"edit":"none"}
-        barrel_temp6_set                        = self.worker.get_node("ns=1;i=444").get_value()
-        self.machinestatus["barrel_temp6_set"]  = {"value":barrel_temp6_set,"edit":"acctivate"}
-        barrel_temp6_real                       = self.worker.get_node("ns=1;i=453").get_value()
-        self.machinestatus["barrel_temp6_real"] = {"value":barrel_temp6_real,"edit":"none"}
+        barrel_temp_set = {}
+        barrel_temp1_set                      = self.worker.get_node("ns=1;i=164").get_value()
+        barrel_temp_set["barrel_temp1_set"]   = {"value":barrel_temp1_set,"edit":"acctivate"}
+        barrel_temp2_set                      = self.worker.get_node("ns=1;i=220").get_value()
+        barrel_temp_set["barrel_temp2_set"]   = {"value":barrel_temp2_set,"edit":"acctivate"}
+        barrel_temp3_set                      = self.worker.get_node("ns=1;i=276").get_value()
+        barrel_temp_set["barrel_temp3_set"]   = {"value":barrel_temp3_set,"edit":"acctivate"}
+        barrel_temp4_set                      = self.worker.get_node("ns=1;i=332").get_value()
+        barrel_temp_set["barrel_temp4_set"]   = {"value":barrel_temp4_set,"edit":"acctivate"}
+        barrel_temp5_set                      = self.worker.get_node("ns=1;i=388").get_value()
+        barrel_temp_set["barrel_temp5_set"]   = {"value":barrel_temp5_set,"edit":"acctivate"}
+        barrel_temp6_set                      = self.worker.get_node("ns=1;i=444").get_value()
+        barrel_temp_set["barrel_temp6_set"]   = {"value":barrel_temp6_set,"edit":"acctivate"}
+        self.machinestatus["barrel_temp_set"] = barrel_temp_set
+
+        barrel_temp_real = {}
+        barrel_temp1_real                      = self.worker.get_node("ns=1;i=173").get_value()
+        barrel_temp_real["barrel_temp1_real"]  = {"value":barrel_temp1_real,"edit":"none"}
+        barrel_temp2_real                      = self.worker.get_node("ns=1;i=229").get_value()
+        barrel_temp_real["barrel_temp2_real"]  = {"value":barrel_temp2_real,"edit":"none"}
+        barrel_temp3_real                      = self.worker.get_node("ns=1;i=285").get_value()
+        barrel_temp_real["barrel_temp3_real"]  = {"value":barrel_temp3_real,"edit":"none"}
+        barrel_temp4_real                      = self.worker.get_node("ns=1;i=341").get_value()
+        barrel_temp_real["barrel_temp4_real"]  = {"value":barrel_temp4_real,"edit":"none"}
+        barrel_temp5_real                      = self.worker.get_node("ns=1;i=397").get_value()
+        barrel_temp_real["barrel_temp5_real"]  = {"value":barrel_temp5_real,"edit":"none"}
+        barrel_temp6_real                      = self.worker.get_node("ns=1;i=453").get_value()
+        barrel_temp_real["barrel_temp6_real"]  = {"value":barrel_temp6_real,"edit":"none"}
+        self.machinestatus["barrel_temp_real"] = barrel_temp_real
+
         #Holding pressure & time setting
-        holding_time1_set                           = self.worker.get_node("ns=5;i=57").get_value()
-        self.machinestatus["holding_time1_set"]     = {"value":holding_time1_set,"edit":"acctivate"}
+        holdingtimeset = {}
+        holding_time1_set                       = self.worker.get_node("ns=5;i=57").get_value()
+        holdingtimeset["holding_time1_set"]     = {"value":holding_time1_set,"edit":"acctivate"}
+        holding_time2_set                       = self.worker.get_node("ns=5;i=58").get_value()
+        holdingtimeset["holding_time2_set"]     = {"value":holding_time2_set,"edit":"acctivate"}
+        holding_time3_set                       = self.worker.get_node("ns=5;i=59").get_value()
+        holdingtimeset["holding_time3_set"]     = {"value":holding_time3_set,"edit":"acctivate"}
+        holding_time4_set                       = self.worker.get_node("ns=5;i=60").get_value()
+        holdingtimeset["holding_time4_set"]     = {"value":holding_time4_set,"edit":"acctivate"}
+        self.machinestatus["holdingtimeset"]    = holdingtimeset
+
+        holdingpressureset ={}
         holding_pressure1_set                       = self.worker.get_node("ns=5;i=52").get_value()
-        self.machinestatus["holding_pressure1_set"] = {"value":holding_pressure1_set,"edit":"acctivate"}
-        holding_time2_set                           = self.worker.get_node("ns=5;i=58").get_value()
-        self.machinestatus["holding_time2_set"]     = {"value":holding_time2_set,"edit":"acctivate"}
+        holdingpressureset["holding_pressure1_set"] = {"value":holding_pressure1_set,"edit":"acctivate"}
         holding_pressure2_set                       = self.worker.get_node("ns=5;i=53").get_value()
-        self.machinestatus["holding_pressure2_set"] = {"value":holding_pressure2_set,"edit":"acctivate"}
-        holding_time3_set                           = self.worker.get_node("ns=5;i=59").get_value()
-        self.machinestatus["holding_time3_set"]     = {"value":holding_time3_set,"edit":"acctivate"}
+        holdingpressureset["holding_pressure2_set"] = {"value":holding_pressure2_set,"edit":"acctivate"}
         holding_pressure3_set                       = self.worker.get_node("ns=5;i=54").get_value()
-        self.machinestatus["holding_pressure3_set"] = {"value":holding_pressure3_set,"edit":"acctivate"}
-        holding_time4_set                           = self.worker.get_node("ns=5;i=60").get_value()
-        self.machinestatus["holding_time4_set"]     = {"value":holding_time4_set,"edit":"acctivate"}
+        holdingpressureset["holding_pressure3_set"] = {"value":holding_pressure3_set,"edit":"acctivate"}
         holding_pressure4_set                       = self.worker.get_node("ns=5;i=55").get_value()
-        self.machinestatus["holding_pressure4_set"] = {"value":holding_pressure4_set,"edit":"acctivate"}
+        holdingpressureset["holding_pressure4_set"] = {"value":holding_pressure4_set,"edit":"acctivate"}
+        self.machinestatus["holdingpressureset"]    = holdingpressureset
         #Injection volume(position) set
-        injection_volume1                          = self.worker.get_node("ns=5;i=63").get_value()
-        self.machinestatus["injection_volume1"]    = {"value":injection_volume1,"edit":"acctivate"}
-        injection_volume2                          = self.worker.get_node("ns=5;i=48").get_value()
-        self.machinestatus["injection_volume2"]    = {"value":injection_volume2,"edit":"acctivate"}
-        injection_volume3                          = self.worker.get_node("ns=5;i=49").get_value()
-        self.machinestatus["injection_volume3"]    = {"value":injection_volume3,"edit":"acctivate"}
-        injection_volume4                          = self.worker.get_node("ns=5;i=50").get_value()
-        self.machinestatus["injection_volume4"]    = {"value":injection_volume4,"edit":"acctivate"}
-        injection_volume5                          = self.worker.get_node("ns=5;i=51").get_value()
-        self.machinestatus["injection_volume5"]    = {"value":injection_volume5,"edit":"acctivate"}
+        injection_pos ={}
+        injection_volume1                      = self.worker.get_node("ns=5;i=63").get_value()
+        injection_pos["injection_volume1"]     = {"value":injection_volume1,"edit":"acctivate"}
+        injection_volume2                      = self.worker.get_node("ns=5;i=48").get_value()
+        injection_pos["injection_volume2"]     = {"value":injection_volume2,"edit":"acctivate"}
+        injection_volume3                      = self.worker.get_node("ns=5;i=49").get_value()
+        injection_pos["injection_volume3"]     = {"value":injection_volume3,"edit":"acctivate"}
+        injection_volume4                      = self.worker.get_node("ns=5;i=50").get_value()
+        injection_pos["injection_volume4"]     = {"value":injection_volume4,"edit":"acctivate"}
+        injection_volume5                      = self.worker.get_node("ns=5;i=51").get_value()
+        injection_pos["injection_volume5"]     = {"value":injection_volume5,"edit":"acctivate"}
+        self.machinestatus["injection_pos"]    = injection_pos
         #Injection rate(speed) set
-        injection_rate1_set                       = self.worker.get_node("ns=5;i=42").get_value()
-        self.machinestatus["injection_rate1_set"] = {"value":injection_rate1_set,"edit":"acctivate"}
-        injection_rate2_set                       = self.worker.get_node("ns=5;i=43").get_value()
-        self.machinestatus["injection_rate2_set"] = {"value":injection_rate2_set,"edit":"acctivate"}
-        injection_rate3_set                       = self.worker.get_node("ns=5;i=44").get_value()
-        self.machinestatus["injection_rate3_set"] = {"value":injection_rate3_set,"edit":"acctivate"}
-        injection_rate4_set                       = self.worker.get_node("ns=5;i=45").get_value()
-        self.machinestatus["injection_rate4_set"] = {"value":injection_rate4_set,"edit":"acctivate"}
-        injection_rate5_set                       = self.worker.get_node("ns=5;i=46").get_value()
-        self.machinestatus["injection_rate5_set"] = {"value":injection_rate5_set,"edit":"acctivate"}
+        injection_speed = {}
+        injection_rate1_set                      = self.worker.get_node("ns=5;i=42").get_value()
+        injection_speed["injection_rate1_set"]   = {"value":injection_rate1_set,"edit":"acctivate"}
+        injection_rate2_set                      = self.worker.get_node("ns=5;i=43").get_value()
+        injection_speed["injection_rate2_set"]   = {"value":injection_rate2_set,"edit":"acctivate"}
+        injection_rate3_set                      = self.worker.get_node("ns=5;i=44").get_value()
+        injection_speed["injection_rate3_set"]   = {"value":injection_rate3_set,"edit":"acctivate"}
+        injection_rate4_set                      = self.worker.get_node("ns=5;i=45").get_value()
+        injection_speed["injection_rate4_set"]   = {"value":injection_rate4_set,"edit":"acctivate"}
+        injection_rate5_set                      = self.worker.get_node("ns=5;i=46").get_value()
+        injection_speed["injection_rate5_set"]   = {"value":injection_rate5_set,"edit":"acctivate"}
+        self.machinestatus["injection_speed"]    = injection_speed
 
         #VP position setting
         vp_position_set                       = self.worker.get_node("ns=5;i=70").get_value()
@@ -209,12 +224,14 @@ class engelagent:
         injection_pressure_set                       = self.worker.get_node("ns=5;i=69").get_value()
         self.machinestatus["injection_pressure_set"] = {"value":injection_pressure_set,"edit":"acctivate"}
         #Back pressure
+        backpressure  = {}
         backpressure1                       = self.worker.get_node("ns=5;i=71").get_value()
-        self.machinestatus["backpressure1"] = {"value":backpressure1,"edit":"acctivate"}
+        backpressure["backpressure1"]       = {"value":backpressure1,"edit":"acctivate"}
         backpressure2                       = self.worker.get_node("ns=5;i=72").get_value()
-        self.machinestatus["backpressure2"] = {"value":backpressure2,"edit":"acctivate"}
+        backpressure["backpressure2"]       = {"value":backpressure2,"edit":"acctivate"}
         backpressure3                       = self.worker.get_node("ns=5;i=73").get_value()
-        self.machinestatus["backpressure3"] = {"value":backpressure3,"edit":"acctivate"}
+        backpressure["backpressure3"]       = {"value":backpressure3,"edit":"acctivate"}
+        self.machinestatus["backpressure"]  = backpressure
         #Clamp force set
         clamp_force_set                        = self.worker.get_node("ns=5;i=85").get_value()
         self.machinestatus["clamp_force_set"]  = {"value":clamp_force_set,"edit":"acctivate"}

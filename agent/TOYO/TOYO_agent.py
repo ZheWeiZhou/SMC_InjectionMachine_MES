@@ -168,7 +168,7 @@ class toyoagent:
                     keyname       = keylist[i]
                     data[keyname] = machinedata[i]
             vpset = float(data["VP_pos_set"])
-            origin_pos_set = [float(data["Ij_Start_pos"]),float(data["IJ_pos_set1"]),float(data["IJ_pos_set2"]),float(data["IJ_pos_set3"]),float(data["IJ_pos_set4"]),float(data["IJ_pos_set5"]),float(data["IJ_pos_set6"])]
+            origin_pos_set = [float(data["Ij_pos_set0"]),float(data["IJ_pos_set1"]),float(data["IJ_pos_set2"]),float(data["IJ_pos_set3"]),float(data["IJ_pos_set4"]),float(data["IJ_pos_set5"]),float(data["IJ_pos_set6"])]
             origin_ijv_set = [float(data["Ijv_set1"]),float(data["Ijv_set2"]),float(data["Ijv_set3"]),float(data["Ijv_set4"]),float(data["Ijv_set5"]),float(data["Ijv_set6"]),float(data["Ijv_set7"]),]
             segcount =0
             def mask_array(arr,index,value):
@@ -424,54 +424,70 @@ class toyoagent:
             self.red.set(f'{self.machineid}_updatetime',current_time)
 
             statusdata = {}
-            statusdata["Ijv_set1"]       = {"value":machinedata["Ijv_set1"],"edit":"acctivate"}
-            statusdata["Ijv_set2"]       = {"value":machinedata["Ijv_set2"],"edit":"acctivate"}
-            statusdata["Ijv_set3"]       = {"value":machinedata["Ijv_set3"],"edit":"acctivate"}
-            statusdata["Ijv_set4"]       = {"value":machinedata["Ijv_set4"],"edit":"acctivate"}
-            statusdata["Ijv_set5"]       = {"value":machinedata["Ijv_set5"],"edit":"acctivate"}
-            statusdata["Ijv_set6"]       = {"value":machinedata["Ijv_set6"],"edit":"acctivate"}
-            statusdata["Ijv_set7"]       = {"value":machinedata["Ijv_set7"],"edit":"acctivate"}
+            injection_speed = {}
+            injection_speed["Ijv_set1"]       = {"value":machinedata["Ijv_set1"],"edit":"acctivate"}
+            injection_speed["Ijv_set2"]       = {"value":machinedata["Ijv_set2"],"edit":"acctivate"}
+            injection_speed["Ijv_set3"]       = {"value":machinedata["Ijv_set3"],"edit":"acctivate"}
+            injection_speed["Ijv_set4"]       = {"value":machinedata["Ijv_set4"],"edit":"acctivate"}
+            injection_speed["Ijv_set5"]       = {"value":machinedata["Ijv_set5"],"edit":"acctivate"}
+            injection_speed["Ijv_set6"]       = {"value":machinedata["Ijv_set6"],"edit":"acctivate"}
+            injection_speed["Ijv_set7"]       = {"value":machinedata["Ijv_set7"],"edit":"acctivate"}
+            statusdata["injection_speed"]     = injection_speed
+
             statusdata["IJPressure_set"] = {"value":machinedata["IJPressure_set"],"edit":"acctivate"}
             statusdata["VP_pos_set"]     = {"value":machinedata["VP_pos_set"],"edit":"acctivate"}
-            statusdata["Ij_pos_set0"]    = {"value":machinedata["Ij_pos_set0"],"edit":"none"}
-            statusdata["IJ_pos_set1"]    = {"value":machinedata["IJ_pos_set1"],"edit":"acctivate"}
-            statusdata["IJ_pos_set2"]    = {"value":machinedata["IJ_pos_set2"],"edit":"acctivate"}
-            statusdata["IJ_pos_set3"]    = {"value":machinedata["IJ_pos_set3"],"edit":"acctivate"}
-            statusdata["IJ_pos_set4"]    = {"value":machinedata["IJ_pos_set4"],"edit":"acctivate"}
-            statusdata["IJ_pos_set5"]    = {"value":machinedata["IJ_pos_set5"],"edit":"acctivate"}
-            statusdata["IJ_pos_set6"]    = {"value":machinedata["IJ_pos_set6"],"edit":"acctivate"}
-            statusdata["Barrel_temp_set1"]   = {"value":machinedata["Barrel_temp_set1"],"edit":"acctivate"}
-            statusdata["Barrel_temp_set2"]   = {"value":machinedata["Barrel_temp_set2"],"edit":"acctivate"}
-            statusdata["Barrel_temp_set3"]   = {"value":machinedata["Barrel_temp_set3"],"edit":"acctivate"}
-            statusdata["Barrel_temp_set4"]   = {"value":machinedata["Barrel_temp_set4"],"edit":"acctivate"}
-            statusdata["Barrel_temp_set5"]   = {"value":machinedata["Barrel_temp_set5"],"edit":"acctivate"}
-            statusdata["Barrel_temp_set6"]   = {"value":machinedata["Barrel_temp_set6"],"edit":"acctivate"}
+            injection_pos ={}
+            injection_pos["Ij_pos_set0"]    = {"value":machinedata["Ij_pos_set0"],"edit":"none"}
+            injection_pos["IJ_pos_set1"]    = {"value":machinedata["IJ_pos_set1"],"edit":"acctivate"}
+            injection_pos["IJ_pos_set2"]    = {"value":machinedata["IJ_pos_set2"],"edit":"acctivate"}
+            injection_pos["IJ_pos_set3"]    = {"value":machinedata["IJ_pos_set3"],"edit":"acctivate"}
+            injection_pos["IJ_pos_set4"]    = {"value":machinedata["IJ_pos_set4"],"edit":"acctivate"}
+            injection_pos["IJ_pos_set5"]    = {"value":machinedata["IJ_pos_set5"],"edit":"acctivate"}
+            injection_pos["IJ_pos_set6"]    = {"value":machinedata["IJ_pos_set6"],"edit":"acctivate"}
+            statusdata["injection_pos"]     = injection_pos
+            barrel_temp_set = {}
+            barrel_temp_set["Barrel_temp_set1"]   = {"value":machinedata["Barrel_temp_set1"],"edit":"acctivate"}
+            barrel_temp_set["Barrel_temp_set2"]   = {"value":machinedata["Barrel_temp_set2"],"edit":"acctivate"}
+            barrel_temp_set["Barrel_temp_set3"]   = {"value":machinedata["Barrel_temp_set3"],"edit":"acctivate"}
+            barrel_temp_set["Barrel_temp_set4"]   = {"value":machinedata["Barrel_temp_set4"],"edit":"acctivate"}
+            barrel_temp_set["Barrel_temp_set5"]   = {"value":machinedata["Barrel_temp_set5"],"edit":"acctivate"}
+            barrel_temp_set["Barrel_temp_set6"]   = {"value":machinedata["Barrel_temp_set6"],"edit":"acctivate"}
+            statusdata["barrel_temp_set"]         = barrel_temp_set
+            
+            barrel_temp_real = {}
+            barrel_temp_real["Act_Barrel_temp1"] = {"value":machinedata["Act_Barrel_temp1"],"edit":"none"}
+            barrel_temp_real["Act_Barrel_temp2"] = {"value":machinedata["Act_Barrel_temp2"],"edit":"none"}
+            barrel_temp_real["Act_Barrel_temp3"] = {"value":machinedata["Act_Barrel_temp3"],"edit":"none"}
+            barrel_temp_real["Act_Barrel_temp4"] = {"value":machinedata["Act_Barrel_temp4"],"edit":"none"}
+            barrel_temp_real["Act_Barrel_temp5"] = {"value":machinedata["Act_Barrel_temp5"],"edit":"none"}
+            barrel_temp_real["Act_Barrel_temp6"] = {"value":machinedata["Act_Barrel_temp6"],"edit":"none"}
+            statusdata["barrel_temp_real"]       = barrel_temp_real
+
             statusdata["Clamping_force_set"] = {"value":machinedata["Clamping_force_set"],"edit":"acctivate"}
             statusdata["Cooling_time_set"]   = {"value":machinedata["Cooling_time_set"],"edit":"acctivate"}
-            statusdata["Holding_time_set1"]  = {"value":machinedata["Holding_time_set1"],"edit":"acctivate"}
-            statusdata["Holding_time_set2"]  = {"value":machinedata["Holding_time_set2"],"edit":"acctivate"}
-            statusdata["Holding_time_set3"]  = {"value":machinedata["Holding_time_set3"],"edit":"acctivate"}
-            statusdata["Holding_time_set4"]  = {"value":machinedata["Holding_time_set4"],"edit":"acctivate"}
-            statusdata["Holding_time_set5"]  = {"value":machinedata["Holding_time_set5"],"edit":"acctivate"}
-            statusdata["Holding_time_set6"]  = {"value":machinedata["Holding_time_set6"],"edit":"acctivate"}
-            statusdata["Holding_pressure_set1"] = {"value":machinedata["Holding_pressure_set1"],"edit":"acctivate"}
-            statusdata["Holding_pressure_set2"] = {"value":machinedata["Holding_pressure_set2"],"edit":"acctivate"}
-            statusdata["Holding_pressure_set3"] = {"value":machinedata["Holding_pressure_set3"],"edit":"acctivate"}
-            statusdata["Holding_pressure_set4"] = {"value":machinedata["Holding_pressure_set4"],"edit":"acctivate"}
-            statusdata["Holding_pressure_set5"] = {"value":machinedata["Holding_pressure_set5"],"edit":"acctivate"}
-            statusdata["Holding_pressure_set6"] = {"value":machinedata["Holding_pressure_set6"],"edit":"acctivate"}
+            holdingtimeset = {}
+            holdingtimeset["Holding_time_set1"]  = {"value":machinedata["Holding_time_set1"],"edit":"acctivate"}
+            holdingtimeset["Holding_time_set2"]  = {"value":machinedata["Holding_time_set2"],"edit":"acctivate"}
+            holdingtimeset["Holding_time_set3"]  = {"value":machinedata["Holding_time_set3"],"edit":"acctivate"}
+            holdingtimeset["Holding_time_set4"]  = {"value":machinedata["Holding_time_set4"],"edit":"acctivate"}
+            holdingtimeset["Holding_time_set5"]  = {"value":machinedata["Holding_time_set5"],"edit":"acctivate"}
+            holdingtimeset["Holding_time_set6"]  = {"value":machinedata["Holding_time_set6"],"edit":"acctivate"}
+            statusdata["holdingtimeset"]         = holdingtimeset
+
+            holdingpressureset ={}
+            holdingpressureset["Holding_pressure_set1"] = {"value":machinedata["Holding_pressure_set1"],"edit":"acctivate"}
+            holdingpressureset["Holding_pressure_set2"] = {"value":machinedata["Holding_pressure_set2"],"edit":"acctivate"}
+            holdingpressureset["Holding_pressure_set3"] = {"value":machinedata["Holding_pressure_set3"],"edit":"acctivate"}
+            holdingpressureset["Holding_pressure_set4"] = {"value":machinedata["Holding_pressure_set4"],"edit":"acctivate"}
+            holdingpressureset["Holding_pressure_set5"] = {"value":machinedata["Holding_pressure_set5"],"edit":"acctivate"}
+            holdingpressureset["Holding_pressure_set6"] = {"value":machinedata["Holding_pressure_set6"],"edit":"acctivate"}
+            statusdata["holdingpressureset"]            = holdingpressureset
             self.red.set(f'{self.machineid}_status',json.dumps(statusdata))
 
             feedbackdata ={}
             feedbackdata["Act_VP_pressure"] = machinedata["Act_VP_pressure"]
             feedbackdata["Act_VP_pos"] = machinedata["Act_VP_pos"]
             feedbackdata["Act_filling_time"] = machinedata["Act_filling_time"]
-            feedbackdata["Act_Barrel_temp1"] = machinedata["Act_Barrel_temp1"]
-            feedbackdata["Act_Barrel_temp2"] = machinedata["Act_Barrel_temp2"]
-            feedbackdata["Act_Barrel_temp3"] = machinedata["Act_Barrel_temp3"]
-            feedbackdata["Act_Barrel_temp4"] = machinedata["Act_Barrel_temp4"]
-            feedbackdata["Act_Barrel_temp5"] = machinedata["Act_Barrel_temp5"]
-            feedbackdata["Act_Barrel_temp6"] = machinedata["Act_Barrel_temp6"]
             feedbackdata["Act_Cushion_pos"] = machinedata["Act_Cushion_pos"]
             feedbackdata["Max_ij_pressure"] = machinedata["Max_ij_pressure"]
             feedbackdata["Max_ij_speed"] = machinedata["Max_ij_speed"]

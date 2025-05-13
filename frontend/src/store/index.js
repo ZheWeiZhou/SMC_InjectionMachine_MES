@@ -5,12 +5,13 @@ export default createStore({
   state() {
     return {
       token: '',
-      host: '140.135.106.49:8000'
+      host: '140.135.106.49:8000',
+      selectmachine: cookies.get('setSelectMachine')  || 'Engel-120'
     }
   },
   mutations: {
-    setToken(state, token) {
-      state.token = token
+    setSelectMachine(state, name) {
+      state.selectmachine = name
       
     },
     clearToken(state) {
@@ -21,6 +22,10 @@ export default createStore({
     getToken() {
       const token = cookies.get('accesstoken');
       return token
+    },
+    getselectmachine(state){
+      
+      return state.selectmachine
     },
     isLoggedIn() {
       const token = cookies.get('accesstoken');

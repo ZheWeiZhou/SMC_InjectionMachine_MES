@@ -27,16 +27,16 @@
                     <line x1="74%" y1="50%" x2="78.5%" y2="50%" stroke="#C5BBB8" stroke-width="4" />
                     <line x1="87%" y1="50%" x2="91.5%" y2="50%" stroke="#C5BBB8" stroke-width="4" />
                     <text fill="#121212" x="79.5%" y="50.5%" font-size="10px" font-family="monospace" font-weight="bold">Entrance</text>
-                    <rect x="5%" y="10%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['MULTIPAS-MuCell']" />
+                    <rect x="5%" y="10%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['MULTIPAS-MuCell']" @click="selectmachine('MULTIPAS-MuCell')"/>
                     <text fill="#121212" x="7%" y="17%" font-size="9px" font-family="monospace" font-weight="bold">MULTIPAS MuCell</text>
 
-                    <rect x="25%" y="10%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['Engel-120']" />
+                    <rect x="25%" y="10%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['Engel-120']" @click="selectmachine('Engel-120')"/>
                     <text fill="#121212" x="29%" y="17%" font-size="9px" font-family="monospace" font-weight="bold">Engel-120</text>
 
-                    <rect x="45%" y="10%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['Engel-80']" />
+                    <rect x="45%" y="10%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['Engel-80']" @click="selectmachine('Engel-80')"/>
                     <text fill="#121212" x="49.5%" y="17%" font-size="9px" font-family="monospace" font-weight="bold">Engel-80</text>
 
-                    <rect x="65%" y="10%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['FCS-MuCell']" />
+                    <rect x="65%" y="10%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['FCS-MuCell']" @click="selectmachine('FCS-MuCell')" />
                     <text fill="#121212" x="69%" y="17%" font-size="9px" font-family="monospace" font-weight="bold">FCS MuCell</text>
 
                     <text fill="#121212" x="2%" y="54%" font-size="12px" font-family="monospace" font-weight="bold">106 Factory</text>
@@ -52,10 +52,10 @@
                     <line x1="20%" y1="96%" x2="24.5%" y2="96%" stroke="#C5BBB8" stroke-width="4" />
                     <text fill="#121212" x="12.5%" y="96.5%" font-size="10px" font-family="monospace" font-weight="bold">Entrance</text>
 
-                    <rect x="75%" y="55%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['TOYO']" />
-                    <text fill="#121212" x="81%" y="62%" font-size="9px" font-family="monospace" font-weight="bold">TOYO</text>
-                    <rect x="55%" y="55%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['FCS-HT-150']" />
-                    <text fill="#121212" x="59%" y="62%" font-size="9px" font-family="monospace" font-weight="bold">FCS HT-150</text>
+                    <rect x="75%" y="55%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['TOYO']" @click="selectmachine('TOYO')" />
+                    <text fill="#121212" x="81%" y="62%" font-size="9px" font-family="monospace" font-weight="bold" >TOYO</text>
+                    <rect x="55%" y="55%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['FCS-HT-150']"  @click="selectmachine('FCS HT-150')"/>
+                    <text fill="#121212" x="59%" y="62%" font-size="9px" font-family="monospace" font-weight="bold" >FCS HT-150</text>
                 </svg>
             </div>
         </v-col>
@@ -119,9 +119,19 @@ import UperNavbar  from './layout/UperNavbar.vue';
                 
             }
         })
+        },
+        selectmachine(name){
+            var machinename = name;
+            
+            this.$cookies.set('setSelectMachine', machinename, '1d');
+            this.$router.push({ name: 'MachineDashboard' });
         }
     },
     mounted(){
+        var loginstate = this.$store.getters.isLoggedIn;
+        if (!loginstate){
+            this.$router.push({ name: 'Login' });
+        }
         this.timer=setInterval(this.getmachineonlinestatus,100);
     },
     beforeDestory(){
