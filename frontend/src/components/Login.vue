@@ -63,7 +63,7 @@
     } 
     else {
         var requestbody = {"useraccount":this.account,"userpassword":this.password}
-        axios.post(`http://${this.$store.getters.getHost}/smc/injectionmachinemes/user/login`,requestbody)
+        axios.post(`${this.$store.getters.getHost}/smc/injectionmachinemes/user/login`,requestbody)
         .then( (response) => {
         if (response.data.status=='error'){
             this.error_message = '登入失敗';

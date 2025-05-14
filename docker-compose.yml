@@ -45,26 +45,27 @@ services:
       RABBITMQ_DEFAULT_PASS: cax521
     restart: always
     
-  # frontend:
-  #   container_name: "Engel-Frontend"
-  #   build: ./frontend
-  #   restart: always
-  #   ports:
-  #     - "8080:80"
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:80"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 3
-  #     start_period: 5s
-  #   # logging:
-  #   #   driver: "json-file"
-  #   #   options:
-  #   #     max-size: "500m"
-  #   depends_on:
-  #     - backend
+  frontend:
+    container_name: "Frontend"
+    build: ./frontend
+    restart: always
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-size: "500m"
+    depends_on:
+      - backend
 
   backend:
+    container_name: "backend"
     build: ./backend
     restart: always
     ports:

@@ -55,7 +55,7 @@ async def insertdata(requestData:machine_contorl_requestBody):
         channel.basic_publish(exchange='',
                       routing_key=machine_name,
                       body=commandbody,
-                      properties=pika.BasicProperties(expiration='60000') # TTL Setting task timeout 60 sec will be cancel
+                    #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
                       )
         connection.close()
         returnData = {"status": "success"}

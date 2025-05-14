@@ -112,6 +112,7 @@ class engelagent:
             nodeid = self.nodemap[target]
             value  = float(value) 
             self.worker.get_node(nodeid).set_value(ua.Variant(value, ua.VariantType.Float))
+            # self.worker.get_node(nodeid).set_value(value)
         
 
     def productpredict(self,input):

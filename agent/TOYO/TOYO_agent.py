@@ -36,7 +36,7 @@ class toyoagent:
             "Ijv_set5":"@SetVelInj_V_4[1]",
             "Ijv_set6":"@SetVelInj_V_5[1]",
             "Ijv_set7":"@SetVelInj_V_6[1]",
-            "IJPressure_set":" @SetPrsInj_P_9[1]",
+            "injection_pressure_set":" @SetPrsInj_P_9[1]",
             "VP_pos_set":"@SetStrInj_S_10[1]",
             "Ij_pos_set0":"SetStrPlst[1]",
             "Ij_pos_set1":"@SetStrInj_S_1[1]",
@@ -52,7 +52,7 @@ class toyoagent:
             "Barrel_temp_set5":"SetTmpBrlZn[1,5]",
             "Barrel_temp_set6":"SetTmpBrlZn[1,6]",
             "Clamping_force_set":"SetFrcClp",
-            "Cooling_time_set":"@SetTimCnt_CoolTim",
+            "cooling_time":"@SetTimCnt_CoolTim",
             "Holding_time_set1":"@SetTimHld_T_1[1]",
             "Holding_time_set2":"@SetTimHld_T_2[1]",
             "Holding_time_set3":"@SetTimHld_T_3[1]",
@@ -98,7 +98,7 @@ class toyoagent:
                     "Ijv_set5":'',
                     "Ijv_set6":'',
                     "Ijv_set7":'',
-                    "IJPressure_set":'',
+                    "injection_pressure_set":'',
                     "VP_pos_set":'',
                     "Act_VP_pressure":'',
                     "Act_VP_pos":'',
@@ -124,7 +124,7 @@ class toyoagent:
                     "Act_Cushion_pos":'',
                     "Ij_pos_set0":'',
                     "Clamping_force_set":'',
-                    "Cooling_time_set":'',
+                    "cooling_time":'',
                     "Max_ij_pressure":'',
                     "Max_ij_speed":'',
                     "Holding_time_set1":'',
@@ -434,7 +434,7 @@ class toyoagent:
             injection_speed["Ijv_set7"]       = {"value":machinedata["Ijv_set7"],"edit":"acctivate"}
             statusdata["injection_speed"]     = injection_speed
 
-            statusdata["IJPressure_set"] = {"value":machinedata["IJPressure_set"],"edit":"acctivate"}
+            statusdata["injection_pressure_set"] = {"value":machinedata["injection_pressure_set"],"edit":"acctivate"}
             statusdata["VP_pos_set"]     = {"value":machinedata["VP_pos_set"],"edit":"acctivate"}
             injection_pos ={}
             injection_pos["Ij_pos_set0"]    = {"value":machinedata["Ij_pos_set0"],"edit":"none"}
@@ -464,7 +464,7 @@ class toyoagent:
             statusdata["barrel_temp_real"]       = barrel_temp_real
 
             statusdata["Clamping_force_set"] = {"value":machinedata["Clamping_force_set"],"edit":"acctivate"}
-            statusdata["Cooling_time_set"]   = {"value":machinedata["Cooling_time_set"],"edit":"acctivate"}
+            statusdata["cooling_time"]   = {"value":machinedata["cooling_time"],"edit":"acctivate"}
             holdingtimeset = {}
             holdingtimeset["Holding_time_set1"]  = {"value":machinedata["Holding_time_set1"],"edit":"acctivate"}
             holdingtimeset["Holding_time_set2"]  = {"value":machinedata["Holding_time_set2"],"edit":"acctivate"}

@@ -91,7 +91,7 @@ import UperNavbar  from './layout/UperNavbar.vue';
             const token = this.$store.getters.getToken;
 
             // const token = "8d6d4e85-b277-4102-8ffd-defcc7b7b9f9"
-            await axios.get(`http://${this.$store.getters.getHost}/smc/injectionmachinemes/machineconnectstatus`,
+            await axios.get(`${this.$store.getters.getHost}/smc/injectionmachinemes/machineconnectstatus`,
             {
                 headers:{"accesstoken":token}
             }
@@ -132,7 +132,8 @@ import UperNavbar  from './layout/UperNavbar.vue';
         if (!loginstate){
             this.$router.push({ name: 'Login' });
         }
-        this.timer=setInterval(this.getmachineonlinestatus,100);
+        this.getmachineonlinestatus();
+        this.timer=setInterval(this.getmachineonlinestatus,1000);
     },
     beforeDestory(){
       clearInterval(this.timer);
