@@ -22,26 +22,26 @@ class injection_machine_db(Base):
 
 class engelagent:
     def __init__(self,machineaddress,user,password,machineid):
-        self.rabbitmq_account = "cax"
+        self.rabbitmq_account  = "cax"
         self.rabbitmq_password = "cax521"
-        self.hostip = "192.168.1.225"
-        self.machineid = machineid
-        self.machineaddress = machineaddress
-        self.user = user
-        self.password = password
-        self.processactivate = False
-        self.worker = ""
+        self.hostip            = "192.168.1.225"
+        self.machineid         = machineid
+        self.machineaddress    = machineaddress
+        self.user              = user
+        self.password          = password
+        self.processactivate   = False
+        self.worker            = ""
         self.red = redis.Redis(host='192.168.1.225',port=6379,db=0)
         self.actpressurecurve = []
-        self.actspeedcurve = []
-        self.motorpower = []
-        self.heaterpower= []
-        self.screwposition = []
-        self.timeindex = []
-        self.machinestatus   = {}
-        self.machinefeedback = {}
-        self.machinecurve   = {}
-        self.db=create_engine("postgresql://postgres:postgres@192.168.1.225:5432/cax")
+        self.actspeedcurve    = []
+        self.motorpower       = []
+        self.heaterpower      = []
+        self.screwposition    = []
+        self.timeindex        = []
+        self.machinestatus    = {}
+        self.machinefeedback  = {}
+        self.machinecurve     = {}
+        self.db = create_engine("postgresql://postgres:postgres@192.168.1.225:5432/cax")
         self.nodemap = {
             "holding_time1_set":"ns=5;i=57",
             "holding_pressure1_set":"ns=5;i=52",
@@ -365,12 +365,12 @@ class engelagent:
                     
                 # DBPLAN save MachineID updatetime status(dumps(dict)) feedback(dumps(dict)) curve((dumps(dict))) ....
                 #Clean act injection pressure&speed act motor power curve 
-                self.actpressurecurve=[]
-                self.actspeedcurve=[]
-                self.motorpower=[]
-                self.heaterpower=[]
-                self.screwposition =[]
-                self.timeindex =[]
+                self.actpressurecurve = []
+                self.actspeedcurve    = []
+                self.motorpower       = []
+                self.heaterpower      = []
+                self.screwposition    = []
+                self.timeindex        = []
         #Get current time
         current_time        = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         self.red.set(f'{self.machineid}_updatetime',current_time)
@@ -379,9 +379,9 @@ class engelagent:
         self.red.set(f'{self.machineid}_curve',json.dumps(self.machinecurve))
 if __name__ == "__main__":
     machineaddress = '192.168.1.15:4840'
-    user = os.environ.get('user', 'localuser1622689641636')
-    password= os.environ.get('password', '12345')
-    Engel=engelagent(machineaddress,user,password,'Engel-120')
+    user           = os.environ.get('user', 'localuser1622689641636')
+    password       = os.environ.get('password', '12345')
+    Engel          = engelagent(machineaddress,user,password,'Engel-120')
     Engel.connect()
     while True:
       try:

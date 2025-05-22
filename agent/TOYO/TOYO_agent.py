@@ -27,7 +27,7 @@ class toyoagent:
         self.spc_path       = spc_path
         self.hostip = "192.168.1.225"
         self.red = redis.Redis(host='192.168.1.225',port=6379,db=0)
-        self.db=create_engine("postgresql://postgres:postgres@192.168.1.225:5432/InjectionMachineMES")
+        self.db=create_engine("postgresql://postgres:postgres@192.168.1.225:5432/cax")
         self.nodemap ={
             "Ijv_set1":"@SetVelInj_V_0[1]",
             "Ijv_set2":"@SetVelInj_V_1[1]",
@@ -38,13 +38,13 @@ class toyoagent:
             "Ijv_set7":"@SetVelInj_V_6[1]",
             "injection_pressure_set":" @SetPrsInj_P_9[1]",
             "VP_pos_set":"@SetStrInj_S_10[1]",
-            "Ij_pos_set0":"SetStrPlst[1]",
-            "Ij_pos_set1":"@SetStrInj_S_1[1]",
-            "Ij_pos_set2":"@SetStrInj_S_2[1]",
-            "Ij_pos_set3":"@SetStrInj_S_3[1]",
-            "Ij_pos_set4":"@SetStrInj_S_4[1]",
-            "Ij_pos_set5":"@SetStrInj_S_5[1]",
-            "Ij_pos_set6":"@SetStrInj_S_6[1]",
+            "IJ_pos_set0":"SetStrPlst[1]",
+            "IJ_pos_set1":"@SetStrInj_S_1[1]",
+            "IJ_pos_set2":"@SetStrInj_S_2[1]",
+            "IJ_pos_set3":"@SetStrInj_S_3[1]",
+            "IJ_pos_set4":"@SetStrInj_S_4[1]",
+            "IJ_pos_set5":"@SetStrInj_S_5[1]",
+            "IJ_pos_set6":"@SetStrInj_S_6[1]",
             "Barrel_temp_set1":"SetTmpBrlZn[1,1]",
             "Barrel_temp_set2":"SetTmpBrlZn[1,2]",
             "Barrel_temp_set3":"SetTmpBrlZn[1,3]",
@@ -205,8 +205,10 @@ class toyoagent:
     # 響應Rabbit MQ的task更改機台參數
     def parametersetting(self,target,value):
         access_node = list(self.nodemap.keys())
+        print(target)
         if target in access_node:
             nodeid = self.nodemap[target]
+            print(nodeid)
             with open('SET.JOB','r') as file:
                 first_line  = file.readline()
             with open('SET.JOB','w') as file:
@@ -415,6 +417,7 @@ class toyoagent:
 
         machinedata = self.get_machine_data()
         pprint(machinedata)
+
         try:
             currentcount = int(machinedata['cycle_count'])
             # upload machine real-time data to redis
@@ -434,7 +437,7 @@ class toyoagent:
             injection_speed["Ijv_set7"]       = {"value":machinedata["Ijv_set7"],"edit":"acctivate"}
             statusdata["injection_speed"]     = injection_speed
 
-            statusdata["IJPressure_set"] = {"value":machinedata["IJPressure_set"],"edit":"acctivate"}
+            statusdata["injection_pressure_set"] = {"value":machinedata["injection_pressure_set"],"edit":"acctivate"}
             statusdata["VP_pos_set"]     = {"value":machinedata["VP_pos_set"],"edit":"acctivate"}
             injection_pos ={}
             injection_pos["Ij_pos_set0"]    = {"value":machinedata["Ij_pos_set0"],"edit":"none"}
@@ -464,7 +467,7 @@ class toyoagent:
             statusdata["barrel_temp_real"]       = barrel_temp_real
 
             statusdata["Clamping_force_set"] = {"value":machinedata["Clamping_force_set"],"edit":"acctivate"}
-            statusdata["Cooling_time_set"]   = {"value":machinedata["Cooling_time_set"],"edit":"acctivate"}
+            statusdata["cooling_time"]   = {"value":machinedata["cooling_time"],"edit":"acctivate"}
             holdingtimeset = {}
             holdingtimeset["Holding_time_set1"]  = {"value":machinedata["Holding_time_set1"],"edit":"acctivate"}
             holdingtimeset["Holding_time_set2"]  = {"value":machinedata["Holding_time_set2"],"edit":"acctivate"}
@@ -520,10 +523,11 @@ class toyoagent:
                 # Determine whether data needs to be uploaded to the database.
                 if self.previous_count != currentcount:
                     print("[Message] Detect machine completed the process, Start to upload data to db ... ")
-                    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+                    current_time = datetime.now().strftime("%Y-%m-%d")
+                    current_time = current_time + ' ' +  machinedata["time"]
                     Session = sessionmaker(bind=self.db)
                     session = Session()
-                    insert_sql = injection_machine_DB.__table__.insert().values(
+                    insert_sql = injection_machine_db.__table__.insert().values(
                         created_at       = current_time,
                         machine_name     = self.machineid,
                         machine_status   = json.dumps(statusdata),
