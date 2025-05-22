@@ -13,7 +13,10 @@
                         </linearGradient>
                     </defs>
                     <rect x="0" y="0" width="100%" height="100%" fill="url(#grad1)" />
-
+                    <circle cx="85%" cy="4.5%" r="3.5" fill="rgba(182,182,180,0.6)" />
+                    <text fill="#121212" x="86%" y="5%" font-size="7px" font-family="monospace" font-weight="bold">Offline</text>
+                    <circle cx="91%" cy="4.5%" r="3.5" fill="rgba(76,175,80,0.6)" />
+                    <text fill="#121212" x="92%" y="5%" font-size="7px" font-family="monospace" font-weight="bold">Online</text>
                     <text fill="#121212" x="2%" y="5%" font-size="12px" font-family="monospace" font-weight="bold">101 Factory</text>
                     <rect x="92%" y="7%" width="0.5%" height="40%" fill="rgba(227,118,18,0.4)" />
 

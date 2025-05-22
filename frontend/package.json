@@ -11,6 +11,8 @@
     "@mdi/font": "5.9.55",
     "axios": "^1.9.0",
     "core-js": "^3.8.3",
+    "highcharts": "^12.2.0",
+    "highcharts-vue": "^2.0.1",
     "roboto-fontface": "*",
     "vue": "^3.2.13",
     "vue-router": "^4.5.1",

@@ -34,7 +34,7 @@
             </v-card>
         </v-col>
     </v-row>
-    <v-row class="mr-1 ml-1" style="min-height: 70%;">
+    <v-row class="mr-1 ml-1" style="min-height: 50%;">
     <v-col>
     <svg width="100%" height="100%" >
         <rect x="0" y="0" rx="15" ry="15" width="100%" height="100%" fill="#82AE39" fill-opacity="0.6"/>
@@ -100,7 +100,7 @@
     </svg>
     </v-col>
     </v-row>
-    <v-row class="mr-1 ml-1" style="min-height: 28%;">
+    <v-row class="mr-1 ml-1" style="min-height: 20%;">
     <v-col>
         <svg width="100%" height="100%">
             <rect x="0" y="0" rx="15" ry="15" width="100%" height="100%" fill="#FEEE81" fill-opacity="0.6"/>
@@ -166,6 +166,72 @@
         </svg>
     </v-col>
     </v-row>
+    <v-row class="mr-1 ml-1" >
+        <v-col>
+            <v-card>
+                <v-card-title>Process Feedback Data</v-card-title>
+                <v-card-text>
+                    <v-row>
+                            <v-col>
+                        <v-table density="compact" fixed-header style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th class="text-left" style="background-color:#333333; color:white">Name</th>
+                                    <th class="text-left" style="background-color:#333333; color:white">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="item in feedbacktabledata.slice(0, 15)"
+                                    :key="item.Name"
+                                >
+                                    <td class="text-left" style="background-color: #F5F5F5;">{{ item.Name }}</td>
+                                    <td class="text-left" style="background-color: #F5F5F5;">{{ item.Value }}</td>
+                                </tr>
+                            </tbody>
+                        </v-table>
+                    </v-col>
+                    <v-col>
+                        <v-table density="compact" fixed-header style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th class="text-left" style="background-color:#333333; color:white">Name</th>
+                                <th class="text-left" style="background-color:#333333; color:white">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="item in feedbacktabledata.slice(15)"
+                                :key="item.Name"
+                            >
+                                <td class="text-left" style="background-color: #F5F5F5;">{{ item.Name }}</td>
+                                <td class="text-left" style="background-color: #F5F5F5;">{{ item.Value }}</td>
+                            </tr>
+                        </tbody>
+                    </v-table>
+                    </v-col>
+                    </v-row>
+            </v-card-text>
+        </v-card>
+        </v-col>
+    </v-row>
+    <v-row class="mr-1 ml-1">
+        <v-col>
+            <v-card>
+                <v-card-title>Curve Data</v-card-title>
+                <v-card-text>
+                    <v-row>
+                        <v-col
+                            v-for = "item in curvedatalist"
+                            :key="item.Title"
+                        >
+                        <highcharts :options="createChartOptions(item.Title, item.Data)" />
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+            </v-card>
+        </v-col>
+    </v-row>
 </template>
   
 
@@ -207,11 +273,31 @@ import { computed } from 'vue'
         backpressure:[],
         backgap:'',
         backgetX:'',
+        feedbacktabledata :[],
+        curvedatalist:[]
 
 
         
     }),
     methods: {
+        createChartOptions(title, yData) {
+            const categories = yData.map((_, i) => (i + 1).toString())
+            return {
+                chart: { type: 'spline' },  // 曲線圖
+                title: { text: title },
+                xAxis: {
+                categories,
+                title: { text: 'time' }
+                },
+                yAxis: {
+                title: { text: 'value' }
+                },
+                series: [{
+                name: title,
+                data: yData
+                }]
+            }
+            },
         async getmachinedata(){
             var name = this.$cookies.get('setSelectMachine');
             this.machinename = name;
@@ -222,6 +308,7 @@ import { computed } from 'vue'
             }
             else{
                 var resdata = response.data.Data;
+                // console.log(resdata)
                 this.machineonline = resdata["Online"]
                 if(this.machineonline == "Online"){
                     this.offlinecolor = "#39CC64"
@@ -267,6 +354,21 @@ import { computed } from 'vue'
                     this.backpressure = Object.entries(resdata["machinestatus"]['backpressure']);
                     this.backgap = computed(() => 100/ (this.backpressure.length + 1))
                     this.backgetX = (index) => this.backgap * (index + 1)
+                }
+                this.feedbacktabledata =[]
+                for (var key of Object.keys(resdata["machinefeedback"])) {
+                    var value = parseFloat(resdata["machinefeedback"][key])
+                    value     = Math.floor(value * 10) / 10
+                    var item  = {"Name":key,"Value": value}
+                    this.feedbacktabledata.push(item)
+                }
+                this.curvedatalist = []
+                for (var k of Object.keys(resdata["machinecurve"])){
+                    var curvetitle = k
+                    var ydata = resdata["machinecurve"][k]
+                    ydata = ydata.map(item => parseFloat(item))
+                    var curveitem = {"Title":curvetitle,"Data":ydata}
+                    this.curvedatalist.push(curveitem)
                 }
             }
 

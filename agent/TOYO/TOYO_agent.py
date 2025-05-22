@@ -494,25 +494,14 @@ class toyoagent:
             feedbackdata["Act_Cushion_pos"] = machinedata["Act_Cushion_pos"]
             feedbackdata["Max_ij_pressure"] = machinedata["Max_ij_pressure"]
             feedbackdata["Max_ij_speed"] = machinedata["Max_ij_speed"]
-            feedbackdata["Act_ij_speed1"] = machinedata["Act_ij_speed1"]
-            feedbackdata["Act_ij_speed2"] = machinedata["Act_ij_speed2"]
-            feedbackdata["Act_ij_speed3"] = machinedata["Act_ij_speed3"]
-            feedbackdata["Act_ij_speed4"] = machinedata["Act_ij_speed4"]
-            feedbackdata["Act_ij_speed5"] = machinedata["Act_ij_speed5"]
-            feedbackdata["Act_ij_speed6"] = machinedata["Act_ij_speed6"]
-            feedbackdata["Act_ij_speed7"] = machinedata["Act_ij_speed7"]
-            feedbackdata["Act_ij_pressure1"] = machinedata["Act_ij_pressure1"]
-            feedbackdata["Act_ij_pressure2"] = machinedata["Act_ij_pressure2"]
-            feedbackdata["Act_ij_pressure3"] = machinedata["Act_ij_pressure3"]
-            feedbackdata["Act_ij_pressure4"] = machinedata["Act_ij_pressure4"]
-            feedbackdata["Act_ij_pressure5"] = machinedata["Act_ij_pressure5"]
-            feedbackdata["Act_ij_pressure6"] = machinedata["Act_ij_pressure6"]
-            feedbackdata["Act_ij_pressure7"] = machinedata["Act_ij_pressure7"]
             feedbackdata["Min_ij_pressure"] = machinedata["Min_ij_pressure"]
             feedbackdata["Min_ij_speed"] = machinedata["Min_ij_speed"]
             self.red.set(f'{self.machineid}_feedback',json.dumps(feedbackdata))
-            # No curve data in TOYO
+            actpressure = [machinedata["Act_ij_pressure1"],machinedata["Act_ij_pressure2"],machinedata["Act_ij_pressure3"],machinedata["Act_ij_pressure4"],machinedata["Act_ij_pressure5"],machinedata["Act_ij_pressure6"],machinedata["Act_ij_pressure7"]]
+            actspeed = [machinedata["Act_ij_speed1"],machinedata["Act_ij_speed2"],machinedata["Act_ij_speed3"],machinedata["Act_ij_speed4"],machinedata["Act_ij_speed5"],machinedata["Act_ij_speed6"],machinedata["Act_ij_speed7"]]
             curvedata = {}
+            curvedata["actpressure"] = actpressure
+            curvedata["actspeed"]    = actspeed
             self.red.set(f'{self.machineid}_curve',json.dumps(curvedata))
 
 

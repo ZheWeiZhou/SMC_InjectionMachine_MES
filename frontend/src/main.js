@@ -5,6 +5,7 @@ import { loadFonts } from './plugins/webfontloader'
 import VueCookies from 'vue3-cookies'
 import router from './router'
 import store from './store'
+import HighchartsVue from 'highcharts-vue'
 loadFonts()
 
 createApp(App)
@@ -12,4 +13,5 @@ createApp(App)
   .use(VueCookies)
   .use(router)
   .use(vuetify)
+  .use(HighchartsVue) 
   .mount('#app')
