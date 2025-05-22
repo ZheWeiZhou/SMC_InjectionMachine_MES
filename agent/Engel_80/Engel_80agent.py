@@ -42,7 +42,7 @@ class engelagent:
         self.machinestatus   = {}
         self.machinefeedback = {}
         self.machinecurve   = {}
-        self.db=create_engine("postgresql://postgres:postgres@140.135.106.49:5433/InjectionMachineMES")
+        self.db=create_engine("postgresql://postgres:postgres@192.168.1.225:5432/cax")
         self.nodemap = {
             "holding_time1_set":"ns=5;i=61",
             "holding_pressure1_set":"ns=5;i=62",
@@ -320,7 +320,7 @@ class engelagent:
                 current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
                 Session = sessionmaker(bind=self.db)
                 session = Session()
-                insert_sql = injection_machine_DB.__table__.insert().values(
+                insert_sql = injection_machine_db.__table__.insert().values(
                     created_at       = current_time,
                     machine_name     = self.machineid,
                     machine_status  = json.dumps(self.machinestatus),
@@ -353,9 +353,9 @@ if __name__ == "__main__":
     Engel.connect()
     while True:
       try:
+        Engel.collectdata()
         with open("healthcheck.txt", "w+") as file:
             file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        Engel.collectdata()
       except Exception as e:
           print(e)    
 

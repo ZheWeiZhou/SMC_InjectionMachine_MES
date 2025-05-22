@@ -127,13 +127,16 @@ import UperNavbar  from './layout/UperNavbar.vue';
             this.$router.push({ name: 'MachineDashboard' });
         }
     },
-    mounted(){
-        var loginstate = this.$store.getters.isLoggedIn;
-        if (!loginstate){
+    mounted(){   
+        var token = this.$cookies.get('accesstoken');
+        if (!token){
+            console.log("Not Login");
             this.$router.push({ name: 'Login' });
         }
+        else{
         this.getmachineonlinestatus();
-        this.timer=setInterval(this.getmachineonlinestatus,1000);
+        this.timer=setInterval(this.getmachineonlinestatus,1000);     
+        }
     },
     beforeDestory(){
       clearInterval(this.timer);

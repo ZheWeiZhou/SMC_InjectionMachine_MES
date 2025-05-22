@@ -38,13 +38,13 @@ class toyoagent:
             "Ijv_set7":"@SetVelInj_V_6[1]",
             "injection_pressure_set":" @SetPrsInj_P_9[1]",
             "VP_pos_set":"@SetStrInj_S_10[1]",
-            "IJ_pos_set0":"SetStrPlst[1]",
-            "IJ_pos_set1":"@SetStrInj_S_1[1]",
-            "IJ_pos_set2":"@SetStrInj_S_2[1]",
-            "IJ_pos_set3":"@SetStrInj_S_3[1]",
-            "IJ_pos_set4":"@SetStrInj_S_4[1]",
-            "IJ_pos_set5":"@SetStrInj_S_5[1]",
-            "IJ_pos_set6":"@SetStrInj_S_6[1]",
+            "Ij_pos_set0":"SetStrPlst[1]",
+            "Ij_pos_set1":"@SetStrInj_S_1[1]",
+            "Ij_pos_set2":"@SetStrInj_S_2[1]",
+            "Ij_pos_set3":"@SetStrInj_S_3[1]",
+            "Ij_pos_set4":"@SetStrInj_S_4[1]",
+            "Ij_pos_set5":"@SetStrInj_S_5[1]",
+            "Ij_pos_set6":"@SetStrInj_S_6[1]",
             "Barrel_temp_set1":"SetTmpBrlZn[1,1]",
             "Barrel_temp_set2":"SetTmpBrlZn[1,2]",
             "Barrel_temp_set3":"SetTmpBrlZn[1,3]",
@@ -434,7 +434,7 @@ class toyoagent:
             injection_speed["Ijv_set7"]       = {"value":machinedata["Ijv_set7"],"edit":"acctivate"}
             statusdata["injection_speed"]     = injection_speed
 
-            statusdata["injection_pressure_set"] = {"value":machinedata["injection_pressure_set"],"edit":"acctivate"}
+            statusdata["IJPressure_set"] = {"value":machinedata["IJPressure_set"],"edit":"acctivate"}
             statusdata["VP_pos_set"]     = {"value":machinedata["VP_pos_set"],"edit":"acctivate"}
             injection_pos ={}
             injection_pos["Ij_pos_set0"]    = {"value":machinedata["Ij_pos_set0"],"edit":"none"}
@@ -464,7 +464,7 @@ class toyoagent:
             statusdata["barrel_temp_real"]       = barrel_temp_real
 
             statusdata["Clamping_force_set"] = {"value":machinedata["Clamping_force_set"],"edit":"acctivate"}
-            statusdata["cooling_time"]   = {"value":machinedata["cooling_time"],"edit":"acctivate"}
+            statusdata["Cooling_time_set"]   = {"value":machinedata["Cooling_time_set"],"edit":"acctivate"}
             holdingtimeset = {}
             holdingtimeset["Holding_time_set1"]  = {"value":machinedata["Holding_time_set1"],"edit":"acctivate"}
             holdingtimeset["Holding_time_set2"]  = {"value":machinedata["Holding_time_set2"],"edit":"acctivate"}

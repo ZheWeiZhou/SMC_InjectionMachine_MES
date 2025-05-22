@@ -5,7 +5,7 @@ export default createStore({
   state() {
     return {
       token: '',
-      host: 'http://140.135.106.49:8000',
+      host: '/api',
       selectmachine: cookies.get('setSelectMachine')  || 'Engel-120'
     }
   },
@@ -20,7 +20,7 @@ export default createStore({
   },
   getters: {
     getToken() {
-      const token = cookies.get('accesstoken');
+      var token = cookies.get('accesstoken');
       return token
     },
     getselectmachine(state){
@@ -28,7 +28,7 @@ export default createStore({
       return state.selectmachine
     },
     isLoggedIn() {
-      const token = cookies.get('accesstoken');
+      var token = cookies.get('accesstoken');
       return !!token
     },
     getHost(state) {

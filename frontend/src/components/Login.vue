@@ -71,7 +71,9 @@
         else{
             var token = response.data.Data.token;
             this.$cookies.set('accesstoken', token, '1d');
-            this.$router.push({ name: 'MachineOverview' });
+            setTimeout(() => {
+             this.$router.push({ name: 'MachineOverview' });}, 1000);
+         
         }
       })
     }

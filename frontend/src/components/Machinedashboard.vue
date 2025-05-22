@@ -293,16 +293,18 @@ import { computed } from 'vue'
     }
 },
     mounted(){
-        var loginstate = this.$store.getters.isLoggedIn;
-        if (!loginstate){
+        var token = this.$cookies.get('accesstoken');
+        if (!token){
             this.$router.push({ name: 'Login' });
         }
         var namecheck = this.$cookies.get('setSelectMachine');
         if (!namecheck){
             this.$router.push({ name: 'MachineOverview' });
         }
+        else{
         this.getmachinedata();
         this.timer=setInterval(this.getmachinedata,1000);
+        }
     },
     beforeDestory(){
       clearInterval(this.timer);

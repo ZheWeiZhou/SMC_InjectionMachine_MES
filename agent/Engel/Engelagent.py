@@ -41,14 +41,8 @@ class engelagent:
         self.machinestatus   = {}
         self.machinefeedback = {}
         self.machinecurve   = {}
-        self.db=create_engine("postgresql://postgres:postgres@192.168.1.225:5432/InjectionMachineMES")
+        self.db=create_engine("postgresql://postgres:postgres@192.168.1.225:5432/cax")
         self.nodemap = {
-            "barrel_temp1_set":"ns=1;i=164",
-            "barrel_temp2_set":"ns=1;i=220",
-            "barrel_temp3_set":"ns=1;i=276",
-            "barrel_temp4_set":"ns=1;i=332",
-            "barrel_temp5_set":"ns=1;i=388",
-            "barrel_temp6_set":"ns=1;i=444",
             "holding_time1_set":"ns=5;i=57",
             "holding_pressure1_set":"ns=5;i=52",
             "holding_time2_set":"ns=5;i=58",
@@ -112,7 +106,7 @@ class engelagent:
             nodeid = self.nodemap[target]
             value  = float(value) 
             self.worker.get_node(nodeid).set_value(ua.Variant(value, ua.VariantType.Float))
-            # self.worker.get_node(nodeid).set_value(value)
+            
         
 
     def productpredict(self,input):
@@ -138,17 +132,17 @@ class engelagent:
         # barrel temp
         barrel_temp_set = {}
         barrel_temp1_set                      = self.worker.get_node("ns=1;i=164").get_value()
-        barrel_temp_set["barrel_temp1_set"]   = {"value":barrel_temp1_set,"edit":"acctivate"}
+        barrel_temp_set["barrel_temp1_set"]   = {"value":barrel_temp1_set,"edit":"none"}
         barrel_temp2_set                      = self.worker.get_node("ns=1;i=220").get_value()
-        barrel_temp_set["barrel_temp2_set"]   = {"value":barrel_temp2_set,"edit":"acctivate"}
+        barrel_temp_set["barrel_temp2_set"]   = {"value":barrel_temp2_set,"edit":"none"}
         barrel_temp3_set                      = self.worker.get_node("ns=1;i=276").get_value()
-        barrel_temp_set["barrel_temp3_set"]   = {"value":barrel_temp3_set,"edit":"acctivate"}
+        barrel_temp_set["barrel_temp3_set"]   = {"value":barrel_temp3_set,"edit":"none"}
         barrel_temp4_set                      = self.worker.get_node("ns=1;i=332").get_value()
-        barrel_temp_set["barrel_temp4_set"]   = {"value":barrel_temp4_set,"edit":"acctivate"}
+        barrel_temp_set["barrel_temp4_set"]   = {"value":barrel_temp4_set,"edit":"none"}
         barrel_temp5_set                      = self.worker.get_node("ns=1;i=388").get_value()
-        barrel_temp_set["barrel_temp5_set"]   = {"value":barrel_temp5_set,"edit":"acctivate"}
+        barrel_temp_set["barrel_temp5_set"]   = {"value":barrel_temp5_set,"edit":"none"}
         barrel_temp6_set                      = self.worker.get_node("ns=1;i=444").get_value()
-        barrel_temp_set["barrel_temp6_set"]   = {"value":barrel_temp6_set,"edit":"acctivate"}
+        barrel_temp_set["barrel_temp6_set"]   = {"value":barrel_temp6_set,"edit":"none"}
         self.machinestatus["barrel_temp_set"] = barrel_temp_set
 
         barrel_temp_real = {}
@@ -358,7 +352,7 @@ class engelagent:
                 current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
                 Session = sessionmaker(bind=self.db)
                 session = Session()
-                insert_sql = injection_machine_DB.__table__.insert().values(
+                insert_sql = injection_machine_db.__table__.insert().values(
                     created_at       = current_time,
                     machine_name     = self.machineid,
                     machine_status  = json.dumps(self.machinestatus),
@@ -391,9 +385,9 @@ if __name__ == "__main__":
     Engel.connect()
     while True:
       try:
+        Engel.collectdata()
         with open("healthcheck.txt", "w+") as file:
             file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        Engel.collectdata()
       except Exception as e:
           print(e)    
 
