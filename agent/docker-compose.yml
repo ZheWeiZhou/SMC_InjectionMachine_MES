@@ -32,7 +32,10 @@ services:
     #   driver: "json-file"
     #   options:
     #     max-size: "500m"
-
+  tachungagent:
+    container_name: "Tachungagent"
+    build: ./Tachung
+    restart: always
 
 
 
