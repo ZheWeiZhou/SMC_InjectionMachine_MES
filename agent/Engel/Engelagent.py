@@ -316,28 +316,28 @@ class engelagent:
                 nozzle_energy                    = self.worker.get_node("ns=5;i=128").get_value()
                 self.machinefeedback["nozzle_energy"] = nozzle_energy
                 # Injection Energy
-                injection_energy                    = self.worker.get_node("ns=5;i=129").get_value()
+                injection_energy                         = self.worker.get_node("ns=5;i=129").get_value()
                 self.machinefeedback["injection_energy"] = injection_energy
                 # Holding Energy
-                holdingenergy                    = self.worker.get_node("ns=5;i=130").get_value()
+                holdingenergy                         = self.worker.get_node("ns=5;i=130").get_value()
                 self.machinefeedback["holdingenergy"] = holdingenergy
                 # Cooling Energy
-                coolingenergy                    = self.worker.get_node("ns=5;i=131").get_value()
+                coolingenergy                         = self.worker.get_node("ns=5;i=131").get_value()
                 self.machinefeedback["coolingenergy"] = coolingenergy
                 # Plastic Energy
-                plasticenergy                    = self.worker.get_node("ns=5;i=132").get_value()
+                plasticenergy                         = self.worker.get_node("ns=5;i=132").get_value()
                 self.machinefeedback["plasticenergy"] = plasticenergy
                 #Open mold energy
-                openmoldenergy                    = self.worker.get_node("ns=5;i=133").get_value()
+                openmoldenergy                         = self.worker.get_node("ns=5;i=133").get_value()
                 self.machinefeedback["openmoldenergy"] = openmoldenergy
                 #Eject energy
-                ejectenergy                    = self.worker.get_node("ns=5;i=134").get_value()
+                ejectenergy                         = self.worker.get_node("ns=5;i=134").get_value()
                 self.machinefeedback["ejectenergy"] = ejectenergy
                 #semi auto energy
-                semi_energy                    = self.worker.get_node("ns=5;i=135").get_value()
+                semi_energy                         = self.worker.get_node("ns=5;i=135").get_value()
                 self.machinefeedback["semi_energy"] = semi_energy
                 # Core energy
-                core_energy                    = self.worker.get_node("ns=5;i=136").get_value()
+                core_energy                         = self.worker.get_node("ns=5;i=136").get_value()
                 self.machinefeedback["core_energy"] = core_energy
                 # IQ VP
                 iqvp                    = self.worker.get_node("ns=5;i=116").get_value()

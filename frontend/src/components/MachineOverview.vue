@@ -12,53 +12,54 @@
                         <stop offset="100%" style="stop-color:#B9B6E5; stop-opacity:1" />
                         </linearGradient>
                     </defs>
-                    <rect x="0" y="0" width="100%" height="100%" fill="url(#grad1)" />
-                    <circle cx="85%" cy="4.5%" r="3.5" fill="rgba(182,182,180,0.6)" />
-                    <text fill="#121212" x="86%" y="5%" font-size="7px" font-family="monospace" font-weight="bold">Offline</text>
-                    <circle cx="91%" cy="4.5%" r="3.5" fill="rgba(76,175,80,0.6)" />
-                    <text fill="#121212" x="92%" y="5%" font-size="7px" font-family="monospace" font-weight="bold">Online</text>
-                    <text fill="#121212" x="2%" y="5%" font-size="12px" font-family="monospace" font-weight="bold">101 Factory</text>
-                    <rect x="92%" y="7%" width="0.5%" height="40%" fill="rgba(227,118,18,0.4)" />
-
-                    <text fill="#121212" x="95%" y="14%" font-size="12px" font-family="monospace" font-weight="bold">T</text>
-                    <text fill="#121212" x="95%" y="18%" font-size="12px" font-family="monospace" font-weight="bold">V</text>
-                    <text fill="#121212" x="95%" y="26%" font-size="12px" font-family="monospace" font-weight="bold">W</text>
-                    <text fill="#121212" x="95%" y="30%" font-size="12px" font-family="monospace" font-weight="bold">A</text>
-                    <text fill="#121212" x="95%" y="34%" font-size="12px" font-family="monospace" font-weight="bold">L</text>
-                    <text fill="#121212" x="95%" y="38%" font-size="12px" font-family="monospace" font-weight="bold">L</text>
-                    <line x1="15%" y1="53%" x2="95%" y2="53%" stroke="#616161" stroke-width="1" stroke-dasharray="5,5" />
-                    <line x1="74%" y1="50%" x2="78.5%" y2="50%" stroke="#C5BBB8" stroke-width="4" />
-                    <line x1="87%" y1="50%" x2="91.5%" y2="50%" stroke="#C5BBB8" stroke-width="4" />
-                    <text fill="#121212" x="79.5%" y="50.5%" font-size="10px" font-family="monospace" font-weight="bold">Entrance</text>
-                    <rect x="5%" y="10%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['MULTIPAS-MuCell']" @click="selectmachine('MULTIPAS-MuCell')"/>
-                    <text fill="#121212" x="7%" y="17%" font-size="9px" font-family="monospace" font-weight="bold">MULTIPAS MuCell</text>
-
-                    <rect x="25%" y="10%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['Engel-120']" @click="selectmachine('Engel-120')"/>
-                    <text fill="#121212" x="29%" y="17%" font-size="9px" font-family="monospace" font-weight="bold">Engel-120</text>
-
-                    <rect x="45%" y="10%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['Engel-80']" @click="selectmachine('Engel-80')"/>
-                    <text fill="#121212" x="49.5%" y="17%" font-size="9px" font-family="monospace" font-weight="bold">Engel-80</text>
-
-                    <rect x="65%" y="10%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['FCS-MuCell']" @click="selectmachine('FCS-MuCell')" />
-                    <text fill="#121212" x="69%" y="17%" font-size="9px" font-family="monospace" font-weight="bold">FCS MuCell</text>
-
-                    <text fill="#121212" x="2%" y="54%" font-size="12px" font-family="monospace" font-weight="bold">106 Factory</text>
-                    <rect x="5%" y="56%" width="0.5%" height="39%" fill="rgba(227,118,18,0.4)" />
-                    <text fill="#121212" x="2%" y="64%" font-size="12px" font-family="monospace" font-weight="bold">T</text>
-                    <text fill="#121212" x="2%" y="68%" font-size="12px" font-family="monospace" font-weight="bold">V</text>
-                    <text fill="#121212" x="2%" y="76%" font-size="12px" font-family="monospace" font-weight="bold">W</text>
-                    <text fill="#121212" x="2%" y="80%" font-size="12px" font-family="monospace" font-weight="bold">A</text>
-                    <text fill="#121212" x="2%" y="84%" font-size="12px" font-family="monospace" font-weight="bold">L</text>
-                    <text fill="#121212" x="2%" y="88%" font-size="12px" font-family="monospace" font-weight="bold">L</text>
-
-                    <line x1="7%" y1="96%" x2="11.5%" y2="96%" stroke="#C5BBB8" stroke-width="4" />
-                    <line x1="20%" y1="96%" x2="24.5%" y2="96%" stroke="#C5BBB8" stroke-width="4" />
-                    <text fill="#121212" x="12.5%" y="96.5%" font-size="10px" font-family="monospace" font-weight="bold">Entrance</text>
-
-                    <rect x="75%" y="55%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['TOYO']" @click="selectmachine('TOYO')" />
-                    <text fill="#121212" x="81%" y="62%" font-size="9px" font-family="monospace" font-weight="bold" >TOYO</text>
-                    <rect x="55%" y="55%" rx="10" ry="10" width="15%" height="12%" :fill="machinedata['FCS-HT-150']"  @click="selectmachine('FCS HT-150')"/>
-                    <text fill="#121212" x="59%" y="62%" font-size="9px" font-family="monospace" font-weight="bold" >FCS HT-150</text>
+                    <rect x="0" y="0" width="100%" height="100%" fill="#F4FBF9" />
+                    <text fill="#74ACFA"   x="5%" y="8%" font-size="70%" font-weight="bold" text-anchor="middle" >Factory 101 </text>
+                    <text fill="#74ACFA"   x="55%" y="8%" font-size="70%" font-weight="bold" text-anchor="middle" >Factory 106 </text>
+                    <!-- MULTIPAS-MuCell -->
+                    <image  @click="selectmachine('MULTIPAS-MuCell')" :href="require('@/assets/machine.png')" x="3%"  y="20%"  width="10%"  height="10%" />
+                    <text fill="#121212" x="8%" y="32%" font-size="40%" font-weight="bold" text-anchor="middle">MULTIPAS-MuCell</text>
+                    <circle :fill="machinedata['MULTIPAS-MuCell'][0]" class="breathing-circle" cx="6%" cy="35%" r="0.6%" />
+                    <text class="breathing-circle" :fill="machinedata['MULTIPAS-MuCell'][0]"  x="8.5%" y="35.7%" font-size="39%" font-weight="bold" text-anchor="middle" >{{ machinedata['MULTIPAS-MuCell'][1] }}</text> 
+                    <text  :fill="machinedata['MULTIPAS-MuCell'][3]"  x="8%" y="19%" font-size="60%" font-weight="bold" text-anchor="middle" >{{ machinedata['MULTIPAS-MuCell'][2] }}</text>
+                    <!-- <rect x="5%" y="25%" width="6%" height="10%" rx="5" ry="5" fill="#BFCEEB" /> -->
+                    <!-- Engel-120 -->
+                    <image  @click="selectmachine('Engel-120')" :href="require('@/assets/machine.png')" x="13%"  y="20%"  width="10%"  height="10%" />
+                    <text fill="#121212" x="18%" y="32%" font-size="40%" font-weight="bold" text-anchor="middle" >Engel-120</text>
+                    <circle :fill="machinedata['Engel-120'][0]" class="breathing-circle" cx="16%" cy="35%" r="0.6%" />
+                    <text class="breathing-circle" :fill="machinedata['Engel-120'][0]"  x="18.5%" y="35.7%" font-size="39%" font-weight="bold" text-anchor="middle" >{{ machinedata['Engel-120'][1] }}</text>  
+                    <text  :fill="machinedata['Engel-120'][3]"  x="18%" y="19%" font-size="60%" font-weight="bold" text-anchor="middle" >{{ machinedata['Engel-120'][2] }}</text>  
+                    <!-- Engel-80 -->
+                    <image  @click="selectmachine('Engel-80')" :href="require('@/assets/machine.png')" x="23%"  y="20%"  width="10%"  height="10%" />
+                    <text fill="#121212" x="28%" y="32%" font-size="40%" font-weight="bold" text-anchor="middle" >Engel-80</text>
+                    <circle :fill="machinedata['Engel-80'][0]" class="breathing-circle" cx="26%" cy="35%" r="0.6%" />
+                    <text class="breathing-circle" :fill="machinedata['Engel-80'][0]"  x="28.5%" y="35.7%" font-size="39%" font-weight="bold" text-anchor="middle" >{{ machinedata['Engel-80'][1] }}</text>
+                    <text  :fill="machinedata['Engel-80'][3]"  x="28%" y="19%" font-size="60%" font-weight="bold" text-anchor="middle" >{{ machinedata['Engel-80'][2] }}</text>             
+                    <!-- FCS-Mucell -->
+                    <image  @click="selectmachine('FCS-Mucell')" :href="require('@/assets/machine.png')" x="33%"  y="20%"  width="10%"  height="10%" />
+                    <text fill="#121212" x="38%" y="32%" font-size="40%" font-weight="bold" text-anchor="middle" >FCS-Mucell</text>
+                    <circle :fill="machinedata['FCS-Mucell'][0]" class="breathing-circle" cx="36%" cy="35%" r="0.6%" />
+                    <text class="breathing-circle" :fill="machinedata['FCS-Mucell'][0]"  x="38.5%" y="35.7%" font-size="39%" font-weight="bold" text-anchor="middle" >{{ machinedata['FCS-Mucell'][1] }}</text>
+                    <text  :fill="machinedata['FCS-Mucell'][3]"  x="38%" y="19%" font-size="60%" font-weight="bold" text-anchor="middle" >{{ machinedata['FCS-Mucell'][2] }}</text>    
+                    <!-- FCS-150 -->
+                    <image  @click="selectmachine('FCS-150')" :href="require('@/assets/machine.png')" x="75%"  y="20%"  width="10%"  height="10%" />
+                    <text fill="#121212" x="80%" y="32%" font-size="40%" font-weight="bold" text-anchor="middle" >FCS-150</text>
+                    <circle :fill="machinedata['FCS-150'][0]" class="breathing-circle" cx="78%" cy="35%" r="0.6%" />
+                    <text class="breathing-circle" :fill="machinedata['FCS-150'][0]"  x="80.5%" y="35.7%" font-size="39%" font-weight="bold" text-anchor="middle" >{{ machinedata['FCS-150'][1] }}</text>
+                    <text  :fill="machinedata['FCS-150'][3]"  x="80%" y="19%" font-size="60%" font-weight="bold" text-anchor="middle" >{{ machinedata['FCS-150'][2] }}</text>  
+                    <!-- TOYO -->
+                    <image  @click="selectmachine('TOYO')" :href="require('@/assets/machine.png')" x="85%"  y="20%"  width="10%"  height="10%" />
+                    <text fill="#121212" x="90%" y="32%" font-size="40%" font-weight="bold" text-anchor="middle" >TOYO</text>
+                    <circle :fill="machinedata['TOYO'][0]" class="breathing-circle" cx="88%" cy="35%" r="0.6%" />
+                    <text class="breathing-circle" :fill="machinedata['TOYO'][0]"  x="90.5%" y="35.7%" font-size="39%" font-weight="bold" text-anchor="middle" >{{ machinedata['TOYO'][1] }}</text>
+                    <!-- Tachung -->
+                    <image  @click="selectmachine('Tachung')" :href="require('@/assets/machine.png')" x="75%"  y="65%"  width="10%"  height="10%" />
+                    <text fill="#121212" x="80%" y="77%" font-size="40%" font-weight="bold" text-anchor="middle" >Tachung</text>
+                    <circle :fill="machinedata['Tachung'][0]" class="breathing-circle" cx="78%" cy="80%" r="0.6%" />
+                    <text class="breathing-circle" :fill="machinedata['Tachung'][0]"  x="80.5%" y="80.7%" font-size="39%" font-weight="bold" text-anchor="middle" >{{ machinedata['Tachung'][1] }}</text>
+                    <text  :fill="machinedata['Tachung'][3]"  x="80%" y="64%" font-size="60%" font-weight="bold" text-anchor="middle" >{{ machinedata['Tachung'][2] }}</text>
+                    <!-- WALL -->
+                    <line x1="50%"  y1="5%"  x2="50%" y2="95%"  stroke="#DEDEF0" stroke-width="0.15%" />
+                    <text fill="#74ACFA"   x="88%" y="99%" font-size="45%" font-weight="bold" text-anchor="middle" >Click the machine icon to view more information </text>
                 </svg>
             </div>
         </v-col>
@@ -66,8 +67,27 @@
 </template>
   
 
-<style scoped>
-</style>
+  <style>
+    .breathing-circle {
+      animation: breathe 2s infinite ease-in-out;
+      transform-origin: center;
+    }
+
+    @keyframes breathe {
+      0% {
+        opacity: 0.3;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.3;
+      }
+    }
+    svg image {
+      cursor: pointer;
+    }
+  </style>
   <script>
 import axios from 'axios';
 import UperNavbar  from './layout/UperNavbar.vue';
@@ -78,15 +98,17 @@ import UperNavbar  from './layout/UperNavbar.vue';
     },
     data: () => ({
         machinedata:{
-            "MULTIPAS-MuCell":"rgba(182,182,180,0.6)",
-            "Engel-120":"rgba(182,182,180,0.6)",
-            "Engel-80":"rgba(182,182,180,0.6)",
-            "FCS-MuCell":"rgba(182,182,180,0.6)",
-            "TOYO":"rgba(182,182,180,0.6)",
-            "FCS-HT-150":"rgba(182,182,180,0.6)",
+            "MULTIPAS-MuCell":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+            "Engel-120":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+            "Engel-80":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+            "FCS-Mucell":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+            "FCS-150":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+            "TOYO":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+            "Tachung":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
         },
         offlinecolor:"rgba(182,182,180,0.6)",
-        onlinecolor:"rgba(76,175,80,0.6)"
+        onlinecolor:"rgba(76,175,80,0.6)",
+        workcolor: "rgba(255,196,51,0.6)",
 
     }),
     methods: {
@@ -101,22 +123,32 @@ import UperNavbar  from './layout/UperNavbar.vue';
             ).then( (response) => {
             if (response.data.status=='error'){
                 this.machinedata = {
-                    "MULTIPAS-MuCell":"rgba(182,182,180,0.6)",
-                    "Engel-120":"rgba(182,182,180,0.6)",
-                    "Engel-80":"rgba(182,182,180,0.6)",
-                    "FCS-MuCell":"rgba(182,182,180,0.6)",
-                    "TOYO":"rgba(182,182,180,0.6)",
-                    "FCS-HT-150":"rgba(182,182,180,0.6)",
+                    "MULTIPAS-MuCell":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+                    "Engel-120":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+                    "Engel-80":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+                    "FCS-Mucell":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+                    "FCS-150":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+                    "TOYO":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+                    "Tachung":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
                 }
             }
             else{
                 var res = response.data.Data;
                 Object.keys(res).forEach(key => {
-                    if (res[key] == 'Offline'){
-                        this.machinedata[key] =  this.offlinecolor;
+                    var machinestatus = res[key]
+                    if (machinestatus['Online'] == 'Offline'){
+                        this.machinedata[key] =  [this.offlinecolor,'Offline','Sleep',"rgba(182,182,180,0.6)"];
                     }
                     else{
-                        this.machinedata[key] =  this.onlinecolor;
+                        var machinework = machinestatus['Status'].charAt(0).toUpperCase() + machinestatus['Status'].slice(1)
+                        var statuscolor = "rgba(182,182,180,0.6)"
+                        if (machinework == "Stay"){
+                            statuscolor = this.onlinecolor
+                        }
+                        if (machinework == "Work"){
+                            statuscolor = this.workcolor
+                        }
+                        this.machinedata[key] =  [this.onlinecolor,'Online',machinework,statuscolor];
                     }
                 });
                 

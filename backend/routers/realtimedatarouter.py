@@ -60,6 +60,7 @@ async def getconnectionstatus():
                 machinename = row[0]
                 try:
                     updatetime = red.get(f'{machinename}_updatetime').decode('utf-8')
+
                     datetime_obj = datetime.strptime(updatetime, "%Y-%m-%d %H:%M:%S.%f")
                     current_time = datetime.now()
                     time_difference = current_time - datetime_obj
@@ -68,9 +69,20 @@ async def getconnectionstatus():
                     if seconds_diff > 5:
                         online = "Offline"
                     resdata[machinename] = online
+                    machineworkstatus = 'Sleep'
+                    if online != "Offline":
+                        try:
+                            machinestatus  = red.get(f'{machinename}_status')
+                            machinestatus   = json.loads(machinestatus)
+                            machineworkstatus = machinestatus["machine"]["value"]
+                        except:
+                            machineworkstatus = "NA"
+                    
+                    machineitem = {'Online':online,'Status':machineworkstatus}
+                    resdata[machinename] = machineitem
                 except:
-                    online = "Offline"
-                    resdata[machinename] = online
+                    machineitem = {'Online':"Offline",'Status':"Sleep"}
+                    resdata[machinename] = machineitem
         returnData = {"status": "success","Data":resdata}
     except Exception as e:
         print(e)

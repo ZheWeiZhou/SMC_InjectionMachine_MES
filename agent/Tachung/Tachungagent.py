@@ -42,31 +42,42 @@ class tachungagent:
         self.machinecurve     = {}
         self.db = create_engine("postgresql://postgres:postgres@192.168.1.225:5432/cax")
         self.nodemap = {
-            "holding_time1_set":"ns=5;i=57",
-            "holding_pressure1_set":"ns=5;i=52",
-            "holding_time2_set":"ns=5;i=58",
-            "holding_pressure2_set":"ns=5;i=53",
-            "holding_time3_set":"ns=5;i=59",
-            "holding_pressure3_set":"ns=5;i=54",
-            "holding_time4_set":"ns=5;i=60",
-            "holding_pressure4_set":"ns=5;i=55",
-            "injection_volume1":"ns=5;i=63",
-            "injection_volume2":"ns=5;i=48",
-            "injection_volume3":"ns=5;i=49",
-            "injection_volume4":"ns=5;i=50",
-            "injection_volume5":"ns=5;i=51",
-            "injection_rate1_set":"ns=5;i=42",
-            "injection_rate2_set":"ns=5;i=43",
-            "injection_rate3_set":"ns=5;i=44",
-            "injection_rate4_set":"ns=5;i=45",
-            "injection_rate5_set":"ns=5;i=46",
-            "vp_position_set":"ns=5;i=70",
-            "cooling_time":"ns=5;i=62",
-            "injection_pressure_set":"ns=5;i=69",
-            "backpressure1":"ns=5;i=71",
-            "backpressure2":"ns=5;i=72",
-            "backpressure3":"ns=5;i=73",
-            "clamp_force_set":"ns=5;i=85"
+            "clamp_force_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmblmG7yRXheItZIfkBnub4CU6pOwscKrvIXmZ7SdShvEjcek=",
+            "holding_time1_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJcfCI2C96i1x6Q==",
+            "holding_time2_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJsfCI2C96i1x6Q==",
+            "holding_time3_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJ8fCI2C96i1x6Q==",
+            "holding_time4_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIMfCI2C96i1x6Q==",
+            "holding_time5_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIcfCI2C96i1x6Q==",
+            "holding_pressure1_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJcfTMnGa8DVmjIM=",
+            "holding_pressure2_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJsfTMnGa8DVmjIM=",
+            "holding_pressure3_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJ8fTMnGa8DVmjIM=",
+            "holding_pressure4_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIMfTMnGa8DVmjIM=",
+            "holding_pressure5_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIcfTMnGa8DVmjIM=",
+            "injection_volume1":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJcfTL2eA9yl7h4M=",
+            "injection_volume2":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJsfTL2eA9yl7h4M=",
+            "injection_volume3":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJ8fTL2eA9yl7h4M=",
+            "injection_volume4":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIMfTL2eA9yl7h4M=",
+            "injection_volume5":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIcfTL2eA9yl7h4M=",
+            "injection_volume6":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIsfTL2eA9yl7h4M=",
+            "injection_rate1_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJcfQMHGM50A=",
+            "injection_rate2_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJsfQMHGM50A=",
+            "injection_rate3_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJ8fQMHGM50A=",
+            "injection_rate4_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIMfQMHGM50A=",
+            "injection_rate5_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIcfQMHGM50A=",
+            "injection_rate6_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIsfQMHGM50A=",
+            "cooling_time":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itA3uG7yl6jtcpeYyD",
+            "vp_position_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jtA3fZ3gKH2H5Ah7hecpeo6tBn2F7yl6jtA3fZ3gKH2H5Ah7hecpeo7TL2eA9yl7h4M=",
+            "filling_time_limit_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jtA3fZ3gKH2H5Ah7hecpeo6tBn2F7yl6jtA3fZ3gKH2H5Ah7hecpeo7XKXmMgw==",
+            "injection_pressure1_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJcfTMnGa8DVmjIM=",
+            "injection_pressure2_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJsfTMnGa8DVmjIM=",
+            "injection_pressure3_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJ8fTMnGa8DVmjIM=",
+            "injection_pressure4_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIMfTMnGa8DVmjIM=",
+            "injection_pressure5_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIcfTMnGa8DVmjIM=",
+            "injection_pressure6_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIsfTMnGa8DVmjIM=",
+            "backpressure1":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrJuRJvmM2ec8SUU",
+            "backpressure2":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrFuRJvmM2ec8SUU",
+            "backpressure3":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrBuRJvmM2ec8SUU",
+            "backpressure4":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrduRJvmM2ec8SUU",
         }
         
     def connect(self):  
@@ -102,7 +113,7 @@ class tachungagent:
         if target in access_node:
             nodeid = self.nodemap[target]
             value  = float(value) 
-            self.worker.get_node(nodeid).set_value(ua.Variant(value, ua.VariantType.Float))
+            self.worker.get_node(self.get_node_safe(nodeid)).set_value(ua.Variant(value, ua.VariantType.Double))
             
         
 
@@ -182,110 +193,110 @@ class tachungagent:
 
         #Clamp force set
         clamp_force_set                        = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmblmG7yRXheItZIfkBnub4CU6pOwscKrvIXmZ7SdShvEjcek=")).get_value()
-        self.machinestatus["clamp_force_set"]  = {"value":clamp_force_set,"edit":"acctivate"}
+        self.machinestatus["clamp_force_set"]  = {"value":clamp_force_set,"edit":"none"}
 
         #Holding pressure & position setting
-        holdingposset = {}
-        holding_pos1_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJcfTL2eA9yl7h4M=")).get_value()
-        holdingposset["holding_pos1_set"]      = {"value":holding_pos1_set,"edit":"acctivate"}
-        holding_pos2_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJsfTL2eA9yl7h4M=")).get_value()
-        holdingposset["holding_pos2_set"]      = {"value":holding_pos2_set,"edit":"acctivate"}
-        holding_pos3_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJ8fTL2eA9yl7h4M=")).get_value()
-        holdingposset["holding_pos3_set"]      = {"value":holding_pos3_set,"edit":"acctivate"}
-        holding_pos4_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIMfTL2eA9yl7h4M=")).get_value()
-        holdingposset["holding_pos4_set"]      = {"value":holding_pos4_set,"edit":"acctivate"}
-        holding_pos5_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIcfTL2eA9yl7h4M=")).get_value()
-        holdingposset["holding_pos5_set"]      = {"value":holding_pos5_set,"edit":"acctivate"}
-        self.machinestatus["holdingposset"]    = holdingposset
+        holdingtimeset = {}
+        holding_time1_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJcfCI2C96i1x6Q==")).get_value()
+        holdingtimeset["holding_time1_set"]     = {"value":holding_time1_set,"edit":"none"}
+        holding_time2_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJsfCI2C96i1x6Q==")).get_value()
+        holdingtimeset["holding_time2_set"]     = {"value":holding_time2_set,"edit":"none"}
+        holding_time3_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJ8fCI2C96i1x6Q==")).get_value()
+        holdingtimeset["holding_time3_set"]     = {"value":holding_time3_set,"edit":"none"}
+        holding_time4_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIMfCI2C96i1x6Q==")).get_value()
+        holdingtimeset["holding_time4_set"]     = {"value":holding_time4_set,"edit":"none"}
+        holding_time5_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIcfCI2C96i1x6Q==")).get_value()
+        holdingtimeset["holding_time5_set"]     = {"value":holding_time5_set,"edit":"none"}
+        self.machinestatus["holdingtimeset"]    = holdingtimeset
         holdingpressureset ={}
         holding_pressure1_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJcfTMnGa8DVmjIM=")).get_value()
-        holdingpressureset["holding_pressure1_set"] = {"value":holding_pressure1_set,"edit":"acctivate"}
+        holdingpressureset["holding_pressure1_set"] = {"value":holding_pressure1_set,"edit":"none"}
         holding_pressure2_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJsfTMnGa8DVmjIM=")).get_value()
-        holdingpressureset["holding_pressure2_set"] = {"value":holding_pressure2_set,"edit":"acctivate"}
+        holdingpressureset["holding_pressure2_set"] = {"value":holding_pressure2_set,"edit":"none"}
         holding_pressure3_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJ8fTMnGa8DVmjIM=")).get_value()
-        holdingpressureset["holding_pressure3_set"] = {"value":holding_pressure3_set,"edit":"acctivate"}
+        holdingpressureset["holding_pressure3_set"] = {"value":holding_pressure3_set,"edit":"none"}
         holding_pressure4_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIMfTMnGa8DVmjIM=")).get_value()
-        holdingpressureset["holding_pressure4_set"] = {"value":holding_pressure4_set,"edit":"acctivate"}
+        holdingpressureset["holding_pressure4_set"] = {"value":holding_pressure4_set,"edit":"none"}
         holding_pressure5_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIcfTMnGa8DVmjIM=")).get_value()
-        holdingpressureset["holding_pressure5_set"] = {"value":holding_pressure5_set,"edit":"acctivate"}
+        holdingpressureset["holding_pressure5_set"] = {"value":holding_pressure5_set,"edit":"none"}
         self.machinestatus["holdingpressureset"]    = holdingpressureset
         #Injection volume(position) set
         injection_pos ={}
         injection_volume1                      = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJcfTL2eA9yl7h4M=")).get_value()
-        injection_pos["injection_volume1"]     = {"value":injection_volume1,"edit":"acctivate"}
+        injection_pos["injection_volume1"]     = {"value":injection_volume1,"edit":"none"}
         injection_volume2                      = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJsfTL2eA9yl7h4M=")).get_value()
-        injection_pos["injection_volume2"]     = {"value":injection_volume2,"edit":"acctivate"}
+        injection_pos["injection_volume2"]     = {"value":injection_volume2,"edit":"none"}
         injection_volume3                      = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJ8fTL2eA9yl7h4M=")).get_value()
-        injection_pos["injection_volume3"]     = {"value":injection_volume3,"edit":"acctivate"}
+        injection_pos["injection_volume3"]     = {"value":injection_volume3,"edit":"none"}
         injection_volume4                      = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIMfTL2eA9yl7h4M=")).get_value()
-        injection_pos["injection_volume4"]     = {"value":injection_volume4,"edit":"acctivate"}
+        injection_pos["injection_volume4"]     = {"value":injection_volume4,"edit":"none"}
         injection_volume5                      = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIcfTL2eA9yl7h4M=")).get_value()
-        injection_pos["injection_volume5"]     = {"value":injection_volume5,"edit":"acctivate"}
+        injection_pos["injection_volume5"]     = {"value":injection_volume5,"edit":"none"}
         injection_volume6                      = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIsfTL2eA9yl7h4M=")).get_value()
-        injection_pos["injection_volume6"]     = {"value":injection_volume6,"edit":"acctivate"}
+        injection_pos["injection_volume6"]     = {"value":injection_volume6,"edit":"none"}
         self.machinestatus["injection_pos"]    = injection_pos
         #Injection rate(speed) set
         injection_speed = {}
         injection_rate1_set                      = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJcfQMHGM50A=")).get_value()
-        injection_speed["injection_rate1_set"]   = {"value":injection_rate1_set,"edit":"acctivate"}
+        injection_speed["injection_rate1_set"]   = {"value":injection_rate1_set,"edit":"none"}
         injection_rate2_set                      = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJsfQMHGM50A=")).get_value()
-        injection_speed["injection_rate2_set"]   = {"value":injection_rate2_set,"edit":"acctivate"}
+        injection_speed["injection_rate2_set"]   = {"value":injection_rate2_set,"edit":"none"}
         injection_rate3_set                      = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJ8fQMHGM50A=")).get_value()
-        injection_speed["injection_rate3_set"]   = {"value":injection_rate3_set,"edit":"acctivate"}
+        injection_speed["injection_rate3_set"]   = {"value":injection_rate3_set,"edit":"none"}
         injection_rate4_set                      = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIMfQMHGM50A=")).get_value()
-        injection_speed["injection_rate4_set"]   = {"value":injection_rate4_set,"edit":"acctivate"}
+        injection_speed["injection_rate4_set"]   = {"value":injection_rate4_set,"edit":"none"}
         injection_rate5_set                      = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIcfQMHGM50A=")).get_value()
-        injection_speed["injection_rate5_set"]   = {"value":injection_rate5_set,"edit":"acctivate"}
+        injection_speed["injection_rate5_set"]   = {"value":injection_rate5_set,"edit":"none"}
         injection_rate6_set                      = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIsfQMHGM50A=")).get_value()
-        injection_speed["injection_rate6_set"]   = {"value":injection_rate6_set,"edit":"acctivate"}
+        injection_speed["injection_rate6_set"]   = {"value":injection_rate6_set,"edit":"none"}
         self.machinestatus["injection_speed"]    = injection_speed
         #Cooling time
         cooling_time                          = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itA3uG7yl6jtcpeYyD")).get_value()
-        self.machinestatus["cooling_time"]    = {"value":cooling_time,"edit":"acctivate"}
+        self.machinestatus["cooling_time"]    = {"value":cooling_time,"edit":"none"}
         #VP position setting
         vp_position_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jtA3fZ3gKH2H5Ah7hecpeo6tBn2F7yl6jtA3fZ3gKH2H5Ah7hecpeo7TL2eA9yl7h4M=")).get_value()
-        self.machinestatus["vp_position_set"] = {"value":vp_position_set,"edit":"acctivate"}
+        self.machinestatus["vp_position_set"] = {"value":vp_position_set,"edit":"none"}
         #Filling Time Limit Setting
         filling_time_limit_set                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jtA3fZ3gKH2H5Ah7hecpeo6tBn2F7yl6jtA3fZ3gKH2H5Ah7hecpeo7XKXmMgw==")).get_value()
-        self.machinestatus["filling_time_limit_set"] = {"value":filling_time_limit_set,"edit":"acctivate"}
+        self.machinestatus["filling_time_set"] = {"value":filling_time_limit_set,"edit":"none"}
 
         #Injection pressure setting
         injection_pressure_list                            = {}
         injection_pressure1_set                            = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJcfTMnGa8DVmjIM=")).get_value()
-        injection_pressure_list["injection_pressure1_set"] = {"value":injection_pressure1_set,"edit":"acctivate"}
+        injection_pressure_list["injection_pressure1_set"] = {"value":injection_pressure1_set,"edit":"none"}
         injection_pressure2_set                            = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJsfTMnGa8DVmjIM=")).get_value()
-        injection_pressure_list["injection_pressure2_set"] = {"value":injection_pressure2_set,"edit":"acctivate"}
+        injection_pressure_list["injection_pressure2_set"] = {"value":injection_pressure2_set,"edit":"none"}
         injection_pressure3_set                            = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJ8fTMnGa8DVmjIM=")).get_value()
-        injection_pressure_list["injection_pressure3_set"] = {"value":injection_pressure3_set,"edit":"acctivate"}
+        injection_pressure_list["injection_pressure3_set"] = {"value":injection_pressure3_set,"edit":"none"}
         injection_pressure4_set                            = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIMfTMnGa8DVmjIM=")).get_value()
-        injection_pressure_list["injection_pressure4_set"] = {"value":injection_pressure4_set,"edit":"acctivate"}
+        injection_pressure_list["injection_pressure4_set"] = {"value":injection_pressure4_set,"edit":"none"}
         injection_pressure5_set                            = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIcfTMnGa8DVmjIM=")).get_value()
-        injection_pressure_list["injection_pressure5_set"] = {"value":injection_pressure5_set,"edit":"acctivate"}
+        injection_pressure_list["injection_pressure5_set"] = {"value":injection_pressure5_set,"edit":"none"}
         injection_pressure6_set                            = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIsfTMnGa8DVmjIM=")).get_value()
-        injection_pressure_list["injection_pressure6_set"] = {"value":injection_pressure6_set,"edit":"acctivate"}
+        injection_pressure_list["injection_pressure6_set"] = {"value":injection_pressure6_set,"edit":"none"}
         self.machinestatus["injection_pressure_list"]      = injection_pressure_list
 
         #Back pressure
         backpressure  = {}
         backpressure1                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrJuRJvmM2ec8SUU")).get_value()
-        backpressure["backpressure1"]       = {"value":backpressure1,"edit":"acctivate"}
+        backpressure["backpressure1"]       = {"value":backpressure1,"edit":"none"}
         backpressure2                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrFuRJvmM2ec8SUU")).get_value()
-        backpressure["backpressure2"]       = {"value":backpressure2,"edit":"acctivate"}
+        backpressure["backpressure2"]       = {"value":backpressure2,"edit":"none"}
         backpressure3                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrBuRJvmM2ec8SUU")).get_value()
-        backpressure["backpressure3"]       = {"value":backpressure3,"edit":"acctivate"}
+        backpressure["backpressure3"]       = {"value":backpressure3,"edit":"none"}
         backpressure4                       = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrduRJvmM2ec8SUU")).get_value()
-        backpressure["backpressure4"]       = {"value":backpressure4,"edit":"acctivate"}
+        backpressure["backpressure4"]       = {"value":backpressure4,"edit":"none"}
         self.machinestatus["backpressure"]  = backpressure
         # Dosing position 
         Dospos = {}
         dos_position1                 = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrJuRJvmM2ec8SUU")).get_value()
-        Dospos["dos_position1"]       = {"value":dos_position1,"edit":"acctivate"}
+        Dospos["dos_position1"]       = {"value":dos_position1,"edit":"none"}
         dos_position2                 = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrFuRIbwKWCA7C4U")).get_value()
-        Dospos["dos_position2"]       = {"value":dos_position2,"edit":"acctivate"}
+        Dospos["dos_position2"]       = {"value":dos_position2,"edit":"none"}
         dos_position3                 = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrBuRIbwKWCA7C4U")).get_value()
-        Dospos["dos_position3"]       = {"value":dos_position3,"edit":"acctivate"}
+        Dospos["dos_position3"]       = {"value":dos_position3,"edit":"none"}
         dos_position4                 = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrduRIbwKWCA7C4U")).get_value()
-        Dospos["dos_position4"]       = {"value":dos_position4,"edit":"acctivate"}
+        Dospos["dos_position4"]       = {"value":dos_position4,"edit":"none"}
         self.machinestatus["Dospos"]  = Dospos
         # FEED BACK 
         #Act cycle time
@@ -301,13 +312,13 @@ class tachungagent:
         material_cushion                         = self.worker.get_node(self.get_node_safe("ns=8;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuH1i59ncA5d4XmEHWb4i1xneYyZ736MHHHwDVngeoverr3MnuC5kA=")).get_value()
         self.machinefeedback["material_cushion"] = material_cushion
         # Maximun real injection pressure (SpecificPressure)
-        Maximun_real_injection_pressure                    = self.worker.get_node(self.get_node_safe("ns=8;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuH1i59ncA5d4XmEHWb4i1xneYyZ736MHHH0DBxiuomfYrTMnGa8DVmjM4hbIDuNXnp")).get_value()
+        Maximun_real_injection_pressure                         = self.worker.get_node(self.get_node_safe("ns=8;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuH1i59ncA5d4XmEHWb4i1xneYyZ736MHHH0DBxiuomfYrTMnGa8DVmjM4hbIDuNXnp")).get_value()
         self.machinefeedback["Maximun_real_injection_pressure"] = Maximun_real_injection_pressure
         # Filling start position
-        filling_start_position                    = self.worker.get_node(self.get_node_safe("ns=8;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuH1i59ncA5d4XmEHWb4i1xneYyZ736MHHHyi5+jOA0fYbtE2CI8TREhvApYIDsLhQ=")).get_value()
+        filling_start_position                         = self.worker.get_node(self.get_node_safe("ns=8;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuH1i59ncA5d4XmEHWb4i1xneYyZ736MHHHyi5+jOA0fYbtE2CI8TREhvApYIDsLhQ=")).get_value()
         self.machinefeedback["filling_start_position"] = filling_start_position
         # Maximun real Holding pressure (SpecificPressure)
-        Maximun_real_holding_pressure                    = self.worker.get_node(self.get_node_safe("ns=8;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuH1i59ncA5d4XmEHWb4i1xneYyZ736MHHHyy94jdAwcYrqJn2K0zJxmvA1ZozOIWyA7jV56Q==")).get_value()
+        Maximun_real_holding_pressure                         = self.worker.get_node(self.get_node_safe("ns=8;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuH1i59ncA5d4XmEHWb4i1xneYyZ736MHHHyy94jdAwcYrqJn2K0zJxmvA1ZozOIWyA7jV56Q==")).get_value()
         self.machinefeedback["Maximun_real_holding_pressure"] = Maximun_real_holding_pressure
         # Act plastic time
         act_plastic_time                         = self.worker.get_node(self.get_node_safe("ns=8;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuH1i59ncA5d4XmEHWb4i1xneYyZ736MHHHxy9ngO0nQIDuJRQ=")).get_value()
@@ -358,6 +369,7 @@ if __name__ == "__main__":
     Tachung          = tachungagent(machineaddress,'Tachung')
     Tachung.connect()
     import time
+    Tachung.parametersetting("holding_time1_set","79")
     while True:
       try:
         Tachung.collectdata()

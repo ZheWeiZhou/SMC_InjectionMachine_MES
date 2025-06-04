@@ -34,69 +34,96 @@
             </v-card>
         </v-col>
     </v-row>
-    <v-row class="mr-1 ml-1" style="min-height: 50%;">
+    <v-row class="mr-1 ml-1" style="min-height: 600px;">
     <v-col>
     <svg width="100%" height="100%" >
         <rect x="0" y="0" rx="15" ry="15" width="100%" height="100%" fill="#82AE39" fill-opacity="0.6"/>
-        <text x="1%" y="9%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="32" >Barrel Temperature(&deg;C)</text>
+        <text x="1%" y="9%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="195%" >Barrel Temperature(&deg;C)</text>
         <text x="76%" y="7%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="16" >!!! Click the settings icon to adjust parameters</text>
-        <text x="1%" y="23%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Settings</text>
+        <text x="1%" y="23%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="190%" >Settings</text>
         <g v-for="([key, value], index) in barreltempset" :key="key">
         <text
-            :x="barrelsetgetX(index) +2.5 +'%'"
+            :x="barrelsetgetX(index) +3.5 +'%'"
             y="23%"
             text-anchor="middle"
-            font-size="28"
+            font-size="180%"
             fill="black"
             font-family="monospace" font-weight="bold"
         >
             {{ value.value }}
         </text>
-        <image style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="7%" height="7%" :x="barrelsetgetX(index) -5 + '%'" y="18%" @click="handleClick(key)"/>
+        <image style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="4%" height="4%" :x="barrelsetgetX(index) -4 + '%'" y="20%" @click="handleClick(key)"/>
         </g>
-        <text x="1%" y="35%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Actual </text>
+        <text x="1%" y="35%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="190%" >Actual </text>
         <g v-for="([key, value], index) in barreltempact" :key="key">
         <text
-            :x="barrelsetgetX(index) +2.5 +'%'"
+            :x="barrelsetgetX(index) +3.5 +'%'"
             y="35%"
             text-anchor="middle"
-            font-size="28"
+            font-size="180%"
             fill="black"
             font-family="monospace" font-weight="bold"
         >
             {{ Math.round(value.value * 10) / 10 }}
         </text>
         </g>
-        <image :href="require('@/assets/screw.png')"  width="80%" height="20%" x="10%" y="40%" />
-        <text x="1%" y="63%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="32" >Filling Setting</text>
-        <text x="1%" y="77%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Position</text>
+        <image :href="require('@/assets/screw.png')"  width="75%" height="11%" x="10%" y="40%" />
+        <text x="1%" y="62%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="190%" >Position</text>
         <g v-for="([key, value], index) in ijpos" :key="key">
         <text
-            :x="possetsetgetX(index) +2.5 +'%'"
-            y="77%"
+            :x="possetsetgetX(index) +11 +'%'"
+            y="62%"
             text-anchor="middle"
-            font-size="28"
+            font-size="180%"
             fill="black"
             font-family="monospace" font-weight="bold"
         >
             {{ Math.round(value.value * 10) / 10  }}
         </text>
-        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="7%" height="7%" :x="possetsetgetX(index) -5 + '%'" y="72%" @click="handleClick(key)"/>
+        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')" width="4%" height="4%" :x="possetsetgetX(index) +6 + '%'" y="58.5%" @click="handleClick(key)"/>
         </g>
-        <text x="1%" y="90%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Speed</text>
+        <text x="1%" y="73%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="190%" >Speed</text>
         <g v-for="([key, value], index) in ispe" :key="key">
         <text
-            :x="ijspsetgetX(index) +2.5 +'%'"
-            y="90%"
+            :x="ijspsetgetX(index) +11 +'%'"
+            y="73%"
             text-anchor="middle"
-            font-size="28"
+            font-size="180%"
             fill="black"
             font-family="monospace" font-weight="bold"
         >
             {{ Math.round(value.value * 10) / 10  }}
         </text>
-        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="7%" height="7%" :x="ijspsetgetX(index) -5 + '%'" y="85%" @click="handleClick(key)"/>
+        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"   width="4%" height="4%" :x="ijspsetgetX(index) +6 + '%'" y="69.5%" @click="handleClick(key)"/>
         </g>
+        <text x="1%" y="84%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="190%" >Pressure</text>
+        <g v-for="([key, value], index) in ijprelist" :key="key">
+        <text
+            :x="ijspsetgetX(index) +11 +'%'"
+            y="84%"
+            text-anchor="middle"
+            font-size="180%"
+            fill="black"
+            font-family="monospace" font-weight="bold"
+        >
+            {{ Math.round(value.value * 10) / 10  }}
+        </text>
+        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="4%" height="4%" :x="ijspsetgetX(index) +6 + '%'" y="80.5%" @click="handleClick(key)"/>
+        </g>   
+        <text x="1%" y="95%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="180%" >Backpressure</text>
+        <g v-for="([key, value], index) in backpressure" :key="key">
+        <text
+            :x="backgetX(index) +11 +'%'"
+            y="95%"
+            text-anchor="middle"
+            font-size="180%"
+            fill="black"
+            font-family="monospace" font-weight="bold"
+        >
+            {{ Math.round(value.value * 10) / 10  }}
+        </text>
+        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"   width="4%" height="4%" :x="backgetX(index) +6 + '%'" y="91.5%" @click="handleClick(key)"/>
+        </g>      
     </svg>
     </v-col>
     </v-row>
@@ -110,13 +137,13 @@
                     :x="holdgetX(index) +2.5 +'%'"
                     y="46%"
                     text-anchor="middle"
-                    font-size="28"
+                    font-size="25"
                     fill="black"
                     font-family="monospace" font-weight="bold"
                 >
                     {{ Math.round(value.value * 10) / 10  }}
                 </text>
-                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="14%" height="14%" :x="holdgetX(index) -10 + '%'" y="35%" @click="handleClick(key)"/>
+                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="12%" height="12%" :x="holdgetX(index) -8 + '%'" y="36%" @click="handleClick(key)"/>
             </g>
             <text x="1%" y="70%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Holding Time</text>
             <g v-for="([key, value], index) in holdt" :key="key">
@@ -124,49 +151,34 @@
                     :x="holdgetX(index) +2.5 +'%'"
                     y="93%"
                     text-anchor="middle"
-                    font-size="28"
+                    font-size="25"
                     fill="black"
                     font-family="monospace" font-weight="bold"
                 >
                     {{ Math.round(value.value * 10) / 10  }}
                 </text>
-                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="14%" height="14%" :x="holdgetX(index) -10 + '%'" y="82%" @click="handleClick(key)"/>
+                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="12%" height="12%" :x="holdgetX(index) -8 + '%'" y="83%" @click="handleClick(key)"/>
             </g>
         </svg>
     </v-col>
     <v-col>
         <svg width="100%" height="100%">
             <rect x="0" y="0" rx="15" ry="15" width="100%" height="100%" fill="#C0E3E1" fill-opacity="0.6"/>
-            <text x="3%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Cooling Time</text>
-            <image  :href="require('@/assets/coldwater.png')"  width="18%" height="18%" x="18%" y="6%" />
-            <image  style="cursor: pointer;" v-if="coolingtime.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="13%" height="13%" x="-2%" y="25%" @click="handleClick('cooling_time')"/>
-            <text x="15%" y="70%" fill="#0071BC" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="90" >{{ Math.round(coolingtime.value * 10) / 10 }}</text>
-            <text x="12.5%" y="90%" fill="#0071BC" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Sec</text>
-
-            <text x="32%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Injection Pressure</text>
-            <image  :href="require('@/assets/pressure.png')"  width="18%" height="18%" x="59%" y="6%" />
-            <image  style="cursor: pointer;" v-if="ijpressure.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="13%" height="13%" x="28%" y="25%" @click="handleClick('injection_pressure_set')"/>
-            <text x="50%" y="70%" fill="#D27D00" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="90" >{{ Math.round(ijpressure.value * 10) / 10 }}</text>
-            <text x="47.5%" y="90%" fill="#D27D00" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Bar</text>
-
-            <text x="73%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Back Pressure</text>
-            <g v-for="([key, value], index) in backpressure" :key="key">
-                <text
-                    x="85%"
-                    :y="backgetX(index) +13 +'%'"
-                    text-anchor="middle"
-                    font-size="28"
-                    fill="black"
-                    font-family="monospace" font-weight="bold"
-                >
-                    {{ Math.round(value.value * 10) / 10  }}
-                </text>
-                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="14%" height="14%" x="70%" :y="backgetX(index) +2 +'%'" @click="handleClick(key)"/>
-            </g>
+            <text x="5%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="32" >Cooling Time</text>
+            <!-- <image  :href="require('@/assets/coldwater.png')"  width="18%" height="18%" x="18%" y="6%" /> -->
+            <image  style="cursor: pointer;" v-if="coolingtime.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="13%" height="13%" x="0%" y="28%" @click="handleClick('cooling_time')"/>
+            <text x="17%" y="73%" fill="#0071BC" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="100" >{{ Math.round(coolingtime.value * 10) / 10 }}</text>
+            <!-- <text x="12.5%" y="90%" fill="#0071BC" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Sec</text> -->
+            <text x="33%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="32" >Clamping Force</text>
+            <image  style="cursor: pointer;" v-if="clamp_force_set.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="13%" height="13%" x="25%" y="25%" @click="handleClick('clamp_force_set')"/>
+            <text x="47%" y="73%" fill="#D27D00" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="90" >{{ Math.round(clamp_force_set.value * 10) / 10 }}</text>
+            <text x="65%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Filling time limit</text>
+            <image  style="cursor: pointer;" v-if="filling_time_set.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="13%" height="13%" x="60%" y="25%" @click="handleClick('filling_time_set')"/>
+            <text x="82%" y="73%" fill="#44B678" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="90" >{{filling_time_set.value }}</text>
         </svg>
     </v-col>
     </v-row>
-    <v-row class="mr-1 ml-1" >
+    <v-row class="mr-1 ml-1">
         <v-col>
             <v-card>
                 <v-card-title>Process Feedback Data</v-card-title>
@@ -215,7 +227,7 @@
         </v-card>
         </v-col>
     </v-row>
-    <v-row class="mr-1 ml-1">
+    <v-row class="mr-1 ml-1" >
         <v-col>
             <v-card>
                 <v-card-title>Curve Data</v-card-title>
@@ -258,6 +270,7 @@ import { computed } from 'vue'
         barreltempact:[],
         ijpos:[],
         ispe:[],
+        ijprelist:[],
         holdp:[],
         holdt:[],
         barrelsetgap:'',
@@ -274,7 +287,10 @@ import { computed } from 'vue'
         backgap:'',
         backgetX:'',
         feedbacktabledata :[],
-        curvedatalist:[]
+        curvedatalist:[],
+        clamp_force_set:{"value":'',"edit":''},
+        filling_time_set : {"value":'NA',"edit":''},
+
 
 
         
@@ -326,12 +342,12 @@ import { computed } from 'vue'
                 }
                 if ('injection_pos' in resdata["machinestatus"]){
                     this.ijpos = Object.entries(resdata["machinestatus"]['injection_pos']);
-                    this.possetgap = computed(() => 100/ (this.ijpos.length + 1))
+                    this.possetgap = computed(() => 80/ (this.ijpos.length + 1))
                     this.possetsetgetX = (index) => this.possetgap * (index + 1)
                 }
                 if ('injection_speed' in resdata["machinestatus"]){
                     this.ispe = Object.entries(resdata["machinestatus"]['injection_speed']);
-                    this.ijspsetgap = computed(() => 100/ (this.ispe.length + 1))
+                    this.ijspsetgap = computed(() => 80/ (this.ispe.length + 1))
                     this.ijspsetgetX = (index) => this.ijspsetgap * (index + 1)
                 }
                 if ('holdingpressureset' in resdata["machinestatus"]){
@@ -348,12 +364,22 @@ import { computed } from 'vue'
                     this.coolingtime = resdata["machinestatus"]['cooling_time'];
                 }
                 if ('injection_pressure_set' in resdata["machinestatus"]){
-                    this.ijpressure = resdata["machinestatus"]['injection_pressure_set'];
+                    this.ijprelist = [["injection_pressure_set",resdata["machinestatus"]['injection_pressure_set']]];
+                }
+                if ("injection_pressure_list" in resdata["machinestatus"]){
+                    this.ijprelist = Object.entries(resdata["machinestatus"]['injection_pressure_list']);
+
                 }
                 if ('backpressure' in resdata["machinestatus"]){
                     this.backpressure = Object.entries(resdata["machinestatus"]['backpressure']);
-                    this.backgap = computed(() => 100/ (this.backpressure.length + 1))
+                    this.backgap = computed(() => 80/ (this.backpressure.length + 1))
                     this.backgetX = (index) => this.backgap * (index + 1)
+                }
+                if ('clamp_force_set' in resdata["machinestatus"]){
+                    this.clamp_force_set = resdata["machinestatus"]['clamp_force_set']
+                }
+                if ('filling_time_set' in resdata["machinestatus"]){
+                    this.filling_time_set = resdata["machinestatus"]['filling_time_set']
                 }
                 this.feedbacktabledata =[]
                 for (var key of Object.keys(resdata["machinefeedback"])) {
@@ -362,14 +388,15 @@ import { computed } from 'vue'
                     var item  = {"Name":key,"Value": value}
                     this.feedbacktabledata.push(item)
                 }
-                this.curvedatalist = []
+                var new_curvedata = []
                 for (var k of Object.keys(resdata["machinecurve"])){
                     var curvetitle = k
                     var ydata = resdata["machinecurve"][k]
                     ydata = ydata.map(item => parseFloat(item))
                     var curveitem = {"Title":curvetitle,"Data":ydata}
-                    this.curvedatalist.push(curveitem)
+                    new_curvedata.push(curveitem)
                 }
+                 this.curvedatalist = new_curvedata
             }
 
         })

@@ -36,6 +36,14 @@ services:
     container_name: "Tachungagent"
     build: ./Tachung
     restart: always
+  fcs150:
+    container_name: "fcs150agent"
+    build: ./FCS_HT150
+    restart: always
+  fcsmucell:
+    container_name: "fcsmucellagent"
+    build: ./FCS_Mucell
+    restart: always
 
 
 
