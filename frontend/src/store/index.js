@@ -5,8 +5,8 @@ export default createStore({
   state() {
     return {
       token: '',
-      host: '/api',
-      // host: 'http://140.135.106.49:8000',
+      // host: '/api',
+      host: 'http://140.135.106.49:8000',
       selectmachine: cookies.get('setSelectMachine')  || 'Engel-120'
     }
   },

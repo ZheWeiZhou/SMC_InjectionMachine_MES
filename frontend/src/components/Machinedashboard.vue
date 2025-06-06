@@ -164,17 +164,17 @@
     <v-col>
         <svg width="100%" height="100%">
             <rect x="0" y="0" rx="15" ry="15" width="100%" height="100%" fill="#C0E3E1" fill-opacity="0.6"/>
-            <text x="5%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="32" >Cooling Time</text>
+            <text x="5%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="200%" >Cooling Time</text>
             <!-- <image  :href="require('@/assets/coldwater.png')"  width="18%" height="18%" x="18%" y="6%" /> -->
             <image  style="cursor: pointer;" v-if="coolingtime.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="13%" height="13%" x="0%" y="28%" @click="handleClick('cooling_time')"/>
-            <text x="17%" y="73%" fill="#0071BC" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="100" >{{ Math.round(coolingtime.value * 10) / 10 }}</text>
+            <text x="17%" y="73%" fill="#0071BC" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="600%" >{{ Math.round(coolingtime.value * 10) / 10 }}</text>
             <!-- <text x="12.5%" y="90%" fill="#0071BC" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Sec</text> -->
-            <text x="33%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="32" >Clamping Force</text>
+            <text x="33%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="200%" >Clamping Force</text>
             <image  style="cursor: pointer;" v-if="clamp_force_set.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="13%" height="13%" x="25%" y="25%" @click="handleClick('clamp_force_set')"/>
-            <text x="47%" y="73%" fill="#D27D00" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="90" >{{ Math.round(clamp_force_set.value * 10) / 10 }}</text>
-            <text x="65%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Filling time limit</text>
+            <text x="47%" y="73%" fill="#D27D00" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="600%" >{{ Math.round(clamp_force_set.value * 10) / 10 }}</text>
+            <text x="65%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="190%" >Filling time set</text>
             <image  style="cursor: pointer;" v-if="filling_time_set.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="13%" height="13%" x="60%" y="25%" @click="handleClick('filling_time_set')"/>
-            <text x="82%" y="73%" fill="#44B678" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="90" >{{filling_time_set.value }}</text>
+            <text x="82%" y="73%" fill="#44B678" text-anchor="middle" font-family="monospace" font-weight="bold" font-size="600%" >{{filling_time_set.value }}</text>
         </svg>
     </v-col>
     </v-row>
