@@ -2,7 +2,7 @@ from aphyt import omron
 import pika
 import redis
 import numpy as np
-from datetime import datetime
+from datetime import datetime,timezone
 import os
 import json
 from sqlalchemy import create_engine,text, Column, Integer, String,DateTime,TEXT,TIMESTAMP
@@ -267,7 +267,7 @@ if __name__ == "__main__":
       try:
         MULTIPAS.collectdata()
         with open("healthcheck.txt", "w+") as file:
-            file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            file.write(datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"))
       except Exception as e:
           print(e)    
 

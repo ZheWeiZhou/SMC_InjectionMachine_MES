@@ -4,12 +4,60 @@ Created on Tue Mar 21 12:41:50 2023
 
 @author: cax
 """
+injection_pos= {
+                "injection_volume1": {
+                    "value": 70.00602254488693,
+                    "edit": "none"
+                },
+                "injection_volume2": {
+                    "value": 68.00585061554783,
+                    "edit": "acctivate"
+                },
+                "injection_volume3": {
+                    "value": 61.05926280835841,
+                    "edit": "acctivate"
+                },
+                "injection_volume4": {
+                    "value": 40.00344360480024,
+                    "edit": "acctivate"
+                },
+                "injection_volume5": {
+                    "value": -1,
+                    "edit": "none"
+                },
+                "injection_volume6": {
+                    "value": -1,
+                    "edit": "none"
+                },
+                "injection_volume7": {
+                    "value": -1,
+                    "edit": "none"
+                },
+                "injection_volume8": {
+                    "value": -1,
+                    "edit": "none"
+                },
+                "injection_volume9": {
+                    "value": -1,
+                    "edit": "none"
+                },
+                "injection_volume10": {
+                    "value": -1,
+                    "edit": "none"
+                }
+            }
+posend = 35
 # Act Volume : self.machinestatus["injection_pos"]["injection_volume1"] - self.machinefeedback["material_cushion"]
 # Set Volume : self.machinestatus["injection_pos"]
 def compare_ijpos_ijend (injection_postion,injection_end): #比較射出終點跟射出位置設定
-    
-    setting_injection_volume=float(injection_postion[0])-float(injection_postion[-1])#計算設定劑量
-    real_injection_volume=float(injection_postion[0])-float(injection_end) #計算實際打入的劑量
+    injection_postion_key = list(injection_postion.keys())
+    posset = []
+    for key in injection_postion_key:
+        positem = injection_postion[key]["value"]
+        if positem >= 0:
+            posset.append(positem)
+    setting_injection_volume=float(max(posset))-float(min(posset))#計算設定劑量
+    real_injection_volume=float(max(posset))-float(injection_end) #計算實際打入的劑量
     compare=real_injection_volume/setting_injection_volume #(實際劑量-設定劑量)/設定劑量
     # print(compare)
     if compare <=0.9:
@@ -20,9 +68,14 @@ def compare_ijpos_ijend (injection_postion,injection_end): #比較射出終點�
         return [2,compare]
     else:
         return [3,compare]
-
 def injection_end_cau(injection_postion,injection_end):#比較殘餘劑量與射出劑量
-    setting_injection_volume=injection_postion[0]-injection_postion[-1]#計算設定劑量
+    injection_postion_key = list(injection_postion.keys())
+    posset = []
+    for key in injection_postion_key:
+        positem = injection_postion[key]["value"]
+        if positem >= 0:
+            posset.append(positem)
+    setting_injection_volume=float(max(posset))-float(min(posset))#計算設定劑量
     compare=injection_end/setting_injection_volume
     if compare <0.2:
         return [0,compare]

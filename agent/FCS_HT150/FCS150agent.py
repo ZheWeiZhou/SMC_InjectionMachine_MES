@@ -3,13 +3,14 @@ from opcua import ua
 import pika
 import redis
 import numpy as np
-from datetime import datetime
+from datetime import datetime,timezone
 import os
 import json
 from sqlalchemy import create_engine,text, Column, Integer, String,DateTime,TEXT,TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import threading
+import copy
 Base = declarative_base()
 class injection_machine_db(Base):
     __tablename__    = "MachineHistory"
@@ -103,6 +104,7 @@ class fcsagent:
             "filling_time_set":{'nodeid':'ns=4;s=APPL.Injection1.sv_CutOffParams.dTimeThreshold','factor':1000000,'type':'int64'},
             "cooling_time":{'nodeid':'ns=4;s=APPL.CoolingTime1.sv_dCoolingTime','factor':1000000,'type':'int64'},
             "storage_pressure_set":{'nodeid':'ns=4;s=APPL.Injection1.sv_ConstChargePressure.Output.rOutputValue','factor':1,'type':'float'},
+            "vp_position_set":{'nodeid':'ns=4;s=APPL.Injection1.sv_CutOffParams.rPositionThreshold','factor':1.5204,'type':'float'},
         }
         
     def connect(self):  
@@ -150,6 +152,30 @@ class fcsagent:
             data_value.SourceTimestamp = None
             data_value.StatusCode = ua.StatusCode(ua.StatusCodes.Good)
             self.worker.get_node(nodeid).set_value(data_value)
+        try:
+            injection_postion= copy.deepcopy(self.machinestatus["injection_pos"])
+            if "injection_volume" in target:
+                injection_postion[target] = {"value":float(value)/1.5204,"edit":"none"}
+            injection_pos_key= list(injection_postion.keys())
+            posset = []
+            for key in injection_pos_key:
+                positem = injection_postion[key]["value"]
+                if positem >= 0:
+                    posset.append(positem)
+            ijendpos = min(posset)
+            print(ijendpos)
+            ijendpos = ijendpos*1.5204
+            vppos_value = ua.DataValue()
+            vppos_value.Value = ua.Variant(ijendpos, ua.VariantType.Float)
+            vppos_value.ServerTimestamp = None
+            vppos_value.SourceTimestamp = None
+            vppos_value.StatusCode = ua.StatusCode(ua.StatusCodes.Good)
+            self.worker.get_node('ns=4;s=APPL.Injection1.sv_CutOffParams.rPositionThreshold').set_value(vppos_value)
+        except Exception as e:
+            print(e)
+
+
+        
             
         
 
@@ -374,7 +400,10 @@ class fcsagent:
             storage_position["storage_position10"]   = {"value":storage_position10,"edit":"acctivate"}
             storagepos.append(storage_position10)
         ijvol1 = max(storagepos)
-        self.machinestatus["storage_position"]  = storage_position           
+        self.machinestatus["storage_position"]  = storage_position 
+        # Cut of position
+        vp_position_set = self.worker.get_node("ns=4;s=APPL.Injection1.sv_CutOffParams.rPositionThreshold").get_value()/1.5204
+        self.machinestatus["vp_position_set"]  = vp_position_set  
         # Injection volume(position) set
         injection_pos ={}
         injection_pos["injection_volume1"]     = {"value":ijvol1,"edit":"none"}
@@ -527,22 +556,22 @@ class fcsagent:
             if self.processactivate == True:
                 print("[Message] Save data ...")
                 # Material Cushion (餘料)
-                material_cushion                         = self.worker.get_node("ns=4;s=APPL.Injection1.sv_rCushion").get_value()
+                material_cushion                         = self.worker.get_node("ns=4;s=APPL.Injection1.sv_rCushion").get_value()/1.5204
                 self.machinefeedback["material_cushion"] = material_cushion
                 # Filling time
                 filling_time                    = self.worker.get_node("ns=4;s=APPL.Injection1.sv_dActInjectTimeForPDP").get_value()/1000000
                 self.machinefeedback["filling_time"] = filling_time
                 # Maximun real injection pressure
-                Maximun_real_injection_pressure                    = self.worker.get_node("ns=4;s=APPL.Injection1.ai_Pressure").get_value()*25.12
+                Maximun_real_injection_pressure                    = self.worker.get_node("ns=4;s=APPL.Injection1.sv_rInjPeakPressure").get_value()/13.05
                 self.machinefeedback["Maximun_real_injection_pressure"] = Maximun_real_injection_pressure
                 # Maximun real injection speed
-                maximun_real_injection_speed                    = self.worker.get_node("ns=4;s=APPL.Injection1.sv_rScrewVelocityAbs").get_value()
+                maximun_real_injection_speed                    = self.worker.get_node("ns=4;s=APPL.Injection1.sv_rInjPeakVelocity").get_value()/1.5204
                 self.machinefeedback["maximun_real_injection_speed"] = maximun_real_injection_speed
                 # VP position real
-                vp_position_real                    = self.worker.get_node("ns=4;s=APPL.Injection1.sv_rCutOffPosition").get_value()/1.5204
+                vp_position_real                    = self.worker.get_node("ns=4;s=APPL.Injection1.sv_rCutOffPositionAbs").get_value()
                 self.machinefeedback["vp_position_real"] = vp_position_real
                 # real vp pressure
-                real_vp_pressure                    = self.worker.get_node("ns=4;s=APPL.Injection1.sv_rCutOffPressure").get_value()/1.5204
+                real_vp_pressure                    = self.worker.get_node("ns=4;s=APPL.Injection1.sv_rCutOffPressure").get_value()/13.05
                 self.machinefeedback["real_vp_pressure"] = real_vp_pressure
                 self.processactivate =False
                 # Act Cycle time 

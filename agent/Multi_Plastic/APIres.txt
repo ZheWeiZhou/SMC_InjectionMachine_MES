@@ -1,0 +1,150 @@
+{
+    "status": "success",
+    "Data": {
+        "Online": "Online",
+        "machinestatus": {
+            "injection_pressure_list": {
+                "injection_pressure1_set": {
+                    "value": 800.0,
+                    "edit": "none"
+                }
+            },
+            "barrel_temp_set": {
+                "barrel_temp1_set": {
+                    "value": 230.0,
+                    "edit": "none"
+                },
+                "barrel_temp2_set": {
+                    "value": 230.0,
+                    "edit": "none"
+                },
+                "barrel_temp3_set": {
+                    "value": 240.0,
+                    "edit": "none"
+                },
+                "barrel_temp4_set": {
+                    "value": 230.0,
+                    "edit": "none"
+                },
+                "barrel_temp5_set": {
+                    "value": 220.0,
+                    "edit": "none"
+                }
+            },
+            "injection_pos": {
+                "injection_volume1": {
+                    "value": 34.0,
+                    "edit": "none"
+                },
+                "injection_volume2": {
+                    "value": 30.0,
+                    "edit": "none"
+                },
+                "injection_volume3": {
+                    "value": 30.0,
+                    "edit": "none"
+                },
+                "injection_volume4": {
+                    "value": 25.0,
+                    "edit": "none"
+                },
+                "injection_volume5": {
+                    "value": 5.0,
+                    "edit": "none"
+                }
+            },
+            "injection_speed": {
+                "injection_rate1_set": {
+                    "value": 150.0,
+                    "edit": "none"
+                },
+                "injection_rate2_set": {
+                    "value": 150.0,
+                    "edit": "none"
+                },
+                "injection_rate3_set": {
+                    "value": 150.0,
+                    "edit": "none"
+                },
+                "injection_rate4_set": {
+                    "value": 150.0,
+                    "edit": "none"
+                },
+                "injection_rate5_set": {
+                    "value": 150.0,
+                    "edit": "none"
+                }
+            },
+            "clamp_force_set": {
+                "value": 99.0,
+                "edit": "none"
+            },
+            "filling_time_set": {
+                "value": 10.0,
+                "edit": "none"
+            },
+            "backpressure": {
+                "backpressure1": {
+                    "value": 150.0,
+                    "edit": "none"
+                },
+                "backpressure2": {
+                    "value": 150.0,
+                    "edit": "none"
+                }
+            },
+            "holdingtimeset": {
+                "holding_time1_set": {
+                    "value": 0.0,
+                    "edit": "none"
+                },
+                "holding_time2_set": {
+                    "value": 0.0,
+                    "edit": "none"
+                },
+                "holding_time3_set": {
+                    "value": 0.2,
+                    "edit": "none"
+                }
+            },
+            "holdingpressureset": {
+                "holding_pressure1_set": {
+                    "value": 800.0,
+                    "edit": "acctivate"
+                },
+                "holding_pressure2_set": {
+                    "value": 1000.0,
+                    "edit": "acctivate"
+                },
+                "holding_pressure3_set": {
+                    "value": 100.0,
+                    "edit": "acctivate"
+                }
+            },
+            "cooling_time": {
+                "value": 0.0,
+                "edit": "none"
+            },
+            "vp_position_set": {
+                "value": 4.999959468841553,
+                "edit": "none"
+            },
+            "Dospos": {
+                "dos_position1": {
+                    "value": 0.0,
+                    "edit": "none"
+                },
+                "dos_position2": {
+                    "value": 80.0,
+                    "edit": "none"
+                }
+            },
+            "machine": {
+                "value": "stay",
+                "edit": "none"
+            }
+        },
+        "machinefeedback": {},
+        "machinecurve": {}
+    }
+}
