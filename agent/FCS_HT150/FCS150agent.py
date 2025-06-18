@@ -11,6 +11,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import threading
 import copy
+import time
 Base = declarative_base()
 class injection_machine_db(Base):
     __tablename__    = "MachineHistory"
@@ -60,7 +61,7 @@ class fcsagent:
             "holding_pressure8_set":{'nodeid':'ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[8].rPressure','factor':13.05,'type':'float'},
             "holding_pressure9_set":{'nodeid':'ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[9].rPressure','factor':13.05,'type':'float'},
             "holding_pressure10_set":{'nodeid':'ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[10].rPressure','factor':13.05,'type':'float'},
-            "injection_volume1":{'nodeid':'ns=4;s=APPL.Injection1.sv_CutOffParams.rDetectionPositionLimit','factor':1.5204,'type':'float'},
+            "injection_volume1":{'nodeid':'ns=4;s=APPL.Injection1.sv_PlastProfVis.Profile.Points[2].rStartPos','factor':1.5204,'type':'float'},
             "injection_volume2":{'nodeid':'ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[2].rStartPos','factor':1.5204,'type':'float'},
             "injection_volume3":{'nodeid':'ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[3].rStartPos','factor':1.5204,'type':'float'},
             "injection_volume4":{'nodeid':'ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[4].rStartPos','factor':1.5204,'type':'float'},
@@ -118,16 +119,21 @@ class fcsagent:
                 self.parametersetting(command["Target"],command["Value"])
             
             def start_controller():
-                connection = pika.BlockingConnection(pika.ConnectionParameters(
-                    host=self.hostip,
-                    credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_password)
-                ))
-                channel = connection.channel()
-                channel.queue_declare(queue=self.machineid)
-                channel.basic_consume(queue=self.machineid,
-                        on_message_callback=callback,
-                        auto_ack=True)
-                channel.start_consuming()
+                while True:
+                    try:
+                        connection = pika.BlockingConnection(pika.ConnectionParameters(
+                            host=self.hostip,
+                            credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_password)
+                        ))
+                        channel = connection.channel()
+                        channel.queue_declare(queue=self.machineid)
+                        channel.basic_consume(queue=self.machineid,
+                                on_message_callback=callback,
+                                auto_ack=True)
+                        channel.start_consuming()
+                    except Exception as e:
+                        print(e)
+                        time.sleep(5)
             controller_thread = threading.Thread(target=start_controller)
             controller_thread.start()
             print("[MESSAGE] Activate Rabbit MQ ..")
@@ -406,7 +412,7 @@ class fcsagent:
         self.machinestatus["vp_position_set"]  = vp_position_set  
         # Injection volume(position) set
         injection_pos ={}
-        injection_pos["injection_volume1"]     = {"value":ijvol1,"edit":"none"}
+        injection_pos["injection_volume1"]     = {"value":ijvol1,"edit":"acctivate"}
         injection_volume2                      = self.worker.get_node("ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[2].rStartPos").get_value()/1.5204
         injection_pos["injection_volume2"]     = {"value":injection_volume2,"edit":"acctivate"}
         injection_volume3                      = self.worker.get_node("ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[3].rStartPos").get_value()/1.5204

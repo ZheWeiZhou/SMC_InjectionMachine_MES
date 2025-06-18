@@ -10,6 +10,7 @@ from sqlalchemy import create_engine,text, Column, Integer, String,DateTime,TEXT
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import threading
+import time
 Base = declarative_base()
 class injection_machine_db(Base):
     __tablename__    = "MachineHistory"
@@ -83,16 +84,21 @@ class engelagent:
                 self.parametersetting(command["Target"],command["Value"])
             
             def start_controller():
-                connection = pika.BlockingConnection(pika.ConnectionParameters(
-                    host=self.hostip,
-                    credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_password)
-                ))
-                channel = connection.channel()
-                channel.queue_declare(queue=self.machineid)
-                channel.basic_consume(queue=self.machineid,
-                        on_message_callback=callback,
-                        auto_ack=True)
-                channel.start_consuming()
+                while True:
+                    try:
+                        connection = pika.BlockingConnection(pika.ConnectionParameters(
+                            host=self.hostip,
+                            credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_password)
+                        ))
+                        channel = connection.channel()
+                        channel.queue_declare(queue=self.machineid)
+                        channel.basic_consume(queue=self.machineid,
+                                on_message_callback=callback,
+                                auto_ack=True)
+                        channel.start_consuming()
+                    except Exception as e:
+                        print(e)
+                        time.sleep(5)
             controller_thread = threading.Thread(target=start_controller)
             controller_thread.start()
             print("[MESSAGE] Activate Rabbit MQ ..")

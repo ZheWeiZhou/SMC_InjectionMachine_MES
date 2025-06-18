@@ -50,6 +50,7 @@ async def insertdata(requestData:machine_contorl_requestBody):
         ))
         channel = connection.channel()
         channel.queue_declare(queue=machine_name)
+        
         commandbody = {"Target":target,"Value":value}
         commandbody = json.dumps(commandbody)
         channel.basic_publish(exchange='',

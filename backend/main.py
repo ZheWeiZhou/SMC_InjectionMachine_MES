@@ -6,6 +6,7 @@ from routers.historyrouter import historyrouter
 from routers.realtimedatarouter import realtimedatarouter
 from routers.commandrouter import commandrouter
 from routers.userrouter import userrouter
+from routers.troubleshooting import troubleshootingrouter
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -20,6 +21,7 @@ app.include_router(historyrouter)
 app.include_router(realtimedatarouter)
 app.include_router(commandrouter)
 app.include_router(userrouter)
+app.include_router(troubleshootingrouter)
 
 @app.get("/smc/injectionmachinemes/healthcheck")
 async def healthcheck():
