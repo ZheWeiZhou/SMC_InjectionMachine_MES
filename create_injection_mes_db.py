@@ -33,7 +33,13 @@ class Machinelist(Base):
     machinename   = Column(String)
     activate      = Column(String)
 
-
+class BayesianNetworkTrainData(Base):
+    __tablename__ = 'BayesianNetworkTrainData'
+    id               = Column(Integer,primary_key=True)
+    machinehistoryid = Column(Integer)
+    created_at       = Column(DateTime(timezone = False), server_default=func.now())
+    machine_name     = Column(String)
+    model_result     = Column(String) 
 # Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
 

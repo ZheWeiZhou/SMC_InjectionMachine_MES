@@ -87,6 +87,7 @@ class fcstroubleshootagent:
                         )
     # 診斷射速過低
     def slovelowspeed(self,machinestatus,deffectlevel,machinelimit):
+        # 如果射速設的超級小，小到乘完係數之後變動幅度不到機台最高射速的2%，那就直接加上2%的機台最高射速來加速調機速度
         adjustratio   = 1.1
         if deffectlevel == 2:
             adjustratio   = 1.25
@@ -103,6 +104,9 @@ class fcstroubleshootagent:
         for oldspeed in speed_set_list:
             
             newspeed = oldspeed * adjustratio
+            changerange = (newspeed - oldspeed)/ machinelimit
+            if changerange <0.02:
+                 newspeed = oldspeed + machinelimit*0.02
             if oldspeed > min(speed_set_list) *2:
                 newspeed = oldspeed
             if newspeed > machinelimit:
@@ -233,9 +237,20 @@ class fcstroubleshootagent:
                     "計量不足":[lambda: self.slovelowdose(machinestatus,machinefeedback,deffectlevel)],
                     "背壓過低":[lambda:self.slovelowbackpressure()],
                     }
+                    modelresulttodb =""
                     for reasonitem in DefectReason:
+                        modelresulttodb = modelresulttodb + reasonitem + ","
                         for func in solution.get(reasonitem, []):
-                            func()          
+                            func()
+                    # Save for Train Data 
+                    modelresulttodb = modelresulttodb[:-1]
+                    url = f"http://{self.hostip}:8000/smc/injectionmachinemes/history/insertBayesianNetworkTrainData"
+                    storagerequestdata = {"machine_name":"FCS-150","modelresult":modelresulttodb}
+                    headers = {
+                        'AccessToken': '8d6d4e85-b277-4102-8ffd-defcc7b7b9f9',
+                        'Content-Type': 'application/json'
+                    }
+                    response = requests.post(url,headers=headers, json=storagerequestdata) 
 if __name__ == "__main__":
     processlineagent = fcstroubleshootagent("192.168.1.225")
     while True:

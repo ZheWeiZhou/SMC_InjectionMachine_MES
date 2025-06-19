@@ -44,7 +44,13 @@ services:
     container_name: "fcsmucellagent"
     build: ./FCS_Mucell
     restart: always
-
+  autoheal:
+    image: willfarrell/autoheal
+    restart: always
+    environment:
+      - AUTOHEAL_INTERVAL=5    # 每 5 秒檢查一次
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 
 
