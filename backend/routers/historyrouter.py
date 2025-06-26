@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Request
+from typing import Dict, Any
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String,DateTime,text
 from sqlalchemy.sql import func
@@ -42,6 +43,7 @@ class inserthistorydata_requestBody(BaseModel):
 class insertBayesianData_requestBody(BaseModel):
     machine_name:str
     modelresult:str
+    abstract: Any | None
 
 @historyrouter.post("/smc/injectionmachinemes/history/insertdata")
 async def insertdata(requestData:inserthistorydata_requestBody):
@@ -88,8 +90,8 @@ async def insertBayesianData(requestData:insertBayesianData_requestBody):
         for i in Modelresult :
             if i in mappingtable_Key:
                 Modelresult_EN.append(mappingtable[i])
-
-        storagedata      = {"Modelresult":Modelresult_EN}
+        Adjustabstract   = requestData.abstract
+        storagedata      = {"Modelresult":Modelresult_EN,"SloveAbstract":Adjustabstract}
         storagedata      = json.dumps(storagedata)
         MachineHistoryID = LatestMachineDataID[0]
         Session          = sessionmaker(bind=engine)

@@ -19,19 +19,207 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+<!-- PROCESS LINE DIALOG -->
+    <v-dialog v-model="processlinedisplay" width="95%" height="150%" transition="dialog-bottom-transition" >
+    <v-card>
+        <v-card-title class="d-flex justify-end">
+            <v-btn size="x-small" icon="mdi-close" color="blue darken-1" @click="processlinedisplay = false"></v-btn>
+        </v-card-title>
+    <v-row class="mr-1 ml-1">
+        <v-col>
+            <v-card>
+                <v-card-title class="text-h6">Updated Time : {{ processlinemessage.created_time }}</v-card-title>
+                <v-card-text>
+                        <v-img
+                            contain
+                            max-height="280"
+                            max-width="650"    
+                            :src="`data:image/png;base64,${processlinemessage.image_str}`"
+                            alt="Base64 Image"
+                            align="center"
+                            justify="center"
+                        ></v-img>
+                </v-card-text>
+            </v-card>
+        </v-col>
+        <v-col>
+            <v-row>
+                <v-col>
+                    <v-card>
+                        <v-card-title class="text-h5">Quality</v-card-title>
+                        <v-card-text class="text-h6">
+                            <span>{{ processlinemessage.quality }}</span>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-card>
+                        <v-card-title class="text-h5">Weight</v-card-title>
+                        <v-card-text class="text-h6">
+                            <span>{{ processlinemessage.product_weight }} g</span>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-card>
+                        <v-card-title class="text-h5">Short Shot Ratio</v-card-title>
+                        <v-card-text class="text-h6">
+                            <span>{{ processlinemessage.shortshotratio }}</span>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-col>
+    </v-row>
+    <!-- Process Line AUTO Trouble shooting -->
+    <v-row class="mr-1 ml-1">
+        <v-col >
+            <v-row >
+                <v-col>
+                    <v-card>
+                        <v-card-title class="text-h5">Diagnosis Result : {{ sloveabstract.DefectReason }}</v-card-title>
+                        <v-card-text class="text-h6">
+                             <v-list >
+                                <v-list-item
+                                v-for="(item, index) in sloveabstract.SloveAbstract"
+                                :key="index"
+                                >
+                                    <v-list-item-content>
+                                        <v-list-item-title class="text-h6">
+                                            <span> {{ item.Parameter }}</span> : 
+                                            <span >
+                                                {{ item.Origin }}
+                                            </span>
+                                            →
+                                            <span>
+                                                {{ item.New }}
+                                            </span>
+                                        </v-list-item-title>
+                                    </v-list-item-content>
+                                </v-list-item>
+                             </v-list>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-card>
+                        <v-card-text class="text-h6"> 
+                            <v-timeline align="start" direction="horizontal">
+                                <v-timeline-item
+                                class="no-dot"
+                                v-for="(item, index) in this.slovetimeline"
+                                :key="index"
+                                icon=""
+                                color="primary"
+                                >
+                                <div>
+                                    Reason: {{ item.DefectReason }}<br />
+                                    Adjust Parameter ：{{ item.AdjustParameter }}<br />
+                                    <v-img
+                                        contain
+                                        max-height="70"
+                                        max-width="70"    
+                                        :src="`data:image/png;base64,${item.image_str}`"
+                                        alt="Base64 Image"
+                                        align="center"
+                                        justify="center"
+                                    ></v-img>                                    
+                                </div>
+                                </v-timeline-item>
+                            </v-timeline>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>    
+        </v-col>
+    </v-row>
+    </v-card>
+    </v-dialog>
+
 
     <v-row class="mt-5 mr-1 ml-1">
         <v-col>
-            <v-card>
+            <v-card class="h-100">
                 <v-card-title class="text-h4">Machine Name</v-card-title>
                 <v-card-text class="text-h5">{{machinename}}</v-card-text>
             </v-card>
         </v-col>
         <v-col>
-            <v-card>
+            <v-card class="h-100">
                 <v-card-title class="text-h4">Connect Status</v-card-title>
                 <v-card-text class="text-h5" :style="{color:offlinecolor}" >{{machineonline}}</v-card-text>
             </v-card>
+        </v-col>
+        <v-col v-if = "troubleshootingavailable =='True'">
+            <v-card class="h-100">
+                <v-card-title class="text-h4">Trouble Shooting</v-card-title>
+                <v-card-actions>
+                <v-btn  class="mr-2 ml-3" color="info" rounded="xl">
+                    Diagnosis
+                </v-btn>
+                <v-btn class="mr-2 ml-3" color="info" v-if="machinename =='FCS-150' || machinename =='TOYO'" @click ="clickprocessline" rounded="xl">
+                    Auto Mode Monitor
+                </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-col>
+    </v-row>
+    <!-- Process Line status display -->
+    <v-row class="mr-1 ml-1" v-if ="processlinedisplay">
+        <v-col>
+            <v-card>
+                <v-card-title class="text-h6">Updated Time : {{ processlinemessage.created_time }}</v-card-title>
+                <v-card-text>
+                        <v-img
+                            contain
+                            max-height="350"
+                            max-width="700"    
+                            :src="`data:image/png;base64,${processlinemessage.image_str}`"
+                            alt="Base64 Image"
+                            align="center"
+                            justify="center"
+                        ></v-img>
+                </v-card-text>
+            </v-card>
+        </v-col>
+        <v-col>
+            <v-row>
+                <v-col>
+                    <v-card>
+                        <v-card-title class="text-h4">Quality</v-card-title>
+                        <v-card-text class="text-h5">
+                            <span>{{ processlinemessage.quality }}</span>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-card>
+                        <v-card-title class="text-h4">Weight</v-card-title>
+                        <v-card-text class="text-h5">
+                            <span>{{ processlinemessage.product_weight }} g</span>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-card>
+                        <v-card-title class="text-h4">Short Shot Ratio</v-card-title>
+                        <v-card-text class="text-h5">
+                            <span>{{ processlinemessage.shortshotratio }}</span>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
         </v-col>
     </v-row>
     <v-row class="mr-1 ml-1" style="min-height: 600px;">
@@ -39,7 +227,7 @@
     <svg width="100%" height="100%" >
         <rect x="0" y="0" rx="15" ry="15" width="100%" height="100%" fill="#82AE39" fill-opacity="0.6"/>
         <text x="1%" y="9%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="195%" >Barrel Temperature(&deg;C)</text>
-        <text x="76%" y="7%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="16" >!!! Click the settings icon to adjust parameters</text>
+        <text x="73%" y="7%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="16" >!!! Click the settings icon to adjust parameters</text>
         <text x="1%" y="23%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="190%" >Settings</text>
         <g v-for="([key, value], index) in barreltempset" :key="key">
         <text
@@ -143,7 +331,7 @@
                 >
                     {{ Math.round(value.value * 10) / 10  }}
                 </text>
-                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="12%" height="12%" :x="holdgetX(index) -8 + '%'" y="36%" @click="handleClick(key)"/>
+                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="9%" height="9%" :x="holdgetX(index) -7 + '%'" y="38.5%" @click="handleClick(key)"/>
             </g>
             <text x="1%" y="70%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Holding Time</text>
             <g v-for="([key, value], index) in holdt" :key="key">
@@ -157,7 +345,7 @@
                 >
                     {{ Math.round(value.value * 10) / 10  }}
                 </text>
-                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="12%" height="12%" :x="holdgetX(index) -8 + '%'" y="83%" @click="handleClick(key)"/>
+                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="9%" height="9%" :x="holdgetX(index) -7 + '%'" y="85.5%" @click="handleClick(key)"/>
             </g>
         </svg>
     </v-col>
@@ -290,10 +478,12 @@ import { computed } from 'vue'
         curvedatalist:[],
         clamp_force_set:{"value":'',"edit":''},
         filling_time_set : {"value":'NA',"edit":''},
-
-
-
-        
+        troubleshootingavailable : "False",
+        processlinedisplay : false,
+        processlinestauts: "standby",
+        processlinemessage : {"created_time":"NA","image_str":"","product_weight":"NA","quality":"NA","shortshotratio":"NA"},
+        sloveabstract:{"DefectReason":"None","SloveAbstract":[]},
+        slovetimeline:[]
     }),
     methods: {
         createChartOptions(title, yData) {
@@ -405,6 +595,117 @@ import { computed } from 'vue'
         this.selectparameter = key
         this.dialog = true
     },
+    async getprocesslineinfo(){
+        var requestbody = {"machine_name":this.machinename};
+        const token = this.$store.getters.getToken;
+        await axios.post(`${this.$store.getters.getHost}/smc/injectionmachinemes/processlineinfo`,requestbody,{
+                headers:{"accesstoken":token}
+            }
+            ).then( (response) => {
+                if (response.data.status=='error'){
+                    console.log('Get process line info fail')
+            }
+            else{
+                var rawinfo             = response.data.Data.processlinemessage;
+                if (response.data.Data.processlinemessage.quality == "shortshot"){
+                    rawinfo.quality  = "Short Shot"
+                    // 如果偵測到是短射那就要撈取診斷資料拿來做timeline
+                    this.getsloveabstract();
+                }
+                else{
+                    // 如果產品已經沒問題了，那就把跟abstract清空，然後給timeline一個好結局
+                    this.sloveabstract = {"DefectReason":"None","SloveAbstract":[]};
+                    if(this.slovetimeline.length < 1 ){
+                        this.slovetimeline.push({"DefectReason":"Finish","AdjustParameter":"None","image_str":rawinfo.image_str});
+                        // var lastone = this.slovetimeline[this.slovetimeline.length -1];
+                        // if (lastone["DefectReason"] == "Finish"){
+                        //     this.slovetimeline = [];
+                        // }
+                    }
+                    else{
+                        var lastone = this.slovetimeline[this.slovetimeline.length -1];
+                        if (lastone["DefectReason"] != "Finish"){
+                            this.slovetimeline.push({"DefectReason":"Finish","AdjustParameter":"None","image_str":rawinfo.image_str})
+                        }
+                    }
+                }
+                rawinfo.product_weight  = rawinfo.product_weight.toFixed(2)
+                rawinfo.shortshotratio  = rawinfo.shortshotratio.toFixed(2)
+                this.processlinemessage = rawinfo;
+
+            }
+            })
+    },
+    async getsloveabstract(){
+        var requestbody = {"machine_name":this.machinename};
+        const token = this.$store.getters.getToken;
+        await axios.post(`${this.$store.getters.getHost}/smc/injectionmachinemes/troubleshooting/getabstract`,requestbody,{
+                headers:{"accesstoken":token}
+            }
+            ).then( (response) => {
+            if (response.data.status=='error'){
+                    console.log('Get Slove abstract fail');
+                    this.sloveabstract={"DefectReason":"None","SloveAbstract":[]};
+            }
+            else{
+                this.sloveabstract  = response.data.Data.SloveAbstract;
+                var adjsutparameter = "";
+                for(const item of response.data.Data.SloveAbstract.SloveAbstract){
+                    adjsutparameter = adjsutparameter + item["Parameter"]+"; "
+                }
+                if (this.slovetimeline.length > 0){
+                    var lastone = this.slovetimeline[this.slovetimeline.length -1];
+                    if (lastone["DefectReason"] == "Finish"){
+                        this.slovetimeline = [];
+                    }
+                }
+                var timelinedata = {"DefectReason":this.sloveabstract.DefectReason,"AdjustParameter":adjsutparameter,"image_str":this.processlinemessage.image_str};
+                this.slovetimeline.push(timelinedata);
+
+            }
+            })
+    },
+    async getprocesslinestatus(){
+        if(this.troubleshootingavailable =='True'){
+            var requestbody = {"machine_name":this.machinename};
+            const token = this.$store.getters.getToken;
+            await axios.post(`${this.$store.getters.getHost}/smc/injectionmachinemes/processlinestatus`,requestbody,{
+                    headers:{"accesstoken":token}
+                }
+                ).then( (response) => {
+                if (response.data.status=='error'){
+                        console.log('Get process line status fail');
+                        this.processlinestauts = "NA";
+                }
+                else{
+                    var currentprocesslinestatus = response.data.Data.processlinestatus;
+                    if (currentprocesslinestatus != "NA"){
+                        if (this.processlinestauts != currentprocesslinestatus ){
+                            if(currentprocesslinestatus == "standby"){
+                                this.getprocesslineinfo();
+                            }
+                        }
+                        this.processlinestauts = currentprocesslinestatus;
+                    }
+                    else{
+                        this.processlinestauts = currentprocesslinestatus;
+                    }
+
+                }
+            })
+        }
+    },
+    clickprocessline(){
+        this.processlinedisplay = !this.processlinedisplay
+        this.processlinemessage = {"created_time":"NA","image_str":"","product_weight":"NA","quality":"NA","shortshotratio":"NA"}
+        if (this.processlinedisplay){
+            this.getprocesslineinfo();
+        }
+        else {
+            this.processlinestauts = "NA"
+        }
+    },
+
     async changeparameter(){
         var requestbody = {"machine_name":this.machinename,"target":this.selectparameter,"value":this.parametervalue};
         const token = this.$store.getters.getToken;
@@ -419,7 +720,25 @@ import { computed } from 'vue'
                 console.log('edit parameter success')
             }
             })
-    }
+    },
+
+    async checktroubleshhotingavailable(){
+        var name = this.$cookies.get('setSelectMachine');
+        const token = this.$store.getters.getToken;
+        this.machinename = name;
+        var requestbody = {"machine_name":this.machinename};
+        await axios.post(`${this.$store.getters.getHost}/smc/injectionmachinemes/checktroubleshootingfunction`,requestbody,{
+                headers:{"accesstoken":token}
+            }
+            ).then( (response) => {
+        if (response.data.status=='error'){
+                console.log('Fail')
+        }
+        else{
+                this.troubleshootingavailable = response.data.Data.activate
+            }
+        })
+        }
 },
     mounted(){
         var token = this.$cookies.get('accesstoken');
@@ -433,10 +752,19 @@ import { computed } from 'vue'
         else{
         this.getmachinedata();
         this.timer=setInterval(this.getmachinedata,1000);
+        this.checktroubleshhotingavailable();
+        this.processlinetimer = setInterval(this.getprocesslinestatus,1000)
         }
     },
     beforeDestory(){
       clearInterval(this.timer);
+      clearInterval(this.processlinetimer);
   },    
   }
 </script>
+
+<style scoped>
+.no-dot .v-timeline-item__dot {
+  display: none !important;
+}
+</style>

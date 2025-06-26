@@ -28,10 +28,11 @@ class UserConfig(Base):
 
 class Machinelist(Base):
     __tablename__ = 'Machinelist'
-    id            = Column(Integer,primary_key=True)
-    created_at    = Column(DateTime(timezone = False), server_default=func.now())
-    machinename   = Column(String)
-    activate      = Column(String)
+    id              = Column(Integer,primary_key=True)
+    created_at      = Column(DateTime(timezone = False), server_default=func.now())
+    machinename     = Column(String)
+    activate        = Column(String)
+    troubleshooting = Column(String)
 
 class BayesianNetworkTrainData(Base):
     __tablename__ = 'BayesianNetworkTrainData'

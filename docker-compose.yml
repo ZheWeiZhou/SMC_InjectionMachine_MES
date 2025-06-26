@@ -83,7 +83,13 @@ services:
     depends_on:
       - redis
       - postgresql
-
+  autoheal:
+    image: willfarrell/autoheal
+    restart: always
+    environment:
+      - AUTOHEAL_INTERVAL=5    # 每 5 秒檢查一次
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   # backend2:
   #   container_name: "G20-Backend2"
   #   build: ./backend

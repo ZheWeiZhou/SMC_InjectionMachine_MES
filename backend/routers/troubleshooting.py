@@ -9,14 +9,16 @@ import logging
 import pickle
 from pgmpy.inference import VariableElimination
 from pgmpy.models import DiscreteBayesianNetwork
+import pika
+import json
+import redis
+red = redis.Redis(host='Redis',port=6379,db=0)
+rabbitmq_account  = "cax"
+rabbitmq_pass    = "cax521"
 logging.basicConfig(
     level=logging.INFO,  # 可改為 DEBUG、WARNING、ERROR、CRITICAL
     format='%(levelname)s - %(asctime)s - %(message)s'
 )
-import pickle
-from pgmpy.inference import VariableElimination
-from pgmpy.models import DiscreteBayesianNetwork
-import json
 model=''
 with open('routers/model/model_file.pkl','rb') as f:
     model=pickle.load(f)
@@ -25,6 +27,11 @@ troubleshootingrouter = APIRouter()
 class diagnosis_requestBody(BaseModel):
     machine_name: str | None
     evidences: Any | None
+
+class send_diagnosis_command_requestBody(BaseModel):
+    machine_name: str | None
+    defect: str | None
+    defectlevel : str | None
     
 @troubleshootingrouter.post("/smc/injectionmachinemes/troubleshooting/diagnosis")
 async def diagnosis(requestData:diagnosis_requestBody):
@@ -41,8 +48,7 @@ async def diagnosis(requestData:diagnosis_requestBody):
     # 最高射速行程占比            -> HighSpeedRatio
     # 短射                       -> ShortShot
     try:
-        evidences = requestData.evidences
-        # evidences = json.loads(evidences)
+        evidences     = requestData.evidences
         Bnetworkinput = {
             "射出行程/自動轉保時間": int(evidences["InjectionDoseVsFillingTime"]),
             "充填時間vs自動轉保時間": int(evidences["ActFillingTimeVsFillingTime"]),
@@ -56,7 +62,7 @@ async def diagnosis(requestData:diagnosis_requestBody):
             "最高射速行程占比": int(evidences["HighSpeedRatio"]),
             "短射": int(evidences["ShortShot"]),
         }
-        var = ["自動轉保時間時間過短","射速過低","射壓過低","計量不足","背壓過低"]
+        var = ["自動轉保時間時間過短","射速過低","射壓過低","計量不足"]
         short_shot_infer = VariableElimination(model)
         q = short_shot_infer.query(variables=var,evidence=Bnetworkinput,joint =False,)
         ans={}
@@ -68,5 +74,59 @@ async def diagnosis(requestData:diagnosis_requestBody):
         pass
     return returnData
     
+@troubleshootingrouter.post("/smc/injectionmachinemes/troubleshooting/send_diagnosis_command")
+async def sendcommand(requestData:send_diagnosis_command_requestBody):
+    returnData   = {"status":"error"}
+    try:
+        machinename = requestData.machine_name
+        acceptmachine = ["FCS-Mucell","FCS-150"]
+        if machinename in acceptmachine:
+            Deffect      = requestData.defect
+            DeffectLevel = requestData.defectlevel
+            connection = pika.BlockingConnection(pika.ConnectionParameters(
+                host='rabbitmq',
+                credentials=pika.PlainCredentials(rabbitmq_account, rabbitmq_pass)
+            ))
+            channel = connection.channel()
+            channel.queue_declare(queue=f"{machinename}_troubleshooting")
+            
+            commandbody = {"Deffect":Deffect,"DeffectLevel":DeffectLevel}
+            commandbody = json.dumps(commandbody)
+            channel.basic_publish(exchange='',
+                        routing_key=f"{machinename}_troubleshooting",
+                        body=commandbody,
+                        #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
+                        )
+            connection.close()
+        returnData = {"status": "success"}
+    except Exception as e:
+        print(e)
+    return returnData
 
 
+class getsloveabstract(BaseModel):
+    machine_name:str
+# get processline info
+@troubleshootingrouter.post("/smc/injectionmachinemes/troubleshooting/getabstract")
+async def checktbs(requestData:getsloveabstract):
+    returnData       = {"status":"error","Data":{}}
+    try:
+        resdata = {}
+        machinename = requestData.machine_name
+        SloveAbstract = red.get(f'{machinename}_SloveAbstract')
+        SloveAbstract = json.loads(SloveAbstract)
+        for item in SloveAbstract["SloveAbstract"]:
+            origin = json.loads(item["Origin"])
+            if isinstance(origin, list):
+                origin = [round(x, 1) for x in origin]
+            new = json.loads(item["New"])
+            if isinstance(new, list):
+                new = [round(x, 1) for x in new]
+            item["Origin"] = origin
+            item["New"] = new
+        resdata["SloveAbstract"] = SloveAbstract
+        returnData       = {"status":"success","Data":resdata}
+    except Exception as e:
+        print(e)
+        pass
+    return returnData       

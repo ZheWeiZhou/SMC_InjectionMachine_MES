@@ -18,8 +18,10 @@ realtimedatarouter = APIRouter()
 db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
 engine = create_engine(db_url)
 Base = declarative_base()
-
 Base = declarative_base()
+
+
+
 
 @realtimedatarouter.get("/smc/injectionmachinemes/realtimedata/{machineid}")
 async def insertdata(machineid:str):
@@ -89,6 +91,64 @@ async def getconnectionstatus():
         logging.error("Get machineconnectstatus data API crashed ...")
         pass
     return returnData
+
+
+class processlinestatus_requestBody(BaseModel):
+    machine_name:str
+# Get AOI Process Line Status
+@realtimedatarouter.post("/smc/injectionmachinemes/processlinestatus")
+async def getconnectionstatus(requestData:processlinestatus_requestBody):
+    returnData       = {"status":"error","Data":{}}
+    try:
+        machine_name       = requestData.machine_name
+        processlinestatus  = red.get(f'{machine_name}_Process_Line_status').decode('utf-8')
+        resdata            = {"processlinestatus":processlinestatus}
+        returnData = {"status": "success","Data":resdata}
+    except Exception as e:
+        print(e)
+        logging.error("Get machineconnectstatus data API crashed ...")
+        pass
+    return returnData
+
+class checktroubleshooting_requestBody(BaseModel):
+    machine_name:str
+# Check Machine Troubleshhoting function activate status
+@realtimedatarouter.post("/smc/injectionmachinemes/checktroubleshootingfunction")
+async def checktbs(requestData:checktroubleshooting_requestBody):
+    returnData       = {"status":"error","Data":{}}
+    try:
+        machinename = requestData.machine_name
+        sql=f'''
+            select troubleshooting from "Machinelist" where machinename  = '{machinename}' limit 1
+        '''
+        resdata     = {"activate":"False"}
+        with engine.connect() as connection:
+            result = connection.execute(text(sql))
+            for row in result:
+                resdata["activate"] = row[0]
+        returnData       = {"status":"success","Data":resdata}
+    except Exception as e:
+        print(e)
+        pass
+    return returnData
+
+class getprocesslineinfo_requestBody(BaseModel):
+    machine_name:str
+# get processline info
+@realtimedatarouter.post("/smc/injectionmachinemes/processlineinfo")
+async def checktbs(requestData:getprocesslineinfo_requestBody):
+    returnData       = {"status":"error","Data":{}}
+    try:
+        resdata = {}
+        machinename = requestData.machine_name
+        processlinemessage = red.get(f'{machinename}_Process_Line_message')
+        processlinemessage = json.loads(processlinemessage)
+        resdata["processlinemessage"] = processlinemessage
+        returnData       = {"status":"success","Data":resdata}
+    except Exception as e:
+        print(e)
+        pass
+    return returnData        
 
 
 
