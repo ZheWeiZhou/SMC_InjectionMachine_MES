@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Request
 from pydantic import BaseModel
 from typing import Dict, Any
-from sqlalchemy import create_engine, Column, Integer, String,DateTime
+from sqlalchemy import create_engine, Column, Integer, String,DateTime,text
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import logging
 import logging
 import pickle
 from pgmpy.inference import VariableElimination
@@ -22,6 +23,10 @@ logging.basicConfig(
 model=''
 with open('routers/model/model_file.pkl','rb') as f:
     model=pickle.load(f)
+
+db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
+engine = create_engine(db_url)
+Base = declarative_base()
 
 troubleshootingrouter = APIRouter()
 class diagnosis_requestBody(BaseModel):
@@ -62,12 +67,15 @@ async def diagnosis(requestData:diagnosis_requestBody):
             "最高射速行程占比": int(evidences["HighSpeedRatio"]),
             "短射": int(evidences["ShortShot"]),
         }
-        var = ["自動轉保時間時間過短","射速過低","射壓過低","計量不足"]
+        var  = ["自動轉保時間時間過短","射速過低","射壓過低","計量不足"]
+        name = ["Short Filling Time","Low Injection Speed","Low Injection Pressure","Low Injection Dose"]
         short_shot_infer = VariableElimination(model)
         q = short_shot_infer.query(variables=var,evidence=Bnetworkinput,joint =False,)
         ans={}
-        for i in var:
-            ans[i]=q[i].values[1]
+        for i in range(len(var)):
+            key = var[i]
+            enname = name[i]
+            ans[enname] = q[key].values[1]
         returnData = {"status":"success","Data":ans}
     except Exception as e:
         print(e)
@@ -79,8 +87,15 @@ async def sendcommand(requestData:send_diagnosis_command_requestBody):
     returnData   = {"status":"error"}
     try:
         machinename = requestData.machine_name
-        acceptmachine = ["FCS-Mucell","FCS-150"]
-        if machinename in acceptmachine:
+        sql=f'''
+            select troubleshooting from "Machinelist" where machinename  = '{machinename}' limit 1
+        '''
+        activate = "False"
+        with engine.connect() as connection:
+            result = connection.execute(text(sql))
+            for row in result:
+                activate= row[0]
+        if activate == "True":
             Deffect      = requestData.defect
             DeffectLevel = requestData.defectlevel
             connection = pika.BlockingConnection(pika.ConnectionParameters(
@@ -98,9 +113,9 @@ async def sendcommand(requestData:send_diagnosis_command_requestBody):
                         #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
                         )
             connection.close()
-        returnData = {"status": "success"}
+            returnData = {"status": "success"}
     except Exception as e:
-        print(e)
+        print("send_diagnosis_command",e)
     return returnData
 
 

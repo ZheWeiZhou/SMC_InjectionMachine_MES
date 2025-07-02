@@ -1,0 +1,26 @@
+services:
+
+
+
+  fcs150_troubleshooting_agent:
+    container_name: "fcs150_troubleshooting_agent"
+    build: ./FCS_HT150_TroubleShootingAgent
+    restart: always
+    labels:
+    - autoheal=true
+  fcsmucell_troubleshooting:
+    container_name: "fcsmucell_troubleshooting_agent"
+    build: ./FCS_Mucell_TroubleShootingAgent
+    restart: always
+    labels:
+    - autoheal=true
+  autoheal:
+    image: willfarrell/autoheal
+    restart: always
+    environment:
+      - AUTOHEAL_INTERVAL=5    # 每 5 秒檢查一次
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+
+

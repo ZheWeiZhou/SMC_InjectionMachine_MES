@@ -1,0 +1,78 @@
+barrel_temp4_set : ns=4;s=APPL.HeatingNozzle1.sv_ZoneRetain1.rSetValVis
+barrel_temp3_set : ns=4;s=APPL.HeatingNozzle1.sv_ZoneRetain2.rSetValVis
+barrel_temp2_set : ns=4;s=APPL.HeatingNozzle1.sv_ZoneRetain3.rSetValVis
+barrel_temp1_set : ns=4;s=APPL.HeatingNozzle1.sv_ZoneRetain4.rSetValVis
+barrel_temp4_real : ns=4;s=APPL.HeatingNozzle1.ti_InTemp1
+barrel_temp3_real : ns=4;s=APPL.HeatingNozzle1.ti_InTemp2
+barrel_temp2_real : ns=4;s=APPL.HeatingNozzle1.ti_InTemp3
+barrel_temp1_real : ns=4;s=APPL.HeatingNozzle1.ti_InTemp4
+act_ij_pressure   : ns=4;s=APPL.Injection1.ai_Pressure (拿出來的值要乘25.12)
+act_ij_speed : ns=4;s=APPL.Injection1.sv_rScrewVelocityAbs
+act_screw_position : ns=4;s=APPL.Injection1.sv_rScrewPositionAbs
+act_filling_time : ns=4;s=APPL.Injection1.sv_dActInjectTimeForPDP 
+act_vp_position : ns=4;s=APPL.Injection1.sv_rCutOffPosition (拿出來的值要除1.5204)
+act_vp_pressure : ns=4;s=APPL.Injection1.sv_rCutOffPressure (拿出來的值要除1.5204)
+act_filling_end : ns=4;s=APPL.Injection1.sv_rCushion        (拿出來的值要除1.5204)
+max_ij_speed : ns=4;s=APPL.Injection1.sv_rInjPeakVelocity (拿出來的值要除1.5204)
+max_ij_pressure : ns=4;s=APPL.Injection1.sv_rInjPeakVelocity (拿出來的值要除13.05)
+
+back_pressure_set : ns=4;s=APPL.Injection1.sv_PlastProfVis.Profile.Points[1].rBackPressure
+clamp_force_set : ns=4;s=APPL.Mold1.sv_ClampForce.rSetClampForce
+coolingtimeset : ns=4;s=APPL.CoolingTime1.sv_dCoolingTime  (拿出來的值要除1000000)
+filling_time_set : ns=4;s=APPL.Injection1.sv_CutOffParams.dTimeThreshold (拿出來的值要除1000000)
+ijpressure1_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[1].rPressure  (拿出來的值要除13.05)
+ijpressure2_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[2].rPressure
+ijpressure3_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[3].rPressure
+ijpressure4_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[4].rPressure
+ijpressure5_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[5].rPressure
+ijpressure6_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[6].rPressure
+ijpressure7_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[7].rPressure
+ijpressure8_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[8].rPressure
+ijpressure9_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[9].rPressure
+ijpressure10_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[10].rPressure
+
+ijspeed1_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[1].rVelocity  (拿出來的值要除1.52)
+ijspeed2_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[2].rVelocity  (拿出來的值要除1.52)
+ijspeed3_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[3].rVelocity  (拿出來的值要除1.52)
+ijspeed4_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[4].rVelocity  (拿出來的值要除1.52)
+ijspeed5_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[5].rVelocity  (拿出來的值要除1.52)
+ijspeed6_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[6].rVelocity  (拿出來的值要除1.52)
+ijspeed7_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[7].rVelocity  (拿出來的值要除1.52)
+ijspeed8_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[8].rVelocity  (拿出來的值要除1.52)
+ijspeed9_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[9].rVelocity  (拿出來的值要除1.52)
+ijspeed10_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[10].rVelocity  (拿出來的值要除1.52)
+
+ijpos1_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[2].rStartPos  (拿出來的值要除1.52)
+ijpos2_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[3].rStartPos  (拿出來的值要除1.52)
+ijpos3_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[4].rStartPos  (拿出來的值要除1.52)
+ijpos4_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[5].rStartPos  (拿出來的值要除1.52)
+ijpos5_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[6].rStartPos  (拿出來的值要除1.52)
+ijpos6_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[7].rStartPos  (拿出來的值要除1.52)
+ijpos7_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[8].rStartPos  (拿出來的值要除1.52)
+ijpos8_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[9].rStartPos  (拿出來的值要除1.52)
+ijpos9_set : ns=4;s=APPL.Injection1.sv_InjectProfVis.Profile.Points[10].rStartPos  (拿出來的值要除1.52)
+
+holdingpressure1_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[1].rPressure  (拿出來的值要除13.05)
+holdingpressure2_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[2].rPressure  (拿出來的值要除13.05)
+holdingpressure3_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[3].rPressure  (拿出來的值要除13.05)
+holdingpressure4_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[4].rPressure  (拿出來的值要除13.05)
+holdingpressure5_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[5].rPressure  (拿出來的值要除13.05)
+holdingpressure6_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[6].rPressure  (拿出來的值要除13.05)
+holdingpressure7_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[7].rPressure  (拿出來的值要除13.05)
+holdingpressure8_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[8].rPressure  (拿出來的值要除13.05)
+holdingpressure9_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[9].rPressure  (拿出來的值要除13.05)
+holdingpressure10_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[10].rPressure  (拿出來的值要除13.05)
+
+holdingtime1_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[2].rStartPos
+holdingtime2_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[3].rStartPos
+holdingtime3_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[4].rStartPos
+holdingtime4_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[5].rStartPos
+holdingtime5_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[6].rStartPos
+holdingtime6_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[7].rStartPos
+holdingtime7_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[8].rStartPos
+holdingtime8_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[9].rStartPos
+holdingtime9_set : ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[10].rStartPos
+
+射出加保壓啟動訊號 : ns=4;s=APPL.Injection1.do_Inject
+
+

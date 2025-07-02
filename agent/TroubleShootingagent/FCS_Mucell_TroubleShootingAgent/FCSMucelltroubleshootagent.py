@@ -5,14 +5,45 @@ import time
 import requests
 import copy
 import pika
+import threading
+from datetime import datetime,timezone
 class fcstroubleshootagent:
-    def __init__(self,hostip):
+    def __init__(self,hostip,machinename):
         self.hostip = hostip
         self.red = redis.Redis(host=self.hostip,port=6379,db=0)
         self.activatesignal = False
         self.rabbitmq_account = "cax"
         self.rabbitmq_pass = "cax521"
+        self.machine_name = machinename
         self.adjustabstract = []
+    def connect(self):  
+        try:
+            def callback(ch, method, properties, body):
+                command = json.loads(body.decode())
+                DeffectLevel = int(command["DeffectLevel"])
+                self.autocheck(command["Deffect"],DeffectLevel)
+            def start_controller():
+                while True:
+                    try:
+                        connection = pika.BlockingConnection(pika.ConnectionParameters(
+                            host=self.hostip,
+                            credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_pass)
+                        ))
+                        channel = connection.channel()
+                        channel.queue_declare(queue=f"{self.machine_name}_troubleshooting")
+                        channel.basic_consume(queue=f"{self.machine_name}_troubleshooting",
+                                on_message_callback=callback,
+                                auto_ack=True)
+                        channel.start_consuming()
+                    except Exception as e:
+                        print(e)
+                        time.sleep(5)
+            controller_thread = threading.Thread(target=start_controller)
+            controller_thread.start()
+            print("[MESSAGE] Activate Rabbit MQ ..")
+        except Exception as e:
+            print(e)
+            print("[ERROR] Connect to Rabbit MQ fail")
     # 如果診斷出劑量過少的解決方法
     def slovelowdose(self,machinestatus,machinefeedback,deffectlevel):
         ijpos_set       = machinestatus["injection_pos"]
@@ -31,7 +62,7 @@ class fcstroubleshootagent:
         if deffectlevel == 3:
              adjustratio   = 1.3
         if deffectlevel == 4:
-             adjustratio   = 1.35       
+             adjustratio   = 1.35        
         newvolume =  actijvolume * adjustratio
         lastpos   =  max(ijpose_set_list) - newvolume
         newijpos_set = copy.deepcopy(ijpose_set_list)
@@ -52,14 +83,14 @@ class fcstroubleshootagent:
             credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_pass)
         ))
         channel = connection.channel()
-        channel.queue_declare(queue="FCS-150")
+        channel.queue_declare(queue=self.machine_name)
         for i in range(len(newijpos_set)):
             target = f"injection_volume{i+1}"
             value  = newijpos_set[i]
             commandbody = {"Target":target,"Value":value}
             commandbody = json.dumps(commandbody)
             channel.basic_publish(exchange='',
-                        routing_key="FCS-150",
+                        routing_key=self.machine_name,
                         body=commandbody,
                         #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
                         )
@@ -85,17 +116,16 @@ class fcstroubleshootagent:
             credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_pass)
         ))
         channel = connection.channel()
-        channel.queue_declare(queue="FCS-150")
+        channel.queue_declare(queue=self.machine_name)
         target = "filling_time_set"
         value  = NewFillingTimeSet
         commandbody = {"Target":target,"Value":value}
         commandbody = json.dumps(commandbody)
         channel.basic_publish(exchange='',
-                        routing_key="FCS-150",
+                        routing_key=self.machine_name,
                         body=commandbody,
                         #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
                         )
-        # Create Adjust Abstract 
         original = str(CurrentFillingTimeSet)
         newset   = str(NewFillingTimeSet)
         abstract = {"Parameter":"Filling Time Limit","Origin":original, "New":newset}
@@ -134,14 +164,14 @@ class fcstroubleshootagent:
             credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_pass)
         ))
         channel = connection.channel()
-        channel.queue_declare(queue="FCS-150")
+        channel.queue_declare(queue=self.machine_name)
         for i in range(len(new_speed_set_list)):
             target = f"injection_rate{i+1}_set"
             value  = new_speed_set_list[i]
             commandbody = {"Target":target,"Value":value}
             commandbody = json.dumps(commandbody)
             channel.basic_publish(exchange='',
-                            routing_key="FCS-150",
+                            routing_key=self.machine_name,
                             body=commandbody,
                             #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
                             )
@@ -149,7 +179,7 @@ class fcstroubleshootagent:
         original = str(speed_set_list)
         newset   = str(new_speed_set_list)
         abstract = {"Parameter":"Injection Speed","Origin":original, "New":newset}
-        self.adjustabstract.append(abstract)            
+        self.adjustabstract.append(abstract)
     # 診斷射壓過低
     def slovelowpressure(self,machinestatus,deffectlevel,machinelimit):
         adjustratio   = 1.05
@@ -176,14 +206,14 @@ class fcstroubleshootagent:
             credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_pass)
         ))
         channel = connection.channel()
-        channel.queue_declare(queue="FCS-150")
+        channel.queue_declare(queue=self.machine_name)
         for i in range(len(newpressurelist)):
             target = f"injection_pressure{i+1}_set"
             value  = newpressurelist[i]
             commandbody = {"Target":target,"Value":value}
             commandbody = json.dumps(commandbody)
             channel.basic_publish(exchange='',
-                            routing_key="FCS-150",
+                            routing_key=self.machine_name,
                             body=commandbody,
                             #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
                             )
@@ -191,39 +221,18 @@ class fcstroubleshootagent:
         original = str(pressurelist)
         newset   = str(newpressurelist)
         abstract = {"Parameter":"Injection Pressure","Origin":original, "New":newset}
-        self.adjustabstract.append(abstract)  
+        self.adjustabstract.append(abstract)
     # 診斷背壓過低
     def slovelowbackpressure(self):
         print("AAAAA")
-    def workflow(self):
-        # GET　Process line status 
-        processlinestatus = self.red.get("FCS-150_Process_Line_status").decode("utf-8")
-        if processlinestatus == "processing":
-            self.activatesignal = True
-        else : 
-            if self.activatesignal:
-                self.activatesignal = False 
-                ProcessLineMessage = self.red.get("FCS-150_Process_Line_message")
-                ProcessLineMessage = json.loads(ProcessLineMessage)
-                ProductQuality = ProcessLineMessage["quality"]
-                if ProductQuality == "shortshot":
-                    machinestatus   = self.red.get("FCS-150_status")
-                    machinestatus   = json.loads(machinestatus)
-                    machinefeedback = self.red.get("FCS-150_feedback")
-                    machinefeedback = json.loads(machinefeedback)
-                    # 射出行程/自動轉保時間   -> InjectionDoseVsFillingTime
-                    # 充填時間vs自動轉保時間  -> ActFillingTimeVsFillingTime
-                    # 射出終點VS射出位置      -> InjectionEndVsInjectionPosition
-                    # 料管溫度VS塑料建議溫度   -> ActBarrelTempVsSuggestTemp
-                    # 當前背壓vs材料建議背壓   -> BackPressureVsSuggestPressure
-                    # 最大射壓VS射壓設定值     -> MaxInjectionPressureVsSettingPressure
-                    # 射壓設定值VS機台射壓最大值 -> SettingPressureVsMachineLimitPressure
-                    # 射速設定值VS機台射速最大值 -> SettingSpeedVsMachineLimitSpeed
-                    # 實際最高射速vs射速設定最大值 ->MaxSpeedVsSpeedSetting
-                    # 最高射速行程占比            -> HighSpeedRatio
-                    # 短射                       -> ShortShot
-                    evidences={
-                        "InjectionDoseVsFillingTime":str(dp.compare_injectiondose_fltlimit(machinestatus["injection_pos"],machinestatus["filling_time_set"]["value"])),
+    def autocheck(self,deffect,deffectlevel):
+        if deffect == "shortshot":
+            machinestatus   = self.red.get(f"{self.machine_name}_status")
+            machinestatus   = json.loads(machinestatus)
+            machinefeedback = self.red.get(f"{self.machine_name}_feedback")
+            machinefeedback = json.loads(machinefeedback)
+            evidences={
+                        "InjectionDoseVsFillingTime":str(dp.compare_injectiondose_fltlimit(machinestatus["injection_pos"],machinestatus["filling_time_set"]["value"],140)),
                         "ActFillingTimeVsFillingTime":str(dp.compare_flt_limit(machinefeedback["filling_time"],machinestatus["filling_time_set"]["value"])),
                         "InjectionEndVsInjectionPosition":str(dp.compare_ijpos_ijend(machinestatus["injection_pos"],machinefeedback["material_cushion"])),
                         "ActBarrelTempVsSuggestTemp":str(dp.settingmaterialtmp_vs_materialtmpsuggestion(machinestatus["barrel_temp_set"],[180,260])),
@@ -235,72 +244,61 @@ class fcstroubleshootagent:
                         "HighSpeedRatio":str(dp.compare_max_ijspeed_postion(machinestatus["injection_speed"],machinestatus["injection_pos"])),
                         "ShortShot":str(1)
                     }
-                    # Send evidences to api
-                    url = f"http://{self.hostip}:8000/smc/injectionmachinemes/troubleshooting/diagnosis"
-                    requestdata = {"machine_name":"FCS-150","evidences":evidences}
-                    headers = {
+            url = f"http://{self.hostip}:8000/smc/injectionmachinemes/troubleshooting/diagnosis"
+            requestdata = {"machine_name":self.machine_name,"evidences":evidences}
+            headers = {
+                        'AccessToken': '8d6d4e85-b277-4102-8ffd-defcc7b7b9f9',
+                        'Content-Type': 'application/json'
+            }
+            response = requests.post(url,headers=headers, json=requestdata)
+            resdata = response.json()
+            if resdata["status"] == "success":
+                DefectReason = []
+                reasonscore  = []
+                reasonlist   = []
+                Result = resdata["Data"]
+                ResultKey = list(Result.keys())
+                for key in ResultKey:
+                    reasonlist.append(key)
+                    reasonscore.append(Result[key])
+                    if Result[key] > 0.55:
+                        DefectReason.append(key)
+            if len(DefectReason) == 0:
+                max_index = reasonscore.index(max(reasonscore))
+                DefectReason.append(reasonlist[max_index])
+            solution = {
+                    "Short Filling Time":[lambda: self.sloveshortfillingtimeset(machinestatus,deffectlevel)],
+                    "Low Injection Speed":[lambda:  self.slovelowspeed(machinestatus,deffectlevel,200)],
+                    "Low Injection Pressure":[lambda: self.slovelowpressure(machinestatus,deffectlevel,140)],
+                    "Low Injection Dose":[lambda: self.slovelowdose(machinestatus,machinefeedback,deffectlevel)],
+                    }
+            modelresulttodb =""
+            for reasonitem in DefectReason:
+                modelresulttodb = modelresulttodb + reasonitem + ","
+                for func in solution.get(reasonitem, []):
+                    func()
+            # Save for Train Data 
+            modelresulttodb = modelresulttodb[:-1]
+            abstracttodb    = self.adjustabstract
+            messagetoredis  = {"DefectReason":modelresulttodb,"SloveAbstract":self.adjustabstract}
+            abstracttored   = json.dumps(messagetoredis)
+            self.red.set(f"{self.machine_name}_SloveAbstract",abstracttored)
+            url = f"http://{self.hostip}:8000/smc/injectionmachinemes/history/insertBayesianNetworkTrainData"
+            storagerequestdata = {"machine_name":self.machine_name,"modelresult":modelresulttodb,"abstract":abstracttodb}
+            headers = {
                         'AccessToken': '8d6d4e85-b277-4102-8ffd-defcc7b7b9f9',
                         'Content-Type': 'application/json'
                     }
-                    response = requests.post(url,headers=headers, json=requestdata)
-                    resdata = response.json()
-                    if resdata["status"] == "success":
-                        DefectReason = []
-                        Result = resdata["Data"]
-                        print(Result)
-                        ResultKey = list(Result.keys())
-                        score = []
-                        for key in ResultKey:
-                            score.append(Result[key])
-                            if Result[key] > 0.55:
-                                DefectReason.append(key)
-                        if len(DefectReason) < 1:
-                            max_index = score.index(max(score))
-                            DefectReason.append(ResultKey[max_index])
-
-                    print(DefectReason)
-                    Productweight = ProcessLineMessage["product_weight"]
-                    defectratio   = Productweight /19
-                    defectratio   = 1-defectratio
-                    deffectlevel  = 1
-                    if defectratio > 0.1 and defectratio <= 0.3:
-                        deffectlevel  = 2
-                    if defectratio > 0.3 and defectratio <= 0.6:
-                        deffectlevel = 3
-                    if defectratio > 0.6:
-                       deffectlevel = 4 
-                    solution = {
-                    "自動轉保時間時間過短":[lambda: self.sloveshortfillingtimeset(machinestatus,deffectlevel)],
-                    "射速過低":[lambda:  self.slovelowspeed(machinestatus,deffectlevel,200)],
-                    "射壓過低":[lambda: self.slovelowpressure(machinestatus,deffectlevel,140)],
-                    "計量不足":[lambda: self.slovelowdose(machinestatus,machinefeedback,deffectlevel)],
-                    # "背壓過低":[lambda:self.slovelowbackpressure()],
-                    }
-                    modelresulttodb =""
-                    for reasonitem in DefectReason:
-                        modelresulttodb = modelresulttodb + reasonitem + ","
-                        for func in solution.get(reasonitem, []):
-                            func()
-                    # Save for Train Data 
-                    modelresulttodb = modelresulttodb[:-1]
-                    abstracttodb    = self.adjustabstract
-                    messagetoredis  = {"DefectReason":modelresulttodb,"SloveAbstract":self.adjustabstract}
-                    abstracttored   = json.dumps(messagetoredis)
-                    self.red.set("FCS-150_SloveAbstract",abstracttored)
-                    url = f"http://{self.hostip}:8000/smc/injectionmachinemes/history/insertBayesianNetworkTrainData"
-                    storagerequestdata = {"machine_name":"FCS-150","modelresult":modelresulttodb,"abstract":abstracttodb}
-                    headers = {
-                        'AccessToken': '8d6d4e85-b277-4102-8ffd-defcc7b7b9f9',
-                        'Content-Type': 'application/json'
-                    }
-                    response = requests.post(url,headers=headers, json=storagerequestdata)
-                    self.adjustabstract = []
-                else:
-                    self.adjustabstract = []
+            response = requests.post(url,headers=headers, json=storagerequestdata)
+            self.adjustabstract = []        
 if __name__ == "__main__":
-    processlineagent = fcstroubleshootagent("192.168.1.225")
-    while True:
+    processlineagent = fcstroubleshootagent("192.168.1.225","FCS-Mucell")
+    processlineagent.connect()
+    while True : 
         try:
-            processlineagent.workflow()
+            time.sleep(1)
+            with open("healthcheck.txt", "w+") as file:
+                file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         except Exception as e:
             print(e)
+            pass

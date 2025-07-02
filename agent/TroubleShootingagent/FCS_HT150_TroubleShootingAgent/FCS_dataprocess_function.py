@@ -114,7 +114,7 @@ def compare_flt_limit(fillingtime,fillingtimelimt):#比較充填時間與充填�
     else:
         return 1
 
-def compare_injectiondose_fltlimit(injection_postion_setting,fillingtimelimt):#比較射出行程和射出轉保時間
+def compare_injectiondose_fltlimit(injection_postion_setting,fillingtimelimt,machinemaxspeed):#比較射出行程和射出轉保時間
     injection_postion_key = list(injection_postion_setting.keys())
     posset = []
     for key in injection_postion_key:
@@ -124,10 +124,12 @@ def compare_injectiondose_fltlimit(injection_postion_setting,fillingtimelimt):#�
     ijdose=float(posset[0])-float(posset[-1])#計算設定劑量
     compare=ijdose/float(fillingtimelimt)
     print("compare_injectiondose_fltlimit")
+    level1gate = machinemaxspeed*0.2
+    level2gate = machinemaxspeed*0.5
     # print(compare)
-    if compare<3:
+    if compare<level1gate:
         return 0
-    elif compare< 12:
+    elif compare<level2gate:
         return 1
     else:
         return 2
@@ -297,7 +299,7 @@ def compare_realinjection_ijspeedset(realspeed,speedset):#檢查實際設速vs�
     print("compare_realinjection_ijspeedset")
     if compare<0.65:
         return 0
-    elif compare<=1:
+    elif compare<=0.9:
         return 1
     else:
         return 2

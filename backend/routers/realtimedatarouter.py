@@ -119,13 +119,14 @@ async def checktbs(requestData:checktroubleshooting_requestBody):
     try:
         machinename = requestData.machine_name
         sql=f'''
-            select troubleshooting from "Machinelist" where machinename  = '{machinename}' limit 1
+            select troubleshooting,aoimodule from "Machinelist" where machinename  = '{machinename}' limit 1
         '''
         resdata     = {"activate":"False"}
         with engine.connect() as connection:
             result = connection.execute(text(sql))
             for row in result:
-                resdata["activate"] = row[0]
+                resdata["troubleshooting"] = row[0]
+                resdata["aoimodule"] = row[1]
         returnData       = {"status":"success","Data":resdata}
     except Exception as e:
         print(e)

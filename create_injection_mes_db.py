@@ -33,6 +33,7 @@ class Machinelist(Base):
     machinename     = Column(String)
     activate        = Column(String)
     troubleshooting = Column(String)
+    aoimodule = Column(String)
 
 class BayesianNetworkTrainData(Base):
     __tablename__ = 'BayesianNetworkTrainData'

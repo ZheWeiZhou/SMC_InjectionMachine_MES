@@ -166,7 +166,6 @@ import UperNavbar  from './layout/UperNavbar.vue';
                 Object.keys(res).forEach(key => {
                     var machinestatus = res[key]
                     if (machinestatus['Online'] == 'Offline'){
-                        console.log("OFFLINE",key)
                         this.machinedata[key] =  ["#000000",'Offline','Sleep',"#000000"];
                     }
                     else{
