@@ -180,56 +180,49 @@
         </svg>
     </v-col>
     </v-row>
-    <v-row class="mr-1 ml-1">
+    <v-row class="mr-1 ml-1" v-if="feedbacktabledata.length>0">
         <v-col>
             <v-card>
                 <v-card-title>Process Feedback Data</v-card-title>
                 <v-card-text>
                     <v-row>
-                            <v-col>
-                        <v-table density="compact" fixed-header style="width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th class="text-left" style="background-color:#333333; color:white">Name</th>
-                                    <th class="text-left" style="background-color:#333333; color:white">Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="item in feedbacktabledata.slice(0, 15)"
-                                    :key="item.Name"
-                                >
-                                    <td class="text-left" style="background-color: #F5F5F5;">{{ item.Name }}</td>
-                                    <td class="text-left" style="background-color: #F5F5F5;">{{ item.Value }}</td>
-                                </tr>
-                            </tbody>
-                        </v-table>
-                    </v-col>
-                    <v-col>
-                        <v-table density="compact" fixed-header style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th class="text-left" style="background-color:#333333; color:white">Name</th>
-                                <th class="text-left" style="background-color:#333333; color:white">Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="item in feedbacktabledata.slice(15)"
-                                :key="item.Name"
-                            >
-                                <td class="text-left" style="background-color: #F5F5F5;">{{ item.Name }}</td>
-                                <td class="text-left" style="background-color: #F5F5F5;">{{ item.Value }}</td>
-                            </tr>
-                        </tbody>
-                    </v-table>
-                    </v-col>
+                        <v-col>
+                            <v-table density="compact" fixed-header style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th v-for="item in feedbacktabledata.slice(0, 15)" :key="item.Name"  class="text-center" style="background-color:#333333; color:white">{{ item.Name }}</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td  v-for="item in feedbacktabledata.slice(0, 15)"  :key="item.Name" class="text-center" style="background-color: #F5F5F5;">{{ item.Value }}</td>
+                                    </tr>
+                                </tbody>
+                            </v-table>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col>
+                            <v-table density="compact" fixed-header style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th v-for="item in feedbacktabledata.slice(15)" :key="item.Name"  class="text-center" style="background-color:#333333; color:white">{{ item.Name }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td  v-for="item in feedbacktabledata.slice(15)"  :key="item.Name" class="text-center" style="background-color: #F5F5F5;">{{ item.Value }}</td>
+                                    </tr>
+                                </tbody>
+                            </v-table>
+                        </v-col>
                     </v-row>
             </v-card-text>
         </v-card>
         </v-col>
     </v-row>
-    <v-row class="mr-1 ml-1" >
+    <v-row class="mr-1 ml-1" v-if="curvedatalist.length>0" >
         <v-col>
             <v-card>
                 <v-card-title>Curve Data</v-card-title>

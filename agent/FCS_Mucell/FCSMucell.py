@@ -26,21 +26,21 @@ class fcsagent:
     def __init__(self,machineaddress,user,password,machineid):
         self.rabbitmq_account  = "cax"
         self.rabbitmq_password = "cax521"
-        self.hostip            = "192.168.1.225"
+        self.hostip            = "192.168.1.50"
         self.machineid         = machineid
         self.machineaddress    = machineaddress
         self.user              = user
         self.password          = password
         self.processactivate   = False
         self.worker            = ""
-        self.red = redis.Redis(host='192.168.1.225',port=6379,db=0)
+        self.red = redis.Redis(host='192.168.1.50',port=6379,db=0)
         self.actpressurecurve = []
         self.actspeedcurve    = []
         self.screwposition    = []
         self.machinestatus    = {}
         self.machinefeedback  = {}
         self.machinecurve     = {}
-        self.db = create_engine("postgresql://postgres:postgres@192.168.1.225:5432/cax")
+        self.db = create_engine("postgresql://postgres:postgres@192.168.1.50:5432/cax")
         self.nodemap = {
             "holding_time1_set":{'nodeid':'ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[2].rStartPos','factor':1,'type':'float'},
             "holding_time2_set":{'nodeid':'ns=4;s=APPL.Injection1.sv_HoldProfVis.Profile.Points[3].rStartPos','factor':1,'type':'float'},

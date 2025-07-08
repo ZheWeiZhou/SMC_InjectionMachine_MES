@@ -26,12 +26,12 @@ class multiplasticagent:
     def __init__(self,machineaddress,machineid):
         self.rabbitmq_account  = "cax"
         self.rabbitmq_password = "cax521"
-        self.hostip            = "192.168.1.225"
+        self.hostip            = "192.168.1.50"
         self.machineid         = machineid
         self.machineaddress    = machineaddress
         self.processactivate   = False
         self.worker            = ""
-        self.red = redis.Redis(host='192.168.1.225',port=6379,db=0)
+        self.red = redis.Redis(host='192.168.1.50',port=6379,db=0)
         self.actpressurecurve = []
         self.actspeedcurve    = []
         self.motorpower       = []
@@ -41,7 +41,7 @@ class multiplasticagent:
         self.machinestatus    = {}
         self.machinefeedback  = {}
         self.machinecurve     = {}
-        self.db = create_engine("postgresql://postgres:postgres@192.168.1.225:5432/cax")
+        self.db = create_engine("postgresql://postgres:postgres@192.168.1.50:5432/cax")
         self.nodemap = {
             "clamp_force_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmblmG7yRXheItZIfkBnub4CU6pOwscKrvIXmZ7SdShvEjcek=",
             "holding_time1_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJcfCI2C96i1x6Q==",

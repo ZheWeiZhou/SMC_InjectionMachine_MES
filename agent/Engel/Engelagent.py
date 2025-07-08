@@ -25,14 +25,14 @@ class engelagent:
     def __init__(self,machineaddress,user,password,machineid):
         self.rabbitmq_account  = "cax"
         self.rabbitmq_password = "cax521"
-        self.hostip            = "192.168.1.225"
+        self.hostip            = "192.168.1.50"
         self.machineid         = machineid
         self.machineaddress    = machineaddress
         self.user              = user
         self.password          = password
         self.processactivate   = False
         self.worker            = ""
-        self.red = redis.Redis(host='192.168.1.225',port=6379,db=0)
+        self.red = redis.Redis(host='192.168.1.50',port=6379,db=0)
         self.actpressurecurve = []
         self.actspeedcurve    = []
         self.motorpower       = []
@@ -42,7 +42,7 @@ class engelagent:
         self.machinestatus    = {}
         self.machinefeedback  = {}
         self.machinecurve     = {}
-        self.db = create_engine("postgresql://postgres:postgres@192.168.1.225:5432/cax")
+        self.db = create_engine("postgresql://postgres:postgres@192.168.1.50:5432/cax")
         self.nodemap = {
             "holding_time1_set":"ns=5;i=57",
             "holding_pressure1_set":"ns=5;i=52",

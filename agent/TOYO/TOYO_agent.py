@@ -25,9 +25,9 @@ class toyoagent:
         self.machineid = machineid
         self.previous_count = -1
         self.spc_path       = spc_path
-        self.hostip = "192.168.1.225"
-        self.red = redis.Redis(host='192.168.1.225',port=6379,db=0)
-        self.db=create_engine("postgresql://postgres:postgres@192.168.1.225:5432/cax")
+        self.hostip = "192.168.1.50"
+        self.red = redis.Redis(host='192.168.1.50',port=6379,db=0)
+        self.db=create_engine("postgresql://postgres:postgres@192.168.1.50:5432/cax")
         self.nodemap ={
             "Ijv_set1":"@SetVelInj_V_0[1]",
             "Ijv_set2":"@SetVelInj_V_1[1]",

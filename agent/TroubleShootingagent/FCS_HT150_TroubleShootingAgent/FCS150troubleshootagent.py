@@ -292,7 +292,7 @@ class fcstroubleshootagent:
             response = requests.post(url,headers=headers, json=storagerequestdata)
             self.adjustabstract = []        
 if __name__ == "__main__":
-    processlineagent = fcstroubleshootagent("192.168.1.225","FCS-150")
+    processlineagent = fcstroubleshootagent("192.168.1.50","FCS-150")
     processlineagent.connect()
     while True : 
         try:
