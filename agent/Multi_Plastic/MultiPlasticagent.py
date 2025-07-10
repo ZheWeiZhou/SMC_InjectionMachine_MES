@@ -43,42 +43,36 @@ class multiplasticagent:
         self.machinecurve     = {}
         self.db = create_engine("postgresql://postgres:postgres@192.168.1.50:5432/cax")
         self.nodemap = {
-            "clamp_force_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmblmG7yRXheItZIfkBnub4CU6pOwscKrvIXmZ7SdShvEjcek=",
-            "holding_time1_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJcfCI2C96i1x6Q==",
-            "holding_time2_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJsfCI2C96i1x6Q==",
-            "holding_time3_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJ8fCI2C96i1x6Q==",
-            "holding_time4_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIMfCI2C96i1x6Q==",
-            "holding_time5_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIcfCI2C96i1x6Q==",
-            "holding_pressure1_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJcfTMnGa8DVmjIM=",
-            "holding_pressure2_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJsfTMnGa8DVmjIM=",
-            "holding_pressure3_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfJ8fTMnGa8DVmjIM=",
-            "holding_pressure4_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIMfTMnGa8DVmjIM=",
-            "holding_pressure5_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itCHuF5yl6jq0Ie4XnKXqO0DR1juYfIcfTMnGa8DVmjIM=",
-            "injection_volume1":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJcfTL2eA9yl7h4M=",
-            "injection_volume2":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJsfTL2eA9yl7h4M=",
-            "injection_volume3":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJ8fTL2eA9yl7h4M=",
-            "injection_volume4":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIMfTL2eA9yl7h4M=",
-            "injection_volume5":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIcfTL2eA9yl7h4M=",
-            "injection_volume6":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIsfTL2eA9yl7h4M=",
-            "injection_rate1_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJcfQMHGM50A=",
-            "injection_rate2_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJsfQMHGM50A=",
-            "injection_rate3_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJ8fQMHGM50A=",
-            "injection_rate4_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIMfQMHGM50A=",
-            "injection_rate5_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIcfQMHGM50A=",
-            "injection_rate6_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIsfQMHGM50A=",
-            "cooling_time":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itA3uG7yl6jtcpeYyD",
-            "vp_position_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jtA3fZ3gKH2H5Ah7hecpeo6tBn2F7yl6jtA3fZ3gKH2H5Ah7hecpeo7TL2eA9yl7h4M=",
-            "filling_time_limit_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jtA3fZ3gKH2H5Ah7hecpeo6tBn2F7yl6jtA3fZ3gKH2H5Ah7hecpeo7XKXmMgw==",
-            "injection_pressure1_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJcfTMnGa8DVmjIM=",
-            "injection_pressure2_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJsfTMnGa8DVmjIM=",
-            "injection_pressure3_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfJ8fTMnGa8DVmjIM=",
-            "injection_pressure4_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIMfTMnGa8DVmjIM=",
-            "injection_pressure5_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIcfTMnGa8DVmjIM=",
-            "injection_pressure6_set":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBn2F7yl6jq0GfYXvKXqO0DR1juYfIsfTMnGa8DVmjIM=",
-            "backpressure1":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrJuRJvmM2ec8SUU",
-            "backpressure2":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrFuRJvmM2ec8SUU",
-            "backpressure3":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrBuRJvmM2ec8SUU",
-            "backpressure4":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrduRJvmM2ec8SUU",
+            "injection_pressure1_set":{'id':"PD_IN_HMI",'index':0},
+            "barrel_temp1_set":{'id':"S_TE_HMI",'index':0},
+            "barrel_temp2_set":{'id':"S_TE_HMI",'index':1},
+            "barrel_temp3_set":{'id':"S_TE_HMI",'index':2},
+            "barrel_temp4_set":{'id':"S_TE_HMI",'index':3},
+            "barrel_temp5_set":{'id':"S_TE_HMI",'index':4},
+            "injection_volume1":{'id':"SP_IN_HMI",'index':0},
+            "injection_volume2":{'id':"SP_IN_HMI",'index':1},
+            "injection_volume3":{'id':"SP_IN_HMI",'index':2},
+            "injection_volume4":{'id':"SP_IN_HMI",'index':3},
+            "injection_volume5":{'id':"SP_IN_HMI",'index':4},
+            "injection_rate1_set":{'id':"FD_IN_HMI",'index':0},
+            "injection_rate2_set":{'id':"FD_IN_HMI",'index':1},
+            "injection_rate3_set":{'id':"FD_IN_HMI",'index':2},
+            "injection_rate4_set":{'id':"FD_IN_HMI",'index':3},
+            "injection_rate5_set":{'id':"FD_IN_HMI",'index':4},
+            "clamp_force_set":{'id':"FD_MC_HMI",'index':4},
+            "filling_time_set":{'id':"ST_IN_HMI",'index':0},
+            "backpressure1":{'id':"PD_ME_HMI",'index':2},
+            "backpressure2":{'id':"PD_ME_HMI",'index':3},
+            "holding_time1_set":{'id':"ST_HD_HMI",'index':0},
+            "holding_time2_set":{'id':"ST_HD_HMI",'index':1},
+            "holding_time3_set":{'id':"ST_HD_HMI",'index':2},
+            "holding_pressure1_set":{'id':"PD_HD_HMI",'index':0},
+            "holding_pressure2_set":{'id':"PD_HD_HMI",'index':1},
+            "holding_pressure3_set":{'id':"PD_HD_HMI",'index':2},
+            "cooling_time":{'id':"ST_HD_HMI",'index':6},
+            "vp_position_set":{'id':"D_SPC_SAVE",'index':1},
+            "dos_position1":{'id':"SP_ME_HMI",'index':0},
+            "dos_position2":{'id':"SP_ME_HMI",'index':1},
         }
         
     def connect(self):  
@@ -117,9 +111,15 @@ class multiplasticagent:
     def parametersetting(self,target,value):
         access_node = list(self.nodemap.keys())
         if target in access_node:
-            nodeid = self.nodemap[target]
-            value  = float(value) 
-            self.worker.get_node(self.get_node_safe(nodeid)).set_value(ua.Variant(value, ua.VariantType.Double))
+            nodeid = self.nodemap[target]['id']
+            index  = self.nodemap[target]['index']
+            value  = float(value)
+            originvalue = self.worker.read_variable(nodeid)
+            newvalue = originvalue
+            newvalue[index] = value
+            self.worker.write_variable(nodeid,newvalue)
+
+            
     def collectdata(self):
         # Mold close singal
         moldclose=self.worker.read_variable('Y23B')
@@ -170,7 +170,7 @@ class multiplasticagent:
         backpressure  = {}
         ackpressure=self.worker.read_variable('PD_ME_HMI')[2:4]
         backpressure["backpressure1"]       = {"value":ackpressure[0],"edit":"none"}
-        backpressure["backpressure2"]       = {"value":ackpressure[0],"edit":"none"}
+        backpressure["backpressure2"]       = {"value":ackpressure[1],"edit":"none"}
         self.machinestatus["backpressure"]  = backpressure
         #Holding time setting
         holdingtimeset = {}
