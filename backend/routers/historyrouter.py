@@ -137,11 +137,13 @@ def parsefeedbackdata(data,item):
         else:
             data[variable].append(item[variable])
     return data     
+
 @historyrouter.post("/smc/injectionmachinemes/history/getdata")
 async def gethistorydata(requsetData:getHistoryData_requestBody):
     returnData       = {"status":"error"}
     try:
-        data = {'id':[],'created_at':[],'machine_name':[]}
+        data      = {'id':[],'created_at':[],'machine_name':[]}
+        curvedata = {} 
         MachineName = requsetData.machine_name
         start_time  = requsetData.start_time
         end_time    = requsetData.end_time
@@ -163,8 +165,9 @@ async def gethistorydata(requsetData:getHistoryData_requestBody):
                     data             = parsefeedbackdata(data,machine_feedback)
                     machine_curve    = row['machine_curve']
                     machine_curve    = json.loads(machine_curve)
-                    data             = parsefeedbackdata(data,machine_curve)
-        returnData = {"status":"success","Data":data}
+                    curvedata        = parsefeedbackdata(curvedata,machine_curve)
+        rsdata = {"variable":data,"curve":curvedata}
+        returnData = {"status":"success","Data":rsdata}
     except Exception as e:
         print(e)
     return returnData
