@@ -405,7 +405,7 @@ class fcsagent:
         self.machinestatus["storage_position"]  = storage_position  
         # Cut of position
         vp_position_set = self.worker.get_node("ns=4;s=APPL.Injection1.sv_CutOffParams.rPositionThreshold").get_value()/0.706
-        self.machinestatus["vp_position_set"]  = vp_position_set           
+        self.machinestatus["vp_position_set"]  = {"value":vp_position_set,"edit":"acctivate"}         
         # Injection volume(position) set
         injection_pos ={}
         injection_pos["injection_volume1"]     = {"value":ijvol1,"edit":"acctivate"}

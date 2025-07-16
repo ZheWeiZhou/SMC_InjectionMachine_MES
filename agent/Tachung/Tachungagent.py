@@ -78,6 +78,10 @@ class tachungagent:
             "backpressure2":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrFuRJvmM2ec8SUU",
             "backpressure3":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrBuRJvmM2ec8SUU",
             "backpressure4":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrduRJvmM2ec8SUU",
+            "dos_position1":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrJuRJvmM2ec8SUU",
+            "dos_position2":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrFuRIbwKWCA7C4U",
+            "dos_position3":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrBuRIbwKWCA7C4U",
+            "dos_position4":"ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrduRIbwKWCA7C4U",
         }
         
     def connect(self):  
@@ -328,9 +332,7 @@ class tachungagent:
         # Act plastic time
         act_plastic_time                         = self.worker.get_node(self.get_node_safe("ns=8;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuH1i59ncA5d4XmEHWb4i1xneYyZ736MHHHxy9ngO0nQIDuJRQ=")).get_value()
         self.machinefeedback["act_plastic_time"] = act_plastic_time
-        from pprint import pprint
-        pprint(self.machinestatus)
-        pprint(self.machinefeedback)
+  
 
         if processstatus != 5:
             self.machinestatus['machine'] = {"value":"work","edit":"none"}
