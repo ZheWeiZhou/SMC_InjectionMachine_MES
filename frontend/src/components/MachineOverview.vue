@@ -144,7 +144,6 @@ import UperNavbar  from './layout/UperNavbar.vue';
         async getmachineonlinestatus(){
             const token = this.$store.getters.getToken;
 
-            // const token = "8d6d4e85-b277-4102-8ffd-defcc7b7b9f9"
             await axios.get(`${this.$store.getters.getHost}/smc/injectionmachinemes/machineconnectstatus`,
             {
                 headers:{"accesstoken":token}

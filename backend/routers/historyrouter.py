@@ -115,7 +115,6 @@ async def insertBayesianData(requestData:insertBayesianData_requestBody):
     return returnData
 def parsestatusdata(data,item):
     for variable in list(item.keys()):
-        print(variable)
         if isinstance(item[variable], dict):
             if 'value' in item[variable]:
                 if variable not in list(data.keys()):
@@ -147,7 +146,7 @@ async def gethistorydata(requsetData:getHistoryData_requestBody):
         MachineName = requsetData.machine_name
         start_time  = requsetData.start_time
         end_time    = requsetData.end_time
-        sql = f'''SELECT id,created_at,machine_name,machine_status,machine_feedback,machine_curve FROM "MachineHistory" WHERE machine_name = '{MachineName}' and created_at > '{start_time}' and created_at < '{end_time}'  ORDER BY id DESC'''
+        sql = f'''SELECT id,created_at,machine_name,machine_status,machine_feedback,machine_curve FROM "MachineHistory" WHERE machine_name = '{MachineName}' and created_at > '{start_time}' and created_at < '{end_time}'  ORDER BY id '''
         with engine.connect() as connection:
                 result = connection.execute(text(sql))
                 for row in result.mappings():
@@ -166,7 +165,7 @@ async def gethistorydata(requsetData:getHistoryData_requestBody):
                     machine_curve    = row['machine_curve']
                     machine_curve    = json.loads(machine_curve)
                     curvedata        = parsefeedbackdata(curvedata,machine_curve)
-        rsdata = {"variable":data,"curve":curvedata}
+        rsdata     = {"variable":data,"curve":curvedata}
         returnData = {"status":"success","Data":rsdata}
     except Exception as e:
         print(e)
