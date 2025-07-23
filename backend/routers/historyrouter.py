@@ -166,7 +166,7 @@ async def gethistorydata(requsetData:getHistoryData_requestBody):
                     machine_curve    = row['machine_curve']
                     machine_curve    = json.loads(machine_curve)
                     curvedata        = parsefeedbackdata(curvedata,machine_curve)
-        rsdata = {"variable":data,"curve":curvedata}
+        rsdata     = {"variable":data,"curve":curvedata}
         returnData = {"status":"success","Data":rsdata}
     except Exception as e:
         print(e)
