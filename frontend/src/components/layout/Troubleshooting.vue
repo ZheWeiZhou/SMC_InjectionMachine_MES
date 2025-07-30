@@ -299,7 +299,7 @@ import axios from 'axios';
                         this.processlineslovetimeline.push({"DefectReason":"Normal","AdjustParameter":" ","image_str":rawinfo.image_str});
                     }
                     else{
-                        var lastone = this.slovetimeline[this.slovetimeline.length -1];
+                        var lastone = this.processlineslovetimeline[this.processlineslovetimeline.length -1];
                         if (lastone["DefectReason"] != "Normal"){
                             this.processlineslovetimeline.push({"DefectReason":"Normal","AdjustParameter":" ","image_str":rawinfo.image_str})
                         }
