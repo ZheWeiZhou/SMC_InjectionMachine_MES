@@ -274,7 +274,7 @@ def workflow():
             if weight >5:
                 print("[Message] Detect weight")
                 weightconfirm += 1
-                if weightconfirm >5:
+                if weightconfirm >3:
                     agent.red.set('FCS-150_Process_Line_status','processing')
                     print("[Message] Detect there is product on the platfrom")
                     product_weight = agent.weightmeter.get_weight()[0]

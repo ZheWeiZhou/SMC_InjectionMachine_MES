@@ -290,7 +290,8 @@ import axios from 'axios';
             else{
                 var rawinfo             = response.data.Data.processlinemessage;
                 if (response.data.Data.processlinemessage.quality == "shortshot"){
-                    rawinfo.quality  = "Short Shot"
+                    rawinfo.quality  = "Short Shot";
+                    console.log("Detect Short shot start to get slove abstract!!!!");
                     this.get_processline_sloveabstract();
                 }
                 else{
@@ -336,7 +337,7 @@ import axios from 'axios';
                         this.processlineslovetimeline = [];
                     }
                 }
-                var timelinedata = {"DefectReason":"DefectReason: " + this.processlineslovetimeline.DefectReason,"AdjustParameter":"AdjustParameter: "+adjsutparameter,"image_str":this.processlinemessage.image_str};
+                var timelinedata = {"DefectReason":"DefectReason: " + this.processlinesloveabstract.DefectReason,"AdjustParameter":"AdjustParameter: "+adjsutparameter,"image_str":this.processlinemessage.image_str};
                 this.processlineslovetimeline.push(timelinedata);
 
             }
