@@ -360,7 +360,9 @@ import axios from 'axios';
                     if (currentprocesslinestatus != "NA"){
                         if (this.processlinestauts != currentprocesslinestatus ){
                             if(currentprocesslinestatus == "standby"){
-                                this.getprocesslineinfo();
+                                setTimeout(() => {
+                                    this.getprocesslineinfo();
+                                }, 1000)
                             }
                         }
                         this.processlinestauts = currentprocesslinestatus;
