@@ -201,26 +201,26 @@ class fcsagent:
     def collectdata(self):
         # Check processstatus
         processstatus                      = self.worker.get_node("ns=4;s=APPL.Injection1.do_Inject").get_value()
-        # barrel temp
+       # barrel temp
         barrel_temp_set = {}
-        barrel_temp1_set                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.sv_ZoneRetain1.rSetValVis").get_value()
+        barrel_temp1_set                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.sv_ZoneRetain4.rSetValVis").get_value()
         barrel_temp_set["barrel_temp1_set"]   = {"value":barrel_temp1_set,"edit":"none"}
-        barrel_temp2_set                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.sv_ZoneRetain2.rSetValVis").get_value()
+        barrel_temp2_set                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.sv_ZoneRetain3.rSetValVis").get_value()
         barrel_temp_set["barrel_temp2_set"]   = {"value":barrel_temp2_set,"edit":"none"}
-        barrel_temp3_set                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.sv_ZoneRetain3.rSetValVis").get_value()
+        barrel_temp3_set                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.sv_ZoneRetain2.rSetValVis").get_value()
         barrel_temp_set["barrel_temp3_set"]   = {"value":barrel_temp3_set,"edit":"none"}
-        barrel_temp4_set                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.sv_ZoneRetain4.rSetValVis").get_value()
+        barrel_temp4_set                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.sv_ZoneRetain1.rSetValVis").get_value()
         barrel_temp_set["barrel_temp4_set"]   = {"value":barrel_temp4_set,"edit":"none"}
         self.machinestatus["barrel_temp_set"] = barrel_temp_set
 
         barrel_temp_real = {}
-        barrel_temp1_real                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.ti_InTemp1").get_value()
+        barrel_temp1_real                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.ti_InTemp4").get_value()
         barrel_temp_real["barrel_temp1_real"]  = {"value":barrel_temp1_real,"edit":"none"}
-        barrel_temp2_real                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.ti_InTemp2").get_value()
+        barrel_temp2_real                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.ti_InTemp3").get_value()
         barrel_temp_real["barrel_temp2_real"]  = {"value":barrel_temp2_real,"edit":"none"}
-        barrel_temp3_real                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.ti_InTemp3").get_value()
+        barrel_temp3_real                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.ti_InTemp2").get_value()
         barrel_temp_real["barrel_temp3_real"]  = {"value":barrel_temp3_real,"edit":"none"}
-        barrel_temp4_real                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.ti_InTemp4").get_value()
+        barrel_temp4_real                      = self.worker.get_node("ns=4;s=APPL.HeatingNozzle1.ti_InTemp1").get_value()
         barrel_temp_real["barrel_temp4_real"]  = {"value":barrel_temp4_real,"edit":"none"}
         self.machinestatus["barrel_temp_real"] = barrel_temp_real
 
