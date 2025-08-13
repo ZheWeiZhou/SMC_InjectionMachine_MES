@@ -76,8 +76,16 @@
                     <!-- <image  @click="selectmachine('Tachung')" :href="require('@/assets/machine.png')" x="75%"  y="65%"  width="10%"  height="10%" /> -->
                     <text fill="#121212" x="80%" y="77%" font-size="40%" font-weight="bold" text-anchor="middle" >Tachung</text>
                     <circle :fill="machinedata['Tachung'][0]" class="breathing-circle" cx="78%" cy="80%" r="0.6%" />
-                    <text class="breathing-circle" :fill="machinedata['Tachung'][0]"  x="80.5%" y="80.7%" font-size="39%" font-weight="bold" text-anchor="middle" >{{ machinedata['Tachung'][1] }}</text>
+                    <text class="breathing-circle" :fill="machinedata['Tachung'][0]"  x="80.5%" y="80.7%" font-size="39%" font-weight="bold" text-anchor="middle" >{{ machinedata['Tachung'][1] }}</text>                    
                     <text  :fill="machinedata['Tachung'][3]"  x="80%" y="63%" font-size="60%" font-weight="bold" text-anchor="middle" >{{ machinedata['Tachung'][2] }}</text>
+                    <!-- ChenHsong -->
+                    <g :transform="'translate(605, 186)'" @click="selectmachine('ChenHsong')">
+                        <path :fill="machinedata['ChenHsong'][0]" d="M1.27 45h11.31l1.91-4.3c.53-1.3 1-2.05 2.23-2.05h23.12c1.22 0 1.44 1 2.23 2.05L44 45h4.59V33.24H1.27zm2.5-9.18h6.93a.82.82 0 0 1 0 1.65H3.77a.82.82 0 0 1 0-1.65m0 2.82h6.93a.71.71 0 1 1 0 1.41H3.77a.71.71 0 1 1 0-1.4ZM2.91 42a.78.78 0 0 1 .78-.78h6.9a.78.78 0 0 1 .78.78v.1a.78.78 0 0 1-.78.78H3.7a.78.78 0 0 1-.78-.78V42Zm5.92-9.69H.62V15.58h8.22v16.75Zm2 0H9.27V15.58h1.56v16.75Zm2.28 0h-1.56V15.58h1.56v16.75Zm7.34 0H18.9V15.58h1.56v16.75Zm2.08 0h-1.85V15.58h1.86v16.75Zm-2.07-14.88H9.27v-1h11.19zm0 14H9.27v-1h11.19zm-8.56-5h-1.31v-5h1.31zm2.1 3.25h-.88v-11.5H14zm4.91 0H18V18.16h.9v11.5Zm19.27-7.88H22.71v-1.15h15.47zm0 5.75H22.71V26.4h15.47v1.16Zm0-1.89H22.71v-3.11h15.47zM44 13.43v2l-1 1v4h-4v-3.81l-1-1.19v-2zM17.86 28.32H16v-8.83h1.81v8.83Zm-2 0h-1.71v-8.83h1.67v8.83Zm9.91-6.24.89.45-1.81 3.58-.89-.45Zm11.33 0 .89.45-1.81 3.58-.89-.45Zm-2.83 0 .89.45-1.81 3.58-.89-.45Zm-2.83 0 .89.45-1.81 3.58-.89-.45Zm-2.83 0 .89.45-1.81 3.58-.89-.45Zm20.65 10.2h-11V20.65h11v11.64ZM48 22.84h-4.31v3.85H48zm-3 4.4h-1.3v.5H45zm1.5 0h-1.31v.5h1.33v-.5Zm1.5 0h-1.31v.5H48zm-3 .65h-1.3v.5H45zm1.5 0h-1.3v.5h1.33v-.5Zm1.5 0h-1.31v.5H48zm-3 .65h-1.3V29H45v-.5Zm1.5 0h-1.3V29h1.33v-.5Zm1.5 0h-1.31V29H48v-.5Z" />
+                    </g>                     
+                    <text fill="#121212" x="90%" y="77%" font-size="40%" font-weight="bold" text-anchor="middle" >ChenHsong</text>
+                    <circle :fill="machinedata['ChenHsong'][0]" class="breathing-circle" cx="88%" cy="80%" r="0.6%" />
+                    <text class="breathing-circle" :fill="machinedata['ChenHsong'][0]"  x="90.5%" y="80.7%" font-size="39%" font-weight="bold" text-anchor="middle" >{{ machinedata['ChenHsong'][1] }}</text>                    
+                    <text  :fill="machinedata['ChenHsong'][3]"  x="90%" y="63%" font-size="60%" font-weight="bold" text-anchor="middle" >{{ machinedata['ChenHsong'][2] }}</text>                                        
                     <!-- WALL -->
                     <line x1="50%"  y1="5%"  x2="50%" y2="95%"  stroke="#DEDEF0" stroke-width="0.15%" />
                     <text fill="#74ACFA"   x="88%" y="99%" font-size="45%" font-weight="bold" text-anchor="middle" >Click the machine icon to view more information </text>
@@ -133,6 +141,7 @@ import UperNavbar  from './layout/UperNavbar.vue';
             "FCS-150":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
             "TOYO":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
             "Tachung":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+            "ChenHsong":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
         },
         offlinecolor:"#121212",
         onlinecolor:"rgba(255,196,51,0.6)",
@@ -158,6 +167,7 @@ import UperNavbar  from './layout/UperNavbar.vue';
                     "FCS-150":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
                     "TOYO":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
                     "Tachung":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
+                    "ChenHsong":["rgba(182,182,180,0.6)","Offline","Sleep","rgba(182,182,180,0.6)"],
                 }
             }
             else{
