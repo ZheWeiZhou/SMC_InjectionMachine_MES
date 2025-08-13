@@ -54,6 +54,12 @@ services:
     restart: always
     labels:
     - autoheal=true
+  chenghsong:
+    container_name: "chenghsongagent"
+    build: ./ChenHsong
+    restart: always
+    labels:
+    - autoheal=true
   autoheal:
     image: willfarrell/autoheal
     restart: always
