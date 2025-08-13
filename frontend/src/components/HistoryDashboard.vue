@@ -107,7 +107,6 @@
   <script>
 import axios from 'axios';
 import UperNavbar  from './layout/UperNavbar.vue';
-
 import { NDatePicker } from "naive-ui";
   export default {
     name: 'HistoryDashboard',
@@ -247,7 +246,9 @@ import { NDatePicker } from "naive-ui";
                     row[key] = origin[key]
                 }
                 for (const curvekey in this.curvedata) {
-                    row[curvekey] =JSON.stringify(this.curvedata[curvekey][i])  
+                    var curvelist = this.curvedata[curvekey][i]
+                    curvelist = curvelist.map(num => Math.round(num * 1000) / 1000);
+                    row[curvekey] =JSON.stringify(curvelist)
                 }
                 return row
             })
@@ -259,18 +260,21 @@ import { NDatePicker } from "naive-ui";
             const csvRows = [keys.join(',')]
             data.forEach(row => {
                 const values = keys.map(key => {
-                let val = row[key]
+                let val = row[key] ;
                 if (typeof val === 'string') {
-                    val = `"${val.replace(/"/g, '""')}"`
+                    val = `"${val
+                    .replace(/\r?\n/g, '')   
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    }"`
                 }
                 return val
                 })
                 csvRows.push(values.join(','))
             })
             const csvString = csvRows.join('\n')
-            const blob = new Blob([csvString], { type: 'text/csv' })
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8' })
             const url = window.URL.createObjectURL(blob)
-
             const a = document.createElement('a')
             a.href = url
             a.download = filename

@@ -42,6 +42,7 @@ class engelagent:
         self.machinestatus    = {}
         self.machinefeedback  = {}
         self.machinecurve     = {}
+        self.counter = -1
         self.db = create_engine("postgresql://postgres:postgres@192.168.1.50:5432/cax")
         self.nodemap = {
             "holding_time1_set":"ns=5;i=57",
@@ -78,6 +79,7 @@ class engelagent:
             self.worker.set_user(self.user)
             self.worker.set_password(self.password)
             self.worker.connect()
+            self.counter = int(self.worker.get_node("ns=1;i=24").get_value())
             print("[MESSAGE] Success connect to Engel")
             def callback(ch, method, properties, body):
                 command = json.loads(body.decode())
@@ -134,6 +136,7 @@ class engelagent:
         print(f'[Message] model predict response: {modelresponse}')
     def collectdata(self):
         # Check processstatus
+        currentcounter = int(self.worker.get_node("ns=1;i=24").get_value())
         processstatus                      = self.worker.get_node("ns=1;i=77").get_value()
         # barrel temp
         barrel_temp_set = {}
@@ -258,125 +261,132 @@ class engelagent:
             self.machinecurve["motorpower"]       = self.motorpower
             self.machinecurve["heaterpower"]      = self.heaterpower
 
+            if self.counter<currentcounter:
+                if self.processactivate == True:
+                    self.counter = currentcounter
+                    print("[Message] Save data ...")
+                    # Material Cushion (餘料)
+                    material_cushion                         = self.worker.get_node("ns=5;i=82").get_value()
+                    self.machinefeedback["material_cushion"] = material_cushion
+                    # Screw volume
+                    screw_volume                    = self.worker.get_node("ns=1;i=126").get_value()
+                    self.machinefeedback["screw_volume"] = screw_volume
+                    #Filling time
+                    filling_time                    = self.worker.get_node("ns=5;i=75").get_value()
+                    self.machinefeedback["filling_time"] = filling_time
+                    #Maximun real injection pressure
+                    Maximun_real_injection_pressure                    = self.worker.get_node("ns=5;i=74").get_value()
+                    self.machinefeedback["Maximun_real_injection_pressure"] = Maximun_real_injection_pressure
+                    #Maximun real injection speed
+                    maximun_real_injection_speed                    = self.worker.get_node("ns=5;i=77").get_value()
+                    self.machinefeedback["maximun_real_injection_speed"] = maximun_real_injection_speed
+                    #Filling start position
+                    filling_start_position                    = self.worker.get_node("ns=4;i=6164").get_value()
+                    self.machinefeedback["filling_start_position"] = filling_start_position
+                    #VP position real
+                    vp_position_real                    = self.worker.get_node("ns=5;i=76").get_value()
+                    self.machinefeedback["vp_position_real"] = vp_position_real
+                    storage_position                    = self.worker.get_node("ns=5;i=63").get_value()
+                    self.machinefeedback["storage_position"] = storage_position
+                    #real vp pressure
+                    real_vp_pressure                    = self.worker.get_node("ns=5;i=78").get_value()
+                    self.machinefeedback["real_vp_pressure"] = real_vp_pressure
+                    #Act plastic time
+                    act_plastic_time                    = self.worker.get_node("ns=5;i=79").get_value()
+                    self.machinefeedback["act_plastic_time"] = act_plastic_time
+                    #Act cycle time
+                    act_cycle_time                    = self.worker.get_node("ns=5;i=83").get_value()
+                    self.machinefeedback["act_cycle_time"] = act_cycle_time
+                    #Maximun_screw_torque
+                    maximun_screw_torque                    = self.worker.get_node("ns=5;i=86").get_value()
+                    self.machinefeedback["maximun_screw_torque"] = maximun_screw_torque
+                    #Mean_screw_torque
+                    mean_screw_torque                    = self.worker.get_node("ns=5;i=87").get_value()
+                    self.machinefeedback["mean_screw_torque"] = mean_screw_torque
+                    # Motor Energy (KWH)
+                    motorenergy                    = self.worker.get_node("ns=5;i=122").get_value()
+                    self.machinefeedback["motorenergy"] = motorenergy
+                    # Heater Engery (KWH)
+                    heaterenergy                    = self.worker.get_node("ns=5;i=123").get_value()
+                    self.machinefeedback["heaterenergy"] = heaterenergy
+                    # Oil Motor Energy (KWH)
+                    Oilmotorenergy                    = self.worker.get_node("ns=5;i=124").get_value()
+                    self.machinefeedback["Oilmotorenergy"] = Oilmotorenergy
+                    # Injection Motor Energy (KWH)
+                    injectionmotorenergy                    = self.worker.get_node("ns=5;i=125").get_value()
+                    self.machinefeedback["injectionmotorenergy"] = injectionmotorenergy
+                    # Plastic Motor Energy (KWH)
+                    plasticmotorenergy                    = self.worker.get_node("ns=5;i=126").get_value()
+                    self.machinefeedback["plasticmotorenergy"] = plasticmotorenergy
+                    # Close Mold Energy (KWH)
+                    closemoldenergy                    = self.worker.get_node("ns=5;i=127").get_value()
+                    self.machinefeedback["closemoldenergy"] = closemoldenergy
+                    # Nozzle Energy
+                    nozzle_energy                    = self.worker.get_node("ns=5;i=128").get_value()
+                    self.machinefeedback["nozzle_energy"] = nozzle_energy
+                    # Injection Energy
+                    injection_energy                         = self.worker.get_node("ns=5;i=129").get_value()
+                    self.machinefeedback["injection_energy"] = injection_energy
+                    # Holding Energy
+                    holdingenergy                         = self.worker.get_node("ns=5;i=130").get_value()
+                    self.machinefeedback["holdingenergy"] = holdingenergy
+                    # Cooling Energy
+                    coolingenergy                         = self.worker.get_node("ns=5;i=131").get_value()
+                    self.machinefeedback["coolingenergy"] = coolingenergy
+                    # Plastic Energy
+                    plasticenergy                         = self.worker.get_node("ns=5;i=132").get_value()
+                    self.machinefeedback["plasticenergy"] = plasticenergy
+                    #Open mold energy
+                    openmoldenergy                         = self.worker.get_node("ns=5;i=133").get_value()
+                    self.machinefeedback["openmoldenergy"] = openmoldenergy
+                    #Eject energy
+                    ejectenergy                         = self.worker.get_node("ns=5;i=134").get_value()
+                    self.machinefeedback["ejectenergy"] = ejectenergy
+                    #semi auto energy
+                    semi_energy                         = self.worker.get_node("ns=5;i=135").get_value()
+                    self.machinefeedback["semi_energy"] = semi_energy
+                    # Core energy
+                    core_energy                         = self.worker.get_node("ns=5;i=136").get_value()
+                    self.machinefeedback["core_energy"] = core_energy
+                    # IQ VP
+                    iqvp                    = self.worker.get_node("ns=5;i=116").get_value()
+                    self.machinefeedback["iqvp"] = iqvp
+                    # IQ Holding Pressure
+                    iqhp                    = self.worker.get_node("ns=5;i=117").get_value()
+                    self.machinefeedback["iqhp"] = iqhp
+                    # Injection volume 
+                    injvolume = self.worker.get_node("ns=5;i=140").get_value()
+                    self.machinefeedback["injvolume"] = injvolume
+                    # Viscodity Change
+                    viscodity_ch = self.worker.get_node("ns=5;i=142").get_value()
+                    self.machinefeedback["viscodity_ch"]= viscodity_ch
+                    self.processactivate =False
+
+                    # TYPE SAVE TO DB CODE HERE !!!!!!!!!!!!
+                    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+                    Session = sessionmaker(bind=self.db)
+                    session = Session()
+                    insert_sql = injection_machine_db.__table__.insert().values(
+                        created_at       = current_time,
+                        machine_name     = self.machineid,
+                        machine_status  = json.dumps(self.machinestatus),
+                        machine_feedback = json.dumps(self.machinefeedback),
+                        machine_curve    = json.dumps(self.machinecurve)
+                    )
+                    session.execute(insert_sql)
+                    session.commit()
+                    session.close()
+                        
+                    # DBPLAN save MachineID updatetime status(dumps(dict)) feedback(dumps(dict)) curve((dumps(dict))) ....
+                    #Clean act injection pressure&speed act motor power curve 
+                    self.actpressurecurve = []
+                    self.actspeedcurve    = []
+                    self.motorpower       = []
+                    self.heaterpower      = []
+                    self.screwposition    = []
+                    self.timeindex        = []
         else:
             self.machinestatus['machine'] = {"value":"stay","edit":"none"}
-            if self.processactivate == True:
-                print("[Message] Save data ...")
-                # Material Cushion (餘料)
-                material_cushion                         = self.worker.get_node("ns=5;i=82").get_value()
-                self.machinefeedback["material_cushion"] = material_cushion
-                # Screw volume
-                screw_volume                    = self.worker.get_node("ns=1;i=126").get_value()
-                self.machinefeedback["screw_volume"] = screw_volume
-                #Filling time
-                filling_time                    = self.worker.get_node("ns=5;i=75").get_value()
-                self.machinefeedback["filling_time"] = filling_time
-                #Maximun real injection pressure
-                Maximun_real_injection_pressure                    = self.worker.get_node("ns=5;i=74").get_value()
-                self.machinefeedback["Maximun_real_injection_pressure"] = Maximun_real_injection_pressure
-                #Maximun real injection speed
-                maximun_real_injection_speed                    = self.worker.get_node("ns=5;i=77").get_value()
-                self.machinefeedback["maximun_real_injection_speed"] = maximun_real_injection_speed
-                #Filling start position
-                filling_start_position                    = self.worker.get_node("ns=4;i=6164").get_value()
-                self.machinefeedback["filling_start_position"] = filling_start_position
-                #VP position real
-                vp_position_real                    = self.worker.get_node("ns=5;i=76").get_value()
-                self.machinefeedback["vp_position_real"] = vp_position_real
-                storage_position                    = self.worker.get_node("ns=5;i=63").get_value()
-                self.machinefeedback["storage_position"] = storage_position
-                #real vp pressure
-                real_vp_pressure                    = self.worker.get_node("ns=5;i=78").get_value()
-                self.machinefeedback["real_vp_pressure"] = real_vp_pressure
-                #Act plastic time
-                act_plastic_time                    = self.worker.get_node("ns=5;i=79").get_value()
-                self.machinefeedback["act_plastic_time"] = act_plastic_time
-                #Act cycle time
-                act_cycle_time                    = self.worker.get_node("ns=5;i=83").get_value()
-                self.machinefeedback["act_cycle_time"] = act_cycle_time
-                #Maximun_screw_torque
-                maximun_screw_torque                    = self.worker.get_node("ns=5;i=86").get_value()
-                self.machinefeedback["maximun_screw_torque"] = maximun_screw_torque
-                #Mean_screw_torque
-                mean_screw_torque                    = self.worker.get_node("ns=5;i=87").get_value()
-                self.machinefeedback["mean_screw_torque"] = mean_screw_torque
-                # Motor Energy (KWH)
-                motorenergy                    = self.worker.get_node("ns=5;i=122").get_value()
-                self.machinefeedback["motorenergy"] = motorenergy
-                # Heater Engery (KWH)
-                heaterenergy                    = self.worker.get_node("ns=5;i=123").get_value()
-                self.machinefeedback["heaterenergy"] = heaterenergy
-                # Oil Motor Energy (KWH)
-                Oilmotorenergy                    = self.worker.get_node("ns=5;i=124").get_value()
-                self.machinefeedback["Oilmotorenergy"] = Oilmotorenergy
-                # Injection Motor Energy (KWH)
-                injectionmotorenergy                    = self.worker.get_node("ns=5;i=125").get_value()
-                self.machinefeedback["injectionmotorenergy"] = injectionmotorenergy
-                # Plastic Motor Energy (KWH)
-                plasticmotorenergy                    = self.worker.get_node("ns=5;i=126").get_value()
-                self.machinefeedback["plasticmotorenergy"] = plasticmotorenergy
-                # Close Mold Energy (KWH)
-                closemoldenergy                    = self.worker.get_node("ns=5;i=127").get_value()
-                self.machinefeedback["closemoldenergy"] = closemoldenergy
-                # Nozzle Energy
-                nozzle_energy                    = self.worker.get_node("ns=5;i=128").get_value()
-                self.machinefeedback["nozzle_energy"] = nozzle_energy
-                # Injection Energy
-                injection_energy                         = self.worker.get_node("ns=5;i=129").get_value()
-                self.machinefeedback["injection_energy"] = injection_energy
-                # Holding Energy
-                holdingenergy                         = self.worker.get_node("ns=5;i=130").get_value()
-                self.machinefeedback["holdingenergy"] = holdingenergy
-                # Cooling Energy
-                coolingenergy                         = self.worker.get_node("ns=5;i=131").get_value()
-                self.machinefeedback["coolingenergy"] = coolingenergy
-                # Plastic Energy
-                plasticenergy                         = self.worker.get_node("ns=5;i=132").get_value()
-                self.machinefeedback["plasticenergy"] = plasticenergy
-                #Open mold energy
-                openmoldenergy                         = self.worker.get_node("ns=5;i=133").get_value()
-                self.machinefeedback["openmoldenergy"] = openmoldenergy
-                #Eject energy
-                ejectenergy                         = self.worker.get_node("ns=5;i=134").get_value()
-                self.machinefeedback["ejectenergy"] = ejectenergy
-                #semi auto energy
-                semi_energy                         = self.worker.get_node("ns=5;i=135").get_value()
-                self.machinefeedback["semi_energy"] = semi_energy
-                # Core energy
-                core_energy                         = self.worker.get_node("ns=5;i=136").get_value()
-                self.machinefeedback["core_energy"] = core_energy
-                # IQ VP
-                iqvp                    = self.worker.get_node("ns=5;i=116").get_value()
-                self.machinefeedback["iqvp"] = iqvp
-                # IQ Holding Pressure
-                iqhp                    = self.worker.get_node("ns=5;i=117").get_value()
-                self.machinefeedback["iqhp"] = iqhp
-
-                self.processactivate =False
-
-                # TYPE SAVE TO DB CODE HERE !!!!!!!!!!!!
-                current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-                Session = sessionmaker(bind=self.db)
-                session = Session()
-                insert_sql = injection_machine_db.__table__.insert().values(
-                    created_at       = current_time,
-                    machine_name     = self.machineid,
-                    machine_status  = json.dumps(self.machinestatus),
-                    machine_feedback = json.dumps(self.machinefeedback),
-                    machine_curve    = json.dumps(self.machinecurve)
-                )
-                session.execute(insert_sql)
-                session.commit()
-                session.close()
-                    
-                # DBPLAN save MachineID updatetime status(dumps(dict)) feedback(dumps(dict)) curve((dumps(dict))) ....
-                #Clean act injection pressure&speed act motor power curve 
-                self.actpressurecurve = []
-                self.actspeedcurve    = []
-                self.motorpower       = []
-                self.heaterpower      = []
-                self.screwposition    = []
-                self.timeindex        = []
         #Get current time
         current_time        = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         self.red.set(f'{self.machineid}_updatetime',current_time)
