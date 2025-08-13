@@ -290,7 +290,8 @@ import axios from 'axios';
             else{
                 var rawinfo             = response.data.Data.processlinemessage;
                 if (response.data.Data.processlinemessage.quality == "shortshot"){
-                    rawinfo.quality  = "Short Shot"
+                    rawinfo.quality  = "Short Shot";
+                    console.log("Detect Short shot start to get slove abstract!!!!");
                     this.get_processline_sloveabstract();
                 }
                 else{
@@ -299,7 +300,7 @@ import axios from 'axios';
                         this.processlineslovetimeline.push({"DefectReason":"Normal","AdjustParameter":" ","image_str":rawinfo.image_str});
                     }
                     else{
-                        var lastone = this.slovetimeline[this.slovetimeline.length -1];
+                        var lastone = this.processlineslovetimeline[this.processlineslovetimeline.length -1];
                         if (lastone["DefectReason"] != "Normal"){
                             this.processlineslovetimeline.push({"DefectReason":"Normal","AdjustParameter":" ","image_str":rawinfo.image_str})
                         }
@@ -336,7 +337,7 @@ import axios from 'axios';
                         this.processlineslovetimeline = [];
                     }
                 }
-                var timelinedata = {"DefectReason":"DefectReason: " + this.processlineslovetimeline.DefectReason,"AdjustParameter":"AdjustParameter: "+adjsutparameter,"image_str":this.processlinemessage.image_str};
+                var timelinedata = {"DefectReason":"DefectReason: " + this.processlinesloveabstract.DefectReason,"AdjustParameter":"AdjustParameter: "+adjsutparameter,"image_str":this.processlinemessage.image_str};
                 this.processlineslovetimeline.push(timelinedata);
 
             }
@@ -359,7 +360,9 @@ import axios from 'axios';
                     if (currentprocesslinestatus != "NA"){
                         if (this.processlinestauts != currentprocesslinestatus ){
                             if(currentprocesslinestatus == "standby"){
-                                this.getprocesslineinfo();
+                                setTimeout(() => {
+                                    this.getprocesslineinfo();
+                                }, 1000)
                             }
                         }
                         this.processlinestauts = currentprocesslinestatus;

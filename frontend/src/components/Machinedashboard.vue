@@ -36,16 +36,17 @@
             <TroubleShooting :machineonline="this.machineonline" :machinename="this.machinename" :aoimoduleavailable="this.aoimoduleavailable" :feedbacktabledata="this.feedbacktabledata" />
         </v-col>
     </v-row>
-    <v-row class="mr-1 ml-1" style="min-height: 600px;">
+    <v-row class="mr-1 ml-1" style="min-height: 700px;">
     <v-col>
     <svg width="100%" height="100%" >
-        <rect x="0" y="0" rx="15" ry="15" width="100%" height="100%" fill="#82AE39" fill-opacity="0.6"/>
+        <rect x="0" y="0" rx="15" ry="15" width="100%" height="100%" fill="#D6E9F7" fill-opacity="0.6"/>
+        <image :href="require('@/assets/screw3.png')"  width="35%" height="15%" x="30%" y="39%" opacity="0.4" preserveAspectRatio="none" />
         <text x="1%" y="9%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="195%" >Barrel Temperature(&deg;C)</text>
         <text x="73%" y="7%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="16" >!!! Click the settings icon to adjust parameters</text>
         <text x="1%" y="23%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="190%" >Settings</text>
         <g v-for="([key, value], index) in barreltempset" :key="key">
         <text
-            :x="barrelsetgetX(index) +3.5 +'%'"
+            :x="100 - (barrelsetgetX(index) +1.5) +'%'"
             y="23%"
             text-anchor="middle"
             font-size="180%"
@@ -54,12 +55,12 @@
         >
             {{ value.value }}
         </text>
-        <image style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="4%" height="4%" :x="barrelsetgetX(index) -4 + '%'" y="20%" @click="handleClick(key)"/>
+        <image style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="4%" height="4%" :x="100 - (barrelsetgetX(index) +6.5) + '%'" y="19.5%" @click="handleClick(key)"/>
         </g>
         <text x="1%" y="35%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="190%" >Actual </text>
         <g v-for="([key, value], index) in barreltempact" :key="key">
         <text
-            :x="barrelsetgetX(index) +3.5 +'%'"
+            :x="100 - (barrelsetgetX(index) +1.5) +'%'"
             y="35%"
             text-anchor="middle"
             font-size="180%"
@@ -69,11 +70,10 @@
             {{ Math.round(value.value * 10) / 10 }}
         </text>
         </g>
-        <image :href="require('@/assets/screw.png')"  width="75%" height="11%" x="10%" y="40%" />
         <text x="1%" y="62%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="190%" >Position</text>
         <g v-for="([key, value], index) in ijpos" :key="key">
         <text
-            :x="possetsetgetX(index) +11 +'%'"
+            :x="100 - (possetsetgetX(index) +11) +'%'"
             y="62%"
             text-anchor="middle"
             font-size="180%"
@@ -82,12 +82,12 @@
         >
             {{ Math.round(value.value * 10) / 10  }}
         </text>
-        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')" width="4%" height="4%" :x="possetsetgetX(index) +6 + '%'" y="58.5%" @click="handleClick(key)"/>
+        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')" width="4%" height="4%" :x="100 - (possetsetgetX(index) +16) + '%'" y="58.5%" @click="handleClick(key)"/>
         </g>
         <text x="1%" y="73%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="190%" >Speed</text>
         <g v-for="([key, value], index) in ispe" :key="key">
         <text
-            :x="ijspsetgetX(index) +11 +'%'"
+            :x="100 - (ijspsetgetX(index) +11) +'%'"
             y="73%"
             text-anchor="middle"
             font-size="180%"
@@ -96,12 +96,12 @@
         >
             {{ Math.round(value.value * 10) / 10  }}
         </text>
-        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"   width="4%" height="4%" :x="ijspsetgetX(index) +6 + '%'" y="69.5%" @click="handleClick(key)"/>
+        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"   width="4%" height="4%" :x="100 - (ijspsetgetX(index) +16) + '%'" y="69.5%" @click="handleClick(key)"/>
         </g>
         <text x="1%" y="84%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="190%" >Pressure</text>
         <g v-for="([key, value], index) in ijprelist" :key="key">
         <text
-            :x="ijspsetgetX(index) +11 +'%'"
+            :x="100 - (ijspsetgetX(index) +11) +'%'"
             y="84%"
             text-anchor="middle"
             font-size="180%"
@@ -110,12 +110,12 @@
         >
             {{ Math.round(value.value * 10) / 10  }}
         </text>
-        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="4%" height="4%" :x="ijspsetgetX(index) +6 + '%'" y="80.5%" @click="handleClick(key)"/>
+        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="4%" height="4%" :x="100 - (ijspsetgetX(index) +16) + '%'" y="80.5%" @click="handleClick(key)"/>
         </g>   
         <text x="1%" y="95%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="180%" >Backpressure</text>
         <g v-for="([key, value], index) in backpressure" :key="key">
         <text
-            :x="backgetX(index) +11 +'%'"
+            :x="100 - (backgetX(index) +11) +'%'"
             y="95%"
             text-anchor="middle"
             font-size="180%"
@@ -124,7 +124,7 @@
         >
             {{ Math.round(value.value * 10) / 10  }}
         </text>
-        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"   width="4%" height="4%" :x="backgetX(index) +6 + '%'" y="91.5%" @click="handleClick(key)"/>
+        <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"   width="4%" height="4%" :x="100 - (backgetX(index) +16) + '%'" y="91.5%" @click="handleClick(key)"/>
         </g>      
     </svg>
     </v-col>
@@ -136,7 +136,7 @@
             <text x="1%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Holding Pressure</text>
             <g v-for="([key, value], index) in holdp" :key="key">
                 <text
-                    :x="holdgetX(index) +2.5 +'%'"
+                    :x="100 - (holdgetX(index) +2.5) +'%'"
                     y="46%"
                     text-anchor="middle"
                     font-size="25"
@@ -145,12 +145,12 @@
                 >
                     {{ Math.round(value.value * 10) / 10  }}
                 </text>
-                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="9%" height="9%" :x="holdgetX(index) -7 + '%'" y="38.5%" @click="handleClick(key)"/>
+                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="9%" height="9%" :x="100 - (holdgetX(index) +12) + '%'" y="38.5%" @click="handleClick(key)"/>
             </g>
             <text x="1%" y="70%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Holding Time</text>
             <g v-for="([key, value], index) in holdt" :key="key">
                 <text
-                    :x="holdgetX(index) +2.5 +'%'"
+                    :x="100 -(holdgetX(index) +2.5) +'%'"
                     y="93%"
                     text-anchor="middle"
                     font-size="25"
@@ -159,7 +159,7 @@
                 >
                     {{ Math.round(value.value * 10) / 10  }}
                 </text>
-                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="9%" height="9%" :x="holdgetX(index) -7 + '%'" y="85.5%" @click="handleClick(key)"/>
+                <image  style="cursor: pointer;" v-if="value.edit == 'acctivate'" :href="require('@/assets/settings.png')"  width="9%" height="9%" :x="100 - (holdgetX(index) +12) + '%'" y="85.5%" @click="handleClick(key)"/>
             </g>
         </svg>
     </v-col>

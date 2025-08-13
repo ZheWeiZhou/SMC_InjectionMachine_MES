@@ -183,9 +183,9 @@ class multiplasticagent:
         # Holding pressure
         holdingpressureset ={}
         holdingset=self.worker.read_variable('PD_HD_HMI')[:3]
-        holdingpressureset["holding_pressure1_set"] = {"value":holdingset[0],"edit":"acctivate"}
-        holdingpressureset["holding_pressure2_set"] = {"value":holdingset[1],"edit":"acctivate"}
-        holdingpressureset["holding_pressure3_set"] = {"value":holdingset[2],"edit":"acctivate"}
+        holdingpressureset["holding_pressure1_set"] = {"value":holdingset[0],"edit":"none"}
+        holdingpressureset["holding_pressure2_set"] = {"value":holdingset[1],"edit":"none"}
+        holdingpressureset["holding_pressure3_set"] = {"value":holdingset[2],"edit":"none"}
         self.machinestatus["holdingpressureset"]    = holdingpressureset
         #Cooling time
         cooling_time                          = self.worker.read_variable('ST_HD_HMI')[6]
