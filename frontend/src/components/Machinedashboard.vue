@@ -36,9 +36,9 @@
             <TroubleShooting :machineonline="this.machineonline" :machinename="this.machinename" :aoimoduleavailable="this.aoimoduleavailable" :feedbacktabledata="this.feedbacktabledata" />
         </v-col>
     </v-row>
-    <v-row class="mr-1 ml-1" style="min-height: 700px;">
+    <v-row class="mr-1 ml-1">
     <v-col>
-    <svg width="100%" height="100%" >
+    <svg viewBox="0 0 1700 600" preserveAspectRatio="xMidYMid meet" style="width: 100%; height: auto;"  >
         <rect x="0" y="0" rx="15" ry="15" width="100%" height="100%" fill="#D6E9F7" fill-opacity="0.6"/>
         <image :href="require('@/assets/screw3.png')"  width="35%" height="15%" x="30%" y="39%" opacity="0.4" preserveAspectRatio="none" />
         <text x="1%" y="9%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="195%" >Barrel Temperature(&deg;C)</text>
@@ -129,9 +129,9 @@
     </svg>
     </v-col>
     </v-row>
-    <v-row class="mr-1 ml-1" style="min-height: 20%;">
+    <v-row class="mr-1 ml-1">
     <v-col>
-        <svg width="100%" height="100%">
+        <svg viewBox="0 0 900 400" style="width: 100%; height: auto;">
             <rect x="0" y="0" rx="15" ry="15" width="100%" height="100%" fill="#FEEE81" fill-opacity="0.6"/>
             <text x="1%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="30" >Holding Pressure</text>
             <g v-for="([key, value], index) in holdp" :key="key">
@@ -164,7 +164,7 @@
         </svg>
     </v-col>
     <v-col>
-        <svg width="100%" height="100%">
+        <svg viewBox="0 0 900 400" style="width: 100%; height: auto;">
             <rect x="0" y="0" rx="15" ry="15" width="100%" height="100%" fill="#C0E3E1" fill-opacity="0.6"/>
             <text x="5%" y="20%" fill="black" text-anchor="start" font-family="monospace" font-weight="bold" font-size="200%" >Cooling Time</text>
             <!-- <image  :href="require('@/assets/coldwater.png')"  width="18%" height="18%" x="18%" y="6%" /> -->
