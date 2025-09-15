@@ -65,6 +65,7 @@ class toyoagent:
             "Holding_pressure_set4":"@SetPrsInj_P_4[1]",
             "Holding_pressure_set5":"@SetPrsInj_P_5[1]",
             "Holding_pressure_set6":"@SetPrsInj_P_6[1]",
+            "filling_time_set":"@SetTimInj_T_0[1]",
         }
     def send_monitor_command(self):
         os.system('copy "SESS0000.REQ" "Session\SESS0000.REQ"')
@@ -161,6 +162,7 @@ class toyoagent:
                     "Min_ij_pressure":'',
                     "Min_ij_speed":'',
                     "cycle_count":'',
+                    "filling_time_set":'',
                 }
         try:
             content = 0
@@ -490,6 +492,9 @@ class toyoagent:
             holdingpressureset["Holding_pressure_set5"] = {"value":machinedata["Holding_pressure_set5"],"edit":"acctivate"}
             holdingpressureset["Holding_pressure_set6"] = {"value":machinedata["Holding_pressure_set6"],"edit":"acctivate"}
             statusdata["holdingpressureset"]            = holdingpressureset
+
+            statusdata["filling_time_set"]            = {"value":machinedata["filling_time_set"],"edit":"acctivate"}
+
             self.red.set(f'{self.machineid}_status',json.dumps(statusdata))
 
             feedbackdata ={}

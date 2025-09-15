@@ -261,8 +261,8 @@ class engelagent:
             self.machinecurve["motorpower"]       = self.motorpower
             self.machinecurve["heaterpower"]      = self.heaterpower
 
-            if self.counter<currentcounter:
-                if self.processactivate == True:
+        if self.counter<currentcounter:
+            if self.processactivate == True:
                     self.counter = currentcounter
                     print("[Message] Save data ...")
                     # Material Cushion (餘料)
@@ -385,7 +385,7 @@ class engelagent:
                     self.heaterpower      = []
                     self.screwposition    = []
                     self.timeindex        = []
-        else:
+        elif processstatus != 4 :
             self.machinestatus['machine'] = {"value":"stay","edit":"none"}
         #Get current time
         current_time        = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
