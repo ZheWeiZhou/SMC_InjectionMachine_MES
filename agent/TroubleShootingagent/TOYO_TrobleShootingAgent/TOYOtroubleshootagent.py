@@ -1,5 +1,5 @@
 import redis
-import FCS_dataprocess_function as dp
+import TOYO_dataprocess_function as dp
 import json
 import time
 import requests
@@ -7,7 +7,7 @@ import copy
 import pika
 import threading
 from datetime import datetime,timezone
-class fcstroubleshootagent:
+class TOYOtroubleshootagent:
     def __init__(self,hostip,machinename):
         self.hostip = hostip
         self.red = redis.Redis(host=self.hostip,port=6379,db=0)
@@ -46,6 +46,7 @@ class fcstroubleshootagent:
             print("[ERROR] Connect to Rabbit MQ fail")
     # 如果診斷出劑量過少的解決方法
     def slovelowdose(self,machinestatus,machinefeedback,deffectlevel):
+        vpsetting       = machinestatus["VP_pos_set"]
         ijpos_set       = machinestatus["injection_pos"]
         ijpos_set_key   = list(ijpos_set.keys())
         ijpose_set_list = []
@@ -53,8 +54,7 @@ class fcstroubleshootagent:
             positem = ijpos_set[key]["value"]
             if positem >= 0:
                 ijpose_set_list.append(positem)
-        injection_end = machinefeedback["material_cushion"]
-        actijvolume   = max(ijpose_set_list) - min(ijpose_set_list)
+        actijvolume   = max(ijpose_set_list) - vpsetting
         # 根據缺陷嚴重程度決定參數調整幅度
         adjustratio   = 1.05
         if deffectlevel == 2:
@@ -64,7 +64,7 @@ class fcstroubleshootagent:
         if deffectlevel == 4:
              adjustratio   = 1.35        
         newvolume =  actijvolume * adjustratio
-        lastpos   =  max(ijpose_set_list) - newvolume
+        lastpos   =  max(ijpose_set_list) - newvolume 
         newijpos_set = copy.deepcopy(ijpose_set_list)
         # 如果發現直接調整最後的射出位置劑量還是不夠...
         if lastpos < 0 :
@@ -94,6 +94,15 @@ class fcstroubleshootagent:
                         body=commandbody,
                         #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
                         )
+        # 同時也把VP位置也設定好
+        commandbody = {"Target":"VP_pos_set","Value":newijpos_set[-1]}
+        commandbody = json.dumps(commandbody)
+        channel.basic_publish(exchange='',
+                        routing_key=self.machine_name,
+                        body=commandbody,
+                        #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
+                        )
+
         # Create Adjust Abstract 
         original = str(ijpose_set_list)
         newset   = str(newijpos_set)
@@ -189,37 +198,29 @@ class fcstroubleshootagent:
              adjustratio   = 1.3
         if deffectlevel == 4:
              adjustratio   = 1.35  
-        pressurelist = []
-        currentpressureset = machinestatus["injection_pressure_list"] 
-        currentpressureset_key = list(currentpressureset.keys())
-        for key in currentpressureset_key:
-            pressureitem = currentpressureset[key]["value"]
-            if pressureitem >=0:
-                pressurelist.append(pressureitem)
-        currentset = max(pressurelist)
-        newset = currentset * adjustratio
+        currentpressureset = machinestatus["injection_pressure_set"] 
+        
+        newset = currentpressureset * adjustratio
+        # 檢查新設定的射壓有沒有超過機台極限
         if newset > machinelimit:
             newset = machinelimit
-        newpressurelist = [newset] * len(pressurelist)
+        # 呼叫HOST更改參數
         connection = pika.BlockingConnection(pika.ConnectionParameters(
             host=self.hostip,
             credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_pass)
         ))
         channel = connection.channel()
         channel.queue_declare(queue=self.machine_name)
-        for i in range(len(newpressurelist)):
-            target = f"injection_pressure{i+1}_set"
-            value  = newpressurelist[i]
-            commandbody = {"Target":target,"Value":value}
-            commandbody = json.dumps(commandbody)
-            channel.basic_publish(exchange='',
-                            routing_key=self.machine_name,
-                            body=commandbody,
-                            #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
-                            )
+        commandbody = {"Target":"injection_pressure_set","Value":newset}
+        commandbody = json.dumps(commandbody)
+        channel.basic_publish(exchange='',
+            routing_key=self.machine_name,
+            body=commandbody,
+        #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
+        )
         # Create Adjust Abstract 
-        original = str(pressurelist)
-        newset   = str(newpressurelist)
+        original = str(currentpressureset)
+        newset   = str(newset)
         abstract = {"Parameter":"Injection Pressure","Origin":original, "New":newset}
         self.adjustabstract.append(abstract)
     # 診斷背壓過低
@@ -232,15 +233,15 @@ class fcstroubleshootagent:
             machinefeedback = self.red.get(f"{self.machine_name}_feedback")
             machinefeedback = json.loads(machinefeedback)
             evidences={
-                        "InjectionDoseVsFillingTime":str(dp.compare_injectiondose_fltlimit(machinestatus["injection_pos"],machinestatus["filling_time_set"]["value"],140)),
+                        "InjectionDoseVsFillingTime":str(dp.compare_injectiondose_fltlimit(machinestatus["injection_pos"],machinestatus["VP_pos_set"],machinestatus["filling_time_set"]["value"],300)),
                         "ActFillingTimeVsFillingTime":str(dp.compare_flt_limit(machinefeedback["filling_time"],machinestatus["filling_time_set"]["value"])),
-                        "InjectionEndVsInjectionPosition":str(dp.compare_ijpos_ijend(machinestatus["injection_pos"],machinefeedback["material_cushion"])),
+                        "InjectionEndVsInjectionPosition":str(dp.compare_ijpos_ijend(machinestatus["injection_pos"],machinestatus["VP_pos_set"],machinefeedback["Act_Cushion_pos"])),
                         "ActBarrelTempVsSuggestTemp":str(dp.settingmaterialtmp_vs_materialtmpsuggestion(machinestatus["barrel_temp_set"],[180,260])),
                         "BackPressureVsSuggestPressure":str(dp.check_backpressure(machinestatus["backpressure"],[1,5])),
-                        "MaxInjectionPressureVsSettingPressure":str(dp.max_injection_pressure_compare_injection_pressure_setting(machinestatus["injection_pressure_list"],machinefeedback["Maximun_real_injection_pressure"])),
-                        "SettingPressureVsMachineLimitPressure":str(dp.settingpressure_vs_machinelimit(machinestatus["injection_pressure_list"],140)),
-                        "SettingSpeedVsMachineLimitSpeed":str(dp.settingspeed_vs_machinelimit(machinestatus["injection_speed"],200)),
-                        "MaxSpeedVsSpeedSetting":str(dp.compare_realinjection_ijspeedset(machinefeedback["maximun_real_injection_speed"],machinestatus["injection_speed"])),
+                        "MaxInjectionPressureVsSettingPressure":str(dp.max_injection_pressure_compare_injection_pressure_setting(machinestatus["injection_pressure_set"],machinefeedback["Max_ij_pressure"])),
+                        "SettingPressureVsMachineLimitPressure":str(dp.settingpressure_vs_machinelimit(machinestatus["injection_pressure_set"],1958)),
+                        "SettingSpeedVsMachineLimitSpeed":str(dp.settingspeed_vs_machinelimit(machinestatus["injection_speed"],300)),
+                        "MaxSpeedVsSpeedSetting":str(dp.compare_realinjection_ijspeedset(machinefeedback["Max_ij_speed"],machinestatus["injection_speed"])),
                         "HighSpeedRatio":str(dp.compare_max_ijspeed_postion(machinestatus["injection_speed"],machinestatus["injection_pos"])),
                         "ShortShot":str(1)
                     }
@@ -292,7 +293,7 @@ class fcstroubleshootagent:
             response = requests.post(url,headers=headers, json=storagerequestdata)
             self.adjustabstract = []        
 if __name__ == "__main__":
-    processlineagent = fcstroubleshootagent("192.168.1.50","TOYO")
+    processlineagent = TOYOtroubleshootagent("192.168.1.50","TOYO")
     processlineagent.connect()
     while True : 
         try:

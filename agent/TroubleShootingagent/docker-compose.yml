@@ -14,6 +14,12 @@ services:
     restart: always
     labels:
     - autoheal=true
+  TOYO_troubleshooting:
+    container_name: "TOYO_troubleshooting_agent"
+    build: ./TOYO_TroubleShootingAgent
+    restart: always
+    labels:
+    - autoheal=true
   autoheal:
     image: willfarrell/autoheal
     restart: always

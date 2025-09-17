@@ -49,18 +49,16 @@ injection_pos= {
 posend = 35
 # Act Volume : self.machinestatus["injection_pos"]["injection_volume1"] - self.machinefeedback["material_cushion"]
 # Set Volume : self.machinestatus["injection_pos"]
-def compare_ijpos_ijend (injection_postion,injection_end): #比較射出終點跟射出位置設定
+def compare_ijpos_ijend (injection_postion,vpsetting,injection_end): #比較射出終點跟射出位置設定
     injection_postion_key = list(injection_postion.keys())
     posset = []
     for key in injection_postion_key:
         positem = injection_postion[key]["value"]
         if positem >= 0:
             posset.append(positem)
-    setting_injection_volume=float(max(posset))-float(min(posset))#計算設定劑量
+    setting_injection_volume=float(max(posset))-float(vpsetting)#計算設定劑量
     real_injection_volume=float(max(posset))-float(injection_end) #計算實際打入的劑量
     compare=real_injection_volume/setting_injection_volume #(實際劑量-設定劑量)/設定劑量
-    print("compare_ijpos_ijend")
-    # print(compare)
     if compare <=0.9:
         return 0
     elif compare<=1.1:
@@ -88,16 +86,7 @@ def injection_end_cau(injection_postion,injection_end):#比較殘餘劑量與射
         return 2
 
 def max_injection_pressure_compare_injection_pressure_setting(injection_pressure_set,max_injection_pressure): #比對實際最大射壓跟射壓設定值
-    
-    injection_pressure_key = list(injection_pressure_set.keys())
-    pressureset = []
-    for key in injection_pressure_key:
-        item = injection_pressure_set[key]["value"]
-        if item >= 0:
-            pressureset.append(item)
-    pressure_set = max(pressureset)
-    compare=float(max_injection_pressure)/float(pressure_set)
-    print("max_injection_pressure_compare_injection_pressure_setting")
+    compare=float(max_injection_pressure)/float(injection_pressure_set)
     if compare>0.8:
         return 0
     elif compare>0.6:
@@ -114,16 +103,15 @@ def compare_flt_limit(fillingtime,fillingtimelimt):#比較充填時間與充填�
     else:
         return 1
 
-def compare_injectiondose_fltlimit(injection_postion_setting,fillingtimelimt,machinemaxspeed):#比較射出行程和射出轉保時間
+def compare_injectiondose_fltlimit(injection_postion_setting,vpsetting,fillingtimelimt,machinemaxspeed):#比較射出行程和射出轉保時間
     injection_postion_key = list(injection_postion_setting.keys())
     posset = []
     for key in injection_postion_key:
-        positem = injection_postion_setting[key]["value"]
+        positem = float(injection_postion_setting[key]["value"])
         if positem >= 0:
             posset.append(positem)
-    ijdose=float(posset[0])-float(posset[-1])#計算設定劑量
+    ijdose=max(posset)-float(vpsetting["value"])#計算設定劑量
     compare=ijdose/float(fillingtimelimt)
-    print("compare_injectiondose_fltlimit")
     level1gate = machinemaxspeed*0.2
     level2gate = machinemaxspeed*0.5
     # print(compare)
@@ -206,15 +194,8 @@ def settingspeed_vs_machinelimit(speedsetting,machinelimit):#比較射速設定�
     else:
         return 2
 def settingpressure_vs_machinelimit(ijpressuresetting,machinelimit):#比較射壓設定值vs機台上限
-    injection_pressure_key = list(ijpressuresetting.keys())
-    pressureset = []
-    for key in injection_pressure_key:
-        item = ijpressuresetting[key]["value"]
-        if item >= 0:
-            pressureset.append(item)
-    pressure_set = max(pressureset)
-    percentage_of_limit=float(pressure_set)/machinelimit
-    print("settingpressure_vs_machinelimit")
+    
+    percentage_of_limit=float(ijpressuresetting)/machinelimit
     if percentage_of_limit<0.5:
         return 0
     elif percentage_of_limit <0.85:
