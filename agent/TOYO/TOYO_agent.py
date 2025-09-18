@@ -75,7 +75,10 @@ class toyoagent:
         os.system('copy "SESS0000.REQ" "Session\SESS0000.REQ"')
         def callback(ch, method, properties, body):
                 command = json.loads(body.decode())
-                self.parametersetting(command["Target"],command["Value"])
+                if 'Batch' in command:
+                    self.batchparametersetting(command["Target"],command["Value"])
+                else:
+                    self.parametersetting(command["Target"],command["Value"])
             
         def start_controller():
                 while True:
@@ -246,7 +249,26 @@ class toyoagent:
             if os.path.exists(setlog_path):
                 os.remove('data\SET.log')
             os.system('copy "SESS0001.REQ" "Session\SESS0001.REQ"')
+    def batchparametersetting(self,target,value):
+        access_node = list(self.nodemap.keys())
+        with open('SET.JOB','r') as file:
+            first_line  = file.readline()
+        with open('SET.JOB','w') as file:
+            file.write(first_line)   
+        with open('SET.JOB','a') as file:
+            for i in range(len(target)):
+                 targetname = target[i]
+                 if targetname in access_node:
+                    nodeid    = self.nodemap[targetname]
+                    setvalue  = value[i]
+                    new_line  = f"SET {nodeid} {setvalue}\n"
+                    file.write(new_line)
+            setlog_path = 'data\SET.log'
+            if os.path.exists(setlog_path):
+                os.remove('data\SET.log')
+            os.system('copy "SESS0001.REQ" "Session\SESS0001.REQ"')
 
+                
     def set_injection_pos(self,pos):
         '''
         SetStrPlst[1]
@@ -440,7 +462,7 @@ class toyoagent:
     def collectdata(self):
 
         machinedata = self.get_machine_data()
-        pprint(machinedata)
+        # pprint(machinedata)
         # for i in list(machinedata.keys()):
         #     print(f"{i}: {machinedata[i]}")
 

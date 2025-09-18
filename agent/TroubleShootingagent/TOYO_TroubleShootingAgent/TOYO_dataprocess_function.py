@@ -49,14 +49,15 @@ injection_pos= {
 posend = 35
 # Act Volume : self.machinestatus["injection_pos"]["injection_volume1"] - self.machinefeedback["material_cushion"]
 # Set Volume : self.machinestatus["injection_pos"]
-def compare_ijpos_ijend (injection_postion,vpsetting,injection_end): #比較射出終點跟射出位置設定
+def compare_ijpos_ijend (injection_postion,vpsetting,injection_end):
+    print("compare_ijpos_ijend") #比較射出終點跟射出位置設定
     injection_postion_key = list(injection_postion.keys())
     posset = []
     for key in injection_postion_key:
-        positem = injection_postion[key]["value"]
+        positem = float(injection_postion[key]["value"])
         if positem >= 0:
             posset.append(positem)
-    setting_injection_volume=float(max(posset))-float(vpsetting)#計算設定劑量
+    setting_injection_volume=float(max(posset))-float(vpsetting["value"])#計算設定劑量
     real_injection_volume=float(max(posset))-float(injection_end) #計算實際打入的劑量
     compare=real_injection_volume/setting_injection_volume #(實際劑量-設定劑量)/設定劑量
     if compare <=0.9:
@@ -86,7 +87,7 @@ def injection_end_cau(injection_postion,injection_end):#比較殘餘劑量與射
         return 2
 
 def max_injection_pressure_compare_injection_pressure_setting(injection_pressure_set,max_injection_pressure): #比對實際最大射壓跟射壓設定值
-    compare=float(max_injection_pressure)/float(injection_pressure_set)
+    compare=float(max_injection_pressure)/float(injection_pressure_set["value"])
     if compare>0.8:
         return 0
     elif compare>0.6:
@@ -97,7 +98,6 @@ def max_injection_pressure_compare_injection_pressure_setting(injection_pressure
 def compare_flt_limit(fillingtime,fillingtimelimt):#比較充填時間與充填限制時間
     
     compare=float(fillingtimelimt)-float(fillingtime)
-    print("compare_flt_limit")
     if compare<1:
         return 0
     else:
@@ -129,13 +129,13 @@ def compare_max_ijspeed_postion(speedsetting,injection_postion):#比較最高射
     injection_postion_key = list(injection_postion.keys())
     posset = []
     for key in injection_postion_key:
-        positem = injection_postion[key]["value"]
+        positem = float(injection_postion[key]["value"])
         if positem >= 0:
             posset.append(positem)
     ijspeedsetting = []
     injection_speed_key = list(speedsetting.keys())
     for key in injection_speed_key:
-        speeditem = speedsetting[key]["value"]
+        speeditem = float(speedsetting[key]["value"])
         if speeditem >= 0:
             ijspeedsetting.append(speeditem)
     ijspeedsetting = ijspeedsetting[:-1]                
@@ -181,7 +181,7 @@ def settingspeed_vs_machinelimit(speedsetting,machinelimit):#比較射速設定�
     ijspeedsetting = []
     injection_speed_key = list(speedsetting.keys())
     for key in injection_speed_key:
-        speeditem = speedsetting[key]["value"]
+        speeditem = float(speedsetting[key]["value"])
         if speeditem >= 0:
             ijspeedsetting.append(speeditem)  
     maxijspeedset=max(ijspeedsetting)
@@ -195,7 +195,7 @@ def settingspeed_vs_machinelimit(speedsetting,machinelimit):#比較射速設定�
         return 2
 def settingpressure_vs_machinelimit(ijpressuresetting,machinelimit):#比較射壓設定值vs機台上限
     
-    percentage_of_limit=float(ijpressuresetting)/machinelimit
+    percentage_of_limit=float(ijpressuresetting["value"])/machinelimit
     if percentage_of_limit<0.5:
         return 0
     elif percentage_of_limit <0.85:
@@ -218,12 +218,12 @@ def settingmoldtemp_vs_moldtempsuggestion(moldtemp,suggestion) : #比較模溫�
             return 3
 
 def settingmaterialtmp_vs_materialtmpsuggestion(settemp,suggestion) : #比較料管溫度設定值VS建議值
-
+    print("settingmaterialtmp_vs_materialtmpsuggestion")
     barrel_temp_set = []
     barrel_temp_key = list(settemp.keys())
     for key in barrel_temp_key:
         tempitem = settemp[key]["value"]
-        if tempitem >= 0:
+        if float(tempitem) >= 0:
             barrel_temp_set.append(tempitem)   
     suggestionlow=suggestion[0]
     suggestionhigh=suggestion[1]
@@ -252,7 +252,7 @@ def check_backpressure(backpressuresetting,suggestion):#檢查背壓設定值與
     backpressure_set = []
     backpressure_set_key = list(backpressuresetting.keys())
     for key in backpressure_set_key:
-        item = backpressuresetting[key]["value"]
+        item = float(backpressuresetting[key]["value"])
         if item >= 0:
             backpressure_set.append(item)
     
@@ -271,11 +271,11 @@ def compare_realinjection_ijspeedset(realspeed,speedset):#檢查實際設速vs�
     ijspeedsetting = []
     injection_speed_key = list(speedset.keys())
     for key in injection_speed_key:
-        speeditem = speedset[key]["value"]
+        speeditem = float(speedset[key]["value"])
         if speeditem >= 0:
             ijspeedsetting.append(speeditem)
     speedsethigh=min(ijspeedsetting)
-    realspeedmax=realspeed
+    realspeedmax=float(realspeed)
     compare=realspeedmax/speedsethigh
     print("compare_realinjection_ijspeedset")
     if compare<0.65:

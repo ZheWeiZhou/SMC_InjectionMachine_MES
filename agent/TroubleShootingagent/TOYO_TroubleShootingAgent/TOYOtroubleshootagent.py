@@ -51,10 +51,10 @@ class TOYOtroubleshootagent:
         ijpos_set_key   = list(ijpos_set.keys())
         ijpose_set_list = []
         for key in ijpos_set_key:
-            positem = ijpos_set[key]["value"]
+            positem = float(ijpos_set[key]["value"])
             if positem >= 0:
                 ijpose_set_list.append(positem)
-        actijvolume   = max(ijpose_set_list) - vpsetting
+        actijvolume   = max(ijpose_set_list) - float(vpsetting["value"])
         # 根據缺陷嚴重程度決定參數調整幅度
         adjustratio   = 1.05
         if deffectlevel == 2:
@@ -82,35 +82,32 @@ class TOYOtroubleshootagent:
             host=self.hostip,
             credentials=pika.PlainCredentials(self.rabbitmq_account, self.rabbitmq_pass)
         ))
+        target = []
+        value  = []
         channel = connection.channel()
         channel.queue_declare(queue=self.machine_name)
         for i in range(len(newijpos_set)):
-            target = f"injection_volume{i+1}"
-            value  = newijpos_set[i]
-            commandbody = {"Target":target,"Value":value}
-            commandbody = json.dumps(commandbody)
-            channel.basic_publish(exchange='',
-                        routing_key=self.machine_name,
-                        body=commandbody,
-                        #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
-                        )
-        # 同時也把VP位置也設定好
-        commandbody = {"Target":"VP_pos_set","Value":newijpos_set[-1]}
+            itemtarget = f"IJ_pos_set{i}"
+            itemvalue  = newijpos_set[i]
+            target.append(itemtarget)
+            value.append(itemvalue)
+        target.append("VP_pos_set")
+        value.append(newijpos_set[-1])
+        commandbody = {"Target":target,"Value":value,"Batch":1}
         commandbody = json.dumps(commandbody)
-        channel.basic_publish(exchange='',
-                        routing_key=self.machine_name,
-                        body=commandbody,
-                        #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
-                        )
-
-        # Create Adjust Abstract 
+        channel.basic_publish(
+            exchange='',
+            routing_key=self.machine_name,
+            body=commandbody,
+        #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
+        )
         original = str(ijpose_set_list)
         newset   = str(newijpos_set)
         abstract = {"Parameter":"Injection Position","Origin":original, "New":newset}
         self.adjustabstract.append(abstract)
     # 如果診斷出充填限制時間過短
     def sloveshortfillingtimeset(self,machinestatus,deffectlevel):
-        CurrentFillingTimeSet = machinestatus["filling_time_set"]["value"]
+        CurrentFillingTimeSet = float(machinestatus["filling_time_set"]["value"])
         adjustratio   = 1.05
         if deffectlevel == 2:
             adjustratio   = 1.2
@@ -141,7 +138,9 @@ class TOYOtroubleshootagent:
         self.adjustabstract.append(abstract)
     # 診斷射速過低
     def slovelowspeed(self,machinestatus,deffectlevel,machinelimit):
+
         # 如果射速設的超級小，小到乘完係數之後變動幅度不到機台最高射速的2%，那就直接加上2%的機台最高射速來加速調機速度
+        machinelimit = float(machinelimit)
         adjustratio   = 1.05
         if deffectlevel == 2:
             adjustratio   = 1.2
@@ -153,7 +152,7 @@ class TOYOtroubleshootagent:
         speed_set_key   = list(CurrentSpeedSet.keys())
         speed_set_list = []
         for key in speed_set_key:
-            positem = CurrentSpeedSet[key]["value"]
+            positem = float(CurrentSpeedSet[key]["value"])
             if positem >= 0:
                 speed_set_list.append(positem)
         new_speed_set_list = []
@@ -174,16 +173,19 @@ class TOYOtroubleshootagent:
         ))
         channel = connection.channel()
         channel.queue_declare(queue=self.machine_name)
+        target = []
+        value  = []
         for i in range(len(new_speed_set_list)):
-            target = f"injection_rate{i+1}_set"
-            value  = new_speed_set_list[i]
-            commandbody = {"Target":target,"Value":value}
-            commandbody = json.dumps(commandbody)
-            channel.basic_publish(exchange='',
-                            routing_key=self.machine_name,
-                            body=commandbody,
-                            #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
-                            )
+            target.append(f"Ijv_set{i+1}")
+            value.append(new_speed_set_list[i])
+
+        commandbody = {"Target":target,"Value":value,"Batch":1}
+        commandbody = json.dumps(commandbody)
+        channel.basic_publish(exchange='',
+            routing_key=self.machine_name,
+            body=commandbody,
+        #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
+        )
         # Create Adjust Abstract 
         original = str(speed_set_list)
         newset   = str(new_speed_set_list)
@@ -198,7 +200,7 @@ class TOYOtroubleshootagent:
              adjustratio   = 1.3
         if deffectlevel == 4:
              adjustratio   = 1.35  
-        currentpressureset = machinestatus["injection_pressure_set"] 
+        currentpressureset = float(machinestatus["injection_pressure_set"]["value"])
         
         newset = currentpressureset * adjustratio
         # 檢查新設定的射壓有沒有超過機台極限
@@ -227,6 +229,7 @@ class TOYOtroubleshootagent:
     def slovelowbackpressure(self):
         print("AAAAA")
     def autocheck(self,deffect,deffectlevel):
+        print("AUTOCHECK")
         if deffect == "shortshot":
             machinestatus   = self.red.get(f"{self.machine_name}_status")
             machinestatus   = json.loads(machinestatus)
@@ -234,7 +237,7 @@ class TOYOtroubleshootagent:
             machinefeedback = json.loads(machinefeedback)
             evidences={
                         "InjectionDoseVsFillingTime":str(dp.compare_injectiondose_fltlimit(machinestatus["injection_pos"],machinestatus["VP_pos_set"],machinestatus["filling_time_set"]["value"],300)),
-                        "ActFillingTimeVsFillingTime":str(dp.compare_flt_limit(machinefeedback["filling_time"],machinestatus["filling_time_set"]["value"])),
+                        "ActFillingTimeVsFillingTime":str(dp.compare_flt_limit(machinefeedback["Act_filling_time"],machinestatus["filling_time_set"]["value"])),
                         "InjectionEndVsInjectionPosition":str(dp.compare_ijpos_ijend(machinestatus["injection_pos"],machinestatus["VP_pos_set"],machinefeedback["Act_Cushion_pos"])),
                         "ActBarrelTempVsSuggestTemp":str(dp.settingmaterialtmp_vs_materialtmpsuggestion(machinestatus["barrel_temp_set"],[180,260])),
                         "BackPressureVsSuggestPressure":str(dp.check_backpressure(machinestatus["backpressure"],[1,5])),
