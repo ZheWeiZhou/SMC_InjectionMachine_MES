@@ -307,6 +307,19 @@ class tachungagent:
         dos_position4                 = self.worker.get_node(self.get_node_safe("ns=11;b=AQAAAKbhKnGK9zM6oO0qcYr3KXuHzi94jeouc7niMnWE5jRxm/AUbZnmbl2H6SV3neoverztKWC65jRggO0nS9itBHua6i5zx8cvZ4DtJ0ed4idxtrduRIbwKWCA7C4U")).get_value()
         Dospos["dos_position4"]       = {"value":dos_position4,"edit":"acctivate"}
         self.machinestatus["Dospos"]  = Dospos
+
+
+        JobBadPartsCounter                        = self.worker.get_node(self.get_node_safe("ns=9;b=AQAAAKbhKnGK9zM6qvojeIzTIWaI7iVgjPEzUZ/mLmC9+jBxx8kvdqviJESI8TRnquw1ep3mMhQ=")).get_value()
+        self.machinestatus["JobBadPartsCounter"]  = JobBadPartsCounter
+        
+        JobCycleCounter                           = self.worker.get_node(self.get_node_safe("ns=9;b=AQAAAKbhKnGK9zM6qvojeIzTIWaI7iVgjPEzUZ/mLmC9+jBxx8kvdqr6I3iMwC9hh/clZuk=")).get_value()
+        self.machinestatus["JobCycleCounter"]     = JobCycleCounter
+        
+        JobGoodPartsCounter                       = self.worker.get_node(self.get_node_safe("ns=9;b=AQAAAKbhKnGK9zM6qvojeIzTIWaI7iVgjPEzUZ/mLmC9+jBxx8kvdq7sL3C54jJgmsAvYYf3JWbp")).get_value()
+        self.machinestatus["JobGoodPartsCounter"] = JobGoodPartsCounter
+
+        JobPartsCounter                           = self.worker.get_node(self.get_node_safe("ns=9;b=AQAAAKbhKnGK9zM6qvojeIzTIWaI7iVgjPEzUZ/mLmC9+jBxx8kvdrniMmCawC9hh/clZuk=")).get_value()
+        self.machinestatus["JobPartsCounter"]     = JobPartsCounter        
         # FEED BACK 
         #Act cycle time
         act_cycle_time                         = self.worker.get_node(self.get_node_safe("ns=9;b=AQAAAKbhKnGK9zM6qvojeIzTIWaI7iVgjPEzUZ/mLmC9+jBxx8A5d4XmFH2E5kA=")).get_value()
