@@ -7,6 +7,7 @@ from routers.realtimedatarouter import realtimedatarouter
 from routers.commandrouter import commandrouter
 from routers.userrouter import userrouter
 from routers.troubleshooting import troubleshootingrouter
+from routers.websocketservice import WebSocketService
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -22,7 +23,7 @@ app.include_router(realtimedatarouter)
 app.include_router(commandrouter)
 app.include_router(userrouter)
 app.include_router(troubleshootingrouter)
-
+app.include_router(WebSocketService)
 @app.get("/smc/injectionmachinemes/healthcheck")
 async def healthcheck():
 

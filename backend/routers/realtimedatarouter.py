@@ -13,12 +13,14 @@ logging.basicConfig(
     format='%(levelname)s - %(asctime)s - %(message)s'
 )
 
-red = redis.Redis(host='Redis',port=6379,db=0)
+# red = redis.Redis(host='Redis',port=6379,db=0)
+red = redis.Redis(host='140.135.106.49',port=6379,db=0)
 realtimedatarouter = APIRouter()
-db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
+# db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
+db_url = "postgresql://postgres:postgres@140.135.106.49:5432/cax"
 engine = create_engine(db_url)
 Base = declarative_base()
-Base = declarative_base()
+
 
 
 
@@ -92,6 +94,18 @@ async def getconnectionstatus():
         pass
     return returnData
 
+@realtimedatarouter.get("/smc/injectionmachinemes/realtimepower/{machineid}")
+async def insertdata(machineid:str):
+    returnData       = {"status":"error","Data":{}}
+    try:
+        machineenergy   = red.get(f'{machineid}_energy')
+        machineenergy   = json.loads(machineenergy)
+        resdata = {"machineenergy":machineenergy}
+        returnData = {"status": "success","Data":resdata}
+    except:
+        logging.error("Get machine energy API crashed ...")
+        pass
+    return returnData
 
 class processlinestatus_requestBody(BaseModel):
     machine_name:str
@@ -112,26 +126,29 @@ async def getconnectionstatus(requestData:processlinestatus_requestBody):
 
 class checktroubleshooting_requestBody(BaseModel):
     machine_name:str
-# Check Machine Troubleshhoting function activate status
-@realtimedatarouter.post("/smc/injectionmachinemes/checktroubleshootingfunction")
+# Check Machine Special module activate status
+@realtimedatarouter.post("/smc/injectionmachinemes/checkmodule")
 async def checktbs(requestData:checktroubleshooting_requestBody):
     returnData       = {"status":"error","Data":{}}
     try:
         machinename = requestData.machine_name
         sql=f'''
-            select troubleshooting,aoimodule from "Machinelist" where machinename  = '{machinename}' limit 1
+            select troubleshooting,aoimodule,powermeter from "Machinelist" where machinename  = '{machinename}' limit 1
         '''
         resdata     = {"activate":"False"}
         with engine.connect() as connection:
             result = connection.execute(text(sql))
             for row in result:
                 resdata["troubleshooting"] = row[0]
-                resdata["aoimodule"] = row[1]
+                resdata["aoimodule"]       = row[1]
+                resdata["powermeter"]      = row[2]
         returnData       = {"status":"success","Data":resdata}
     except Exception as e:
         print(e)
         pass
     return returnData
+
+
 
 class getprocesslineinfo_requestBody(BaseModel):
     machine_name:str
