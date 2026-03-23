@@ -468,7 +468,7 @@ class toyoagent:
 
         try:
             currentcount = int(machinedata['cycle_count'])
-            statusdata["cycle_count"] = {"value":currentcount,"edit":"none"}
+            
             # upload machine real-time data to redis
             print("[Message] Upload realtime data to redis ... ")
 
@@ -476,6 +476,7 @@ class toyoagent:
             self.red.set(f'{self.machineid}_updatetime',current_time)
 
             statusdata = {}
+            statusdata["cycle_count"] = {"value":currentcount,"edit":"none"}
             injection_speed = {}
             injection_speed["Ijv_set1"]       = {"value":machinedata["Ijv_set1"],"edit":"acctivate"}
             injection_speed["Ijv_set2"]       = {"value":machinedata["Ijv_set2"],"edit":"acctivate"}
