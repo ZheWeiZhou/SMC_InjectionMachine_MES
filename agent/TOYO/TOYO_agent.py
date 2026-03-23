@@ -468,6 +468,7 @@ class toyoagent:
 
         try:
             currentcount = int(machinedata['cycle_count'])
+            statusdata["cycle_count"] = {"value":currentcount,"edit":"none"}
             # upload machine real-time data to redis
             print("[Message] Upload realtime data to redis ... ")
 
