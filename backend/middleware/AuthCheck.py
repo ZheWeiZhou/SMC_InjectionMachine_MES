@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
 engine = create_engine(db_url)
 
-whitelist = ["/smc/injectionmachinemes/healthcheck", "/smc/injectionmachinemes/realtimedata","/smc/injectionmachinemes/user/login","/ws/realtimedata/power/current/{machine_id}"]
+whitelist = ["/smc/injectionmachinemes/healthcheck", "/smc/injectionmachinemes/realtimedata","/smc/injectionmachinemes/user/login","/ws/realtimedata/power/current/{machine_id}","/smc/injectionmachinemes/currentcurve/{machineid}"]
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         #  CORS 預檢請求不驗證 Token

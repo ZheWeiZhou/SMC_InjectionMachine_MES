@@ -13,11 +13,9 @@ logging.basicConfig(
     format='%(levelname)s - %(asctime)s - %(message)s'
 )
 
-# red = redis.Redis(host='Redis',port=6379,db=0)
-red = redis.Redis(host='140.135.106.49',port=6379,db=0)
+red = redis.Redis(host='Redis',port=6379,db=0)
 realtimedatarouter = APIRouter()
-# db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
-db_url = "postgresql://postgres:postgres@140.135.106.49:5432/cax"
+db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
 engine = create_engine(db_url)
 Base = declarative_base()
 
@@ -168,7 +166,18 @@ async def checktbs(requestData:getprocesslineinfo_requestBody):
         pass
     return returnData        
 
-
+@realtimedatarouter.get("/smc/injectionmachinemes/currentcurve/{machineid}")
+async def insertdata(machineid:str):
+    returnData       = {"status":"error","Data":{}}
+    try:
+        curve   = red.get(f'PowerMeter_{machineid}_curve')
+        curve   = json.loads(curve)
+        resdata = {"current":curve}
+        returnData = {"status": "success","Data":resdata}
+    except:
+        logging.error("Get machine energy API crashed ...")
+        pass
+    return returnData
 
 
 
