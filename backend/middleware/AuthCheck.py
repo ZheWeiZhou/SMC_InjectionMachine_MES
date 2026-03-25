@@ -5,10 +5,16 @@ from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from fastapi.responses import JSONResponse
+import json
 db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
 engine = create_engine(db_url)
-
-whitelist = ["/smc/injectionmachinemes/healthcheck", "/smc/injectionmachinemes/realtimedata","/smc/injectionmachinemes/user/login","/ws/realtimedata/power/current/{machine_id}","/smc/injectionmachinemes/currentcurve/{machineid}"]
+with open('config.json', 'r', encoding='utf-8') as f:
+    envparameter = json.load(f)
+db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
+engine = create_engine(envparameter["db_url"])
+whitelist = ["/smc/injectionmachinemes/healthcheck", "/smc/injectionmachinemes/realtimedata",
+             "/smc/injectionmachinemes/user/login","/ws/realtimedata/power/current/",
+             "/smc/injectionmachinemes/currentcurve/","ws/realtimedata/power/currentcurve/"]
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         #  CORS 預檢請求不驗證 Token

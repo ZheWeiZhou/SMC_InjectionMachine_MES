@@ -24,8 +24,10 @@ model=''
 with open('routers/model/model_file.pkl','rb') as f:
     model=pickle.load(f)
 
-db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
-engine = create_engine(db_url)
+with open('config.json', 'r', encoding='utf-8') as f:
+    envparameter = json.load(f)
+    
+engine = create_engine(envparameter["db_url"])
 Base = declarative_base()
 
 troubleshootingrouter = APIRouter()

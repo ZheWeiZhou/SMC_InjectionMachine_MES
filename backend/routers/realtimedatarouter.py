@@ -12,11 +12,12 @@ logging.basicConfig(
     level=logging.INFO,  # 可改為 DEBUG、WARNING、ERROR、CRITICAL
     format='%(levelname)s - %(asctime)s - %(message)s'
 )
-
-red = redis.Redis(host='Redis',port=6379,db=0)
+with open('config.json', 'r', encoding='utf-8') as f:
+    envparameter = json.load(f)
+red = redis.Redis(host=envparameter["red_url"],port=6379,db=0)
 realtimedatarouter = APIRouter()
-db_url = "postgresql://postgres:postgres@Injection-Machine-Database:5432/cax"
-engine = create_engine(db_url)
+
+engine = create_engine(envparameter["db_url"])
 Base = declarative_base()
 
 
@@ -171,11 +172,18 @@ async def insertdata(machineid:str):
     returnData       = {"status":"error","Data":{}}
     try:
         curve   = red.get(f'PowerMeter_{machineid}_curve')
-        curve   = json.loads(curve)
+        if curve:
+            curve   = json.loads(curve)
+        else:
+            curve = {
+                "current_a":  [-1],
+                "current_b":  [-1],
+                "current_c":  [-1],
+            }
         resdata = {"current":curve}
         returnData = {"status": "success","Data":resdata}
     except:
-        logging.error("Get machine energy API crashed ...")
+        logging.error("Get machine currentcurve crashed ...")
         pass
     return returnData
 
