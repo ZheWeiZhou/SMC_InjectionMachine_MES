@@ -23,7 +23,10 @@
         <v-col>
             <v-card class="h-100">
                 <v-card-title class="text-h4">Machine Name</v-card-title>
-                <v-card-text class="text-h5">{{machinename}}</v-card-text>
+                <v-card-text class="text-h5">
+                    {{machinename}} 
+                    <PowerMeter v-if="powermeteravailable == 'True' && machineonline == 'Online'" :machinename="machinename"/>
+                </v-card-text>
             </v-card>
         </v-col>
         <v-col>
@@ -248,14 +251,17 @@
 import axios from 'axios';
 import UperNavbar  from './layout/UperNavbar.vue';
 import TroubleShooting  from './layout/Troubleshooting.vue';
+import PowerMeter from './layout/Powermeter.vue'
 import { computed } from 'vue'
   export default {
     name: 'MachineDashboard',
     components: {
             UperNavbar,
-            TroubleShooting
+            TroubleShooting,
+            PowerMeter
     },
     data: () => ({
+        powermeterdialog:false,
         dialog: false,
         machinename :'',
         selectparameter:'',
@@ -289,6 +295,7 @@ import { computed } from 'vue'
         filling_time_set : {"value":'NA',"edit":''},
         troubleshootingavailable : "False",
         aoimoduleavailable : "False",
+        powermeteravailable : "Faslse",
     }),
     methods: {
         createChartOptions(title, yData) {
@@ -424,7 +431,7 @@ import { computed } from 'vue'
         const token = this.$store.getters.getToken;
         this.machinename = name;
         var requestbody = {"machine_name":this.machinename};
-        await axios.post(`${this.$store.getters.getHost}/smc/injectionmachinemes/checktroubleshootingfunction`,requestbody,{
+        await axios.post(`${this.$store.getters.getHost}/smc/injectionmachinemes/checkmodule`,requestbody,{
                 headers:{"accesstoken":token}
             }
             ).then( (response) => {
@@ -433,7 +440,10 @@ import { computed } from 'vue'
         }
         else{
                 this.troubleshootingavailable = response.data.Data.troubleshooting
-                this.aoimoduleavailable = response.data.Data.aoimodule
+                this.aoimoduleavailable  = response.data.Data.aoimodule
+                this.powermeteravailable = response.data.Data.powermeter
+                console.log("11111",this.powermeteravailable)
+
             }
         })
         }

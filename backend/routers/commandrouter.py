@@ -73,36 +73,66 @@ class TargetValueItem(BaseModel):
 class machine_multicontorl_requestBody(BaseModel):
     machine_name:str
     command:List[TargetValueItem]
+    machine_Protocol :str = "euromap77"
 
 @commandrouter.post("/smc/injectionmachinemes/multicontrol")
 async def insertdata(requestData:machine_multicontorl_requestBody):
     returnData       = {"status":"error"}
     machine_name     = requestData.machine_name
     command          = requestData.command
+    machine_Protocol = requestData.machine_Protocol
     try:
-        for commanditem in command:
-            target = commanditem.target
-            value  = commanditem.value
-            float(value)
-            connection = pika.BlockingConnection(pika.ConnectionParameters(
-                host='rabbitmq',
-                credentials=pika.PlainCredentials(rabbitmq_account, rabbitmq_pass)
-            ))
-            channel = connection.channel()
-            channel.queue_declare(queue=machine_name)
-            
-            commandbody = {"Target":target,"Value":value}
-            commandbody = json.dumps(commandbody)
-            channel.basic_publish(exchange='',
-                        routing_key=machine_name,
-                        body=commandbody,
-                        #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
-                        )
-            connection.close()
-        returnData = {"status": "success"}
+        match machine_Protocol:
+            case "euromap77":
+                for commanditem in command:
+                    target = commanditem.target
+                    value  = commanditem.value
+                    float(value)
+                    connection = pika.BlockingConnection(pika.ConnectionParameters(
+                        host='rabbitmq',
+                        credentials=pika.PlainCredentials(rabbitmq_account, rabbitmq_pass)
+                    ))
+                    channel = connection.channel()
+                    channel.queue_declare(queue=machine_name)
+                    
+                    commandbody = {"Target":target,"Value":value}
+                    commandbody = json.dumps(commandbody)
+                    channel.basic_publish(exchange='',
+                                routing_key=machine_name,
+                                body=commandbody,
+                                #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
+                                )
+                    connection.close()
+                returnData = {"status": "success"}
+            case "euromap63":
+                batchtarget = []
+                batchvalue  = []
+                for commanditem in command:
+                    target = commanditem.target
+                    value  = commanditem.value
+                    float(value)
+                    batchtarget.append(target)
+                    batchvalue.append(value)
+                connection = pika.BlockingConnection(pika.ConnectionParameters(
+                        host='rabbitmq',
+                        credentials=pika.PlainCredentials(rabbitmq_account, rabbitmq_pass)
+                    ))
+                commandbody = {"Target":batchtarget,"Value":batchvalue,"Batch":1}
+                commandbody = json.dumps(commandbody)
+                channel = connection.channel()
+                channel.queue_declare(queue=machine_name)
+                channel.basic_publish(
+                    exchange='',
+                    routing_key=machine_name,
+                    body=commandbody,
+                #   properties=pika.BasicProperties(expiration='600000') # TTL Setting task timeout 60 sec will be cancel
+                )
+                returnData = {"status": "success"}
+            case _:
+                returnData = {"status": "error","message":"unknown machine protocol"}
     except Exception as e:
-        print(e)
-        logging.error("Save machine data to db failed ...")
+        print("ERROR @@@@@@@@@@@@@",e)
+        logging.error(e)
         pass
     return returnData
 

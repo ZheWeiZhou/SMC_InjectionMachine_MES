@@ -29,6 +29,8 @@ class toyoagent:
         self.red = redis.Redis(host='192.168.1.50',port=6379,db=0)
         self.db=create_engine("postgresql://postgres:postgres@192.168.1.50:5432/cax")
         self.machineupdatetime = ''
+        [{'nodename':'Ijv_set1','value':'99','name':'第一段射速','unit':'mm/s'}]
+        {'nodename':'Ijv_set1','value':'99','name':'第2段射速','unit':'mm/s'}
         self.nodemap ={
             "Ijv_set1":"@SetVelInj_V_0[1]",
             "Ijv_set2":"@SetVelInj_V_1[1]",

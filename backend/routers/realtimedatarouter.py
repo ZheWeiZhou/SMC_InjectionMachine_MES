@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request
 from pydantic import BaseModel
+from typing import Dict, Any
 from sqlalchemy import create_engine, Column, Integer, String,DateTime,text
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
@@ -186,6 +187,32 @@ async def insertdata(machineid:str):
         logging.error("Get machine currentcurve crashed ...")
         pass
     return returnData
+
+class updatepowerinfo_requestBody(BaseModel):
+    machine_name:str
+    curve:Dict[str, Any]
+    abstract:Dict[str, Any]
+@realtimedatarouter.post("/smc/injectionmachinemes/updatemachinepowerdata")
+async def updatepowerinfo(requestData:updatepowerinfo_requestBody):
+    returnData       = {"status":"error"}
+    try:
+        machine_id = requestData.machine_name
+        curve = requestData.curve
+        abstract = requestData.abstract
+        cal = requestData.cal
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+        machinepowerinfo ={}
+        machinepowerinfo["updatetime"] = current_time
+        machinepowerinfo["abstract"] = abstract
+        machinepowerinfo["curve"] = curve
+        machinepowerinfo["cal"] = cal
+        red.set(f'{machine_id}_energy',json.dumps(machinepowerinfo))
+        returnData = {"status":"success"}
+    except:
+        pass
+    return returnData
+
+
 
 
 

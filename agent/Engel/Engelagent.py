@@ -42,6 +42,7 @@ class engelagent:
         self.machinestatus    = {}
         self.machinefeedback  = {}
         self.machinecurve     = {}
+        self.machinepowerinfo = {}
         self.counter = -1
         self.db = create_engine("postgresql://postgres:postgres@192.168.1.50:5432/cax")
         self.nodemap = {
@@ -261,6 +262,7 @@ class engelagent:
             self.machinecurve["motorpower"]       = self.motorpower
             self.machinecurve["heaterpower"]      = self.heaterpower
 
+
         if self.counter<currentcounter:
             if self.processactivate == True:
                     self.counter = currentcounter
@@ -361,9 +363,22 @@ class engelagent:
                     viscodity_ch = self.worker.get_node("ns=5;i=142").get_value()
                     self.machinefeedback["viscodity_ch"]= viscodity_ch
                     self.processactivate =False
-
+                    # This is for MachinePower DashBoard =========
+                    curveitem = {
+                        "motorpower": {"value":self.machinecurve["motorpower"],"name":"Motor Power","Unit":"kW"},
+                        "heaterpower": {"value":self.machinecurve["heaterpower"],"name":"Heater Power","Unit":"kW"},
+                    }
+                    self.machinepowerinfo["curve"]             =  curveitem
+                    abstractitem = {
+                        "plasticmotorenergy":{"value":float(self.machinefeedback["plasticmotorenergy"])*3.6e6,"name":"Plasticize Power Consumption","Unit":"J"},
+                        "closemoldenergy": {"value":float(self.machinefeedback["closemoldenergy"])*3.6e6,"name":"Close mold Power Consumption","Unit":"J"},
+                        "injection_energy": {"value":float(self.machinefeedback["injection_energy"])*3.6e6,"name":"Injection Power Consumption","Unit":"J"},
+                        "total": {"value":float(self.machinefeedback["plasticmotorenergy"])*3.6e6 + float(self.machinefeedback["closemoldenergy"])*3.6e6 + float(self.machinefeedback["injection_energy"])*3.6e6,"name":"Total Power Consumption","Unit":"J"},
+                    }
+                    self.machinepowerinfo["abstract"] = abstractitem
+                    current_time        = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+                    self.machinepowerinfo["updatetime"] = current_time
                     # TYPE SAVE TO DB CODE HERE !!!!!!!!!!!!
-                    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
                     Session = sessionmaker(bind=self.db)
                     session = Session()
                     insert_sql = injection_machine_db.__table__.insert().values(
@@ -393,6 +408,7 @@ class engelagent:
         self.red.set(f'{self.machineid}_status',json.dumps(self.machinestatus))
         self.red.set(f'{self.machineid}_feedback',json.dumps(self.machinefeedback))
         self.red.set(f'{self.machineid}_curve',json.dumps(self.machinecurve))
+        self.red.set(f'{self.machineid}_energy',json.dumps(self.machinepowerinfo))
 if __name__ == "__main__":
     machineaddress = '192.168.1.15:4840'
     user           = os.environ.get('user', 'localuser1622689641636')

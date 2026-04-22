@@ -1,0 +1,37 @@
+# --- Python 相關 ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+.env
+.pytest_cache/
+
+# --- Node.js 相關 ---
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# --- 模型與大型數據 (機器學習專案必備) ---
+# 避免將數 GB 的模型權重上傳
+*.bin
+*.pth
+*.onnx
+*.gguf
+models/
+datasets/
+output/
+checkpoint-*/
+
+# --- 作業系統與開發工具 ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# --- 工業通訊/日誌 ---
+logs/
+*.log
