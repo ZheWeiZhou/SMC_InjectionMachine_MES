@@ -192,6 +192,7 @@ class updatepowerinfo_requestBody(BaseModel):
     machine_name:str
     curve:Dict[str, Any]
     abstract:Dict[str, Any]
+    cal:Dict[str, Any]
 @realtimedatarouter.post("/smc/injectionmachinemes/updatemachinepowerdata")
 async def updatepowerinfo(requestData:updatepowerinfo_requestBody):
     returnData       = {"status":"error"}

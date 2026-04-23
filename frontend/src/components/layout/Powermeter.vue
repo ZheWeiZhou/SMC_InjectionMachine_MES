@@ -9,27 +9,54 @@
                 <v-btn size="x-small" icon="mdi-close" color="blue darken-1" @click="powermeterdialog = false"></v-btn>
             </v-card-title>
             <v-card-text>
-            <v-row>
+            <v-row v-if="Object.keys(optimization).length > 0" >
                 <v-col>
-                    <v-btn color = "light-green-accent-1">
-                        <v-icon color="#39CC64">mdi-leaf</v-icon>
-                        Energy optimization
-                    </v-btn>
-                </v-col>
+                    <v-card class="pa-6 mb-4" rounded="xl" variant="flat" color="#DCEDC8">
+                        <div class="d-flex justify-space-between align-center mb-6">
+                        <h3 class="text-h6 font-weight-bold" style="color:#33691E;" >Adjustments Suggestion</h3>
+                            <v-btn
+                            size="small"
+                            elevation="0"
+                            rounded="lg"
+                            color="#C5E1A5" 
+                            class="text-green-darken-4 font-weight-bold"
+                            >
+                                <v-icon start>mdi-leaf</v-icon>
+                                APPLY TO MACHINE
+                            </v-btn>
+                        </div>
+                        <div class="d-flex flex-wrap" style="gap: 80px;">
+                        <div  v-for="(item, key) in optimization" :key="key">
+                        <div class="text-right">
+                            <div class="text-caption">{{ item.name }}</div>
+                            <div class="text-h4 font-weight-bold" style="color:#689F38;">
+                            {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.unit  }} </span>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+                    </v-card>
+                </v-col>                
             </v-row>
-            <v-row>
-                <v-col v-for="(item, key) in abstractitem" :key="key" cols="12" sm="6" md="3">
-                    <v-card elevation="2" class="pa-4">
-                    <v-card-title class="text-subtitle-1">
-                        {{ item.name }}
-                    </v-card-title>
-                    
-                    <v-card-text class="text-h6 font-weight-bold">
-                     {{ Math.round( item.value  * 100 / 100) }} {{ item.Unit  }} 
-                    </v-card-text>
+            <v-row v-if="Object.keys(abstractitem).length > 0">
+                <v-col>
+                    <v-card class="pa-6 mb-4" rounded="xl" variant="flat" color="#F1F8E9">
+                        <div class="d-flex justify-space-between align-center mb-6">
+                        <h3 class="text-h6 font-weight-bold" style="color:#2E7D32;">Power Consumption</h3>
+                        </div>
+                        <div class="d-flex flex-wrap" style="gap: 80px;">
+                        <div  v-for="(item, key) in abstractitem" :key="key">
+                        <div class="text-right">
+                            <div class="text-caption ">{{ item.name }}</div>
+                            <div class="text-h4 font-weight-bold text-green-accent-3">
+                            {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.Unit  }} </span>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
                     </v-card>
                 </v-col>
-                </v-row>
+            </v-row>
                 <v-row>
                     <v-col>
                         <v-card>
@@ -68,13 +95,14 @@ import axios from 'axios';
     
     data: () => ({
         powermeterdialog:false,
-        plasticpower:'',
-        injectionpower:'',
-        clampingpower:'',
-        totalpower:'',
         updatetime:'',
         abstractitem:{},
-        curvedatalist:[]
+
+        optimization:[
+            {'nodename':'Ijv_set_1','value':'99','name':'第一段射速','unit':'mm/s'},
+            {'nodename':'Ijv_set_2','value':'90','name':'第二段射速','unit':'mm/s'},
+        ],
+        curvedatalist:[],
         
     }),
     methods: {
@@ -114,17 +142,8 @@ import axios from 'axios';
                     var dataupdatetime = rawinfo["updatetime"]
                     if (dataupdatetime != this.updatetime){
                         this.updatetime         = dataupdatetime
-                        this.abstractitem       = rawinfo?.abstract
-
-            
-                        this.plasticpower       = rawinfo?.abstract?.plasticmotorenergy ?? 0
-                        this.plasticpower       = Math.round(this.plasticpower  * 100) / 100;
-                        this.injectionpower     = rawinfo?.abstract?.injection_energy ?? 0
-                        this.injectionpower     = Math.round(this.injectionpower  * 100) / 100;
-                        this.clampingpower      = rawinfo?.abstract?.closemoldenergy ?? 0
-                        this.clampingpower      = Math.round(this.clampingpower  * 100) / 100;
-                        this.totalpower         = rawinfo?.abstract?.total ?? 0
-                        this.totalpower         = Math.round(this.totalpower  * 100) / 100;
+                        this.abstractitem       = rawinfo?.abstract ?? {}
+                        // this.optimization       = rawinfo?.cal ?? {}
                         var new_curvedata = []
                         for (var k of Object.keys(rawinfo["curve"])) {
                             var item = rawinfo.curve[k];
