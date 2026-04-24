@@ -143,7 +143,7 @@ import axios from 'axios';
                     if (dataupdatetime != this.updatetime){
                         this.updatetime         = dataupdatetime
                         this.abstractitem       = rawinfo?.abstract ?? {}
-                        // this.optimization       = rawinfo?.cal ?? {}
+                        this.optimization       = rawinfo?.cal ?? {}
                         var new_curvedata = []
                         for (var k of Object.keys(rawinfo["curve"])) {
                             var item = rawinfo.curve[k];

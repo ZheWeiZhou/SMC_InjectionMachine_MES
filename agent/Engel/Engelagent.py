@@ -378,6 +378,7 @@ class engelagent:
                     self.machinepowerinfo["abstract"] = abstractitem
                     current_time        = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
                     self.machinepowerinfo["updatetime"] = current_time
+                    self.machinefeedback["updatetime"] = current_time
                     # TYPE SAVE TO DB CODE HERE !!!!!!!!!!!!
                     Session = sessionmaker(bind=self.db)
                     session = Session()
