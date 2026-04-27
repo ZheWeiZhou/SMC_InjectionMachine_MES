@@ -11,6 +11,8 @@
             <v-card-text>
             <v-row v-if="Object.keys(optimization).length > 0" >
                 <v-col>
+                    <v-row>
+                        <v-col>
                     <v-card class="pa-6 mb-4" rounded="xl" variant="flat" color="#DCEDC8">
                         <div class="d-flex justify-space-between align-center mb-6">
                         <h3 class="text-h6 font-weight-bold" style="color:#33691E;" >Adjustments Suggestion</h3>
@@ -31,12 +33,35 @@
                         <div class="text-right">
                             <div class="text-caption">{{ item.name }}</div>
                             <div class="text-h4 font-weight-bold" style="color:#689F38;">
-                            {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.unit  }} </span>
+                            {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.unit }} </span>
                             </div>
                         </div>
                         </div>
                         </div>
+
+                            <v-card class="mt-4" variant="flat" color="#DCEDC8" v-if="Object.keys(powerprediction).length > 0" >
+                                <div class="d-flex justify-space-between align-center mb-6">
+                                <h3 class="text-h6 font-weight-bold" style="color:#33691E;" >Expected Optimization Results</h3>
+                                </div>
+                                <div class="d-flex flex-wrap" style="gap: 80px;">
+                                <div  v-for="(item, key) in powerprediction" :key="key">
+                                <div class="text-right">
+                                    <div class="text-caption">{{ item.name }}</div>
+                                    <div class="text-h4 font-weight-bold" style="color:#689F38;">
+                                    {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.unit }} </span>
+                                    </div>
+                                </div>
+                                </div>
+                                </div>
+                            </v-card>
+
+                        <v-card-actions v-if="isshowmessage">
+                            <v-spacer></v-spacer>
+                            <span class="text-caption">{{ messagetext }}</span>
+                        </v-card-actions>
                     </v-card>
+                    </v-col>
+                    </v-row>
                 </v-col>                
             </v-row>
             <v-row v-if="Object.keys(abstractitem).length > 0">
@@ -55,6 +80,21 @@
                         </div>
                         </div>
                         </div>
+                        <v-card v-if="Object.keys(lasttimepowerprediction).length > 0" class="mt-4" variant="flat" color="#F1F8E9">
+                            <div class="d-flex justify-space-between align-center mb-6">
+                            <h3 class="text-h6 font-weight-bold" style="color:#2E7D32;">Predicted Energy Consumption</h3>
+                            </div>
+                            <div class="d-flex flex-wrap" style="gap: 80px;">
+                            <div  v-for="(item, key) in lasttimepowerprediction" :key="key">
+                            <div class="text-right">
+                                <div class="text-caption ">{{ item.name }}</div>
+                                <div class="text-h4 font-weight-bold text-green-accent-3">
+                                {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.unit  }} </span>
+                                </div>
+                            </div>
+                            </div>
+                            </div>
+                        </v-card>
                     </v-card>
                 </v-col>
             </v-row>
@@ -103,7 +143,15 @@ import axios from 'axios';
             {'nodename':'Ijv_set1','value':'20','name':'第一段射速','unit':'mm/s'},
             {'nodename':'Ijv_set2','value':'19','name':'第二段射速','unit':'mm/s'},
         ],
+        powerprediction:[
+            {'nodename':'','value':'20000','name':'充填能耗','unit':'J'},
+            {'nodename':'','value':'19000','name':'保壓能耗','unit':'J'},
+        ],
+        lasttimepowerprediction:[],
+        haveupdate:false,
         curvedatalist:[],
+        isshowmessage:false,
+        messagetext:''
         
     }),
     methods: {
@@ -144,7 +192,15 @@ import axios from 'axios';
                     if (dataupdatetime != this.updatetime){
                         this.updatetime         = dataupdatetime
                         this.abstractitem       = rawinfo?.abstract ?? {}
+                        if(this.haveupdate){
+                            this.lasttimepowerprediction = this.powerprediction
+                            this.haveupdate = false
+                        }
+                        else{
+                            this.lasttimepowerprediction = []
+                        }
                         this.optimization       = rawinfo?.cal ?? {}
+                        this.powerprediction = rawinfo?.powerprediction ?? {}
                         var new_curvedata = []
                         for (var k of Object.keys(rawinfo["curve"])) {
                             var item = rawinfo.curve[k];
@@ -161,7 +217,6 @@ import axios from 'axios';
             })
     },
     async updateparameter(){
-        console.log('ATIVSTE')
         const token = this.$store.getters.getToken;
         let command = []
         this.optimization.forEach((item) =>{
@@ -184,7 +239,12 @@ import axios from 'axios';
             if (response.data.status=='error'){
                     console.log('Fail')
             }else{
-                console.log("UPDATE PARAMETER")
+                this.messagetext = "Parameter updates success"
+                this.isshowmessage = true
+                this.haveupdate = true
+                setTimeout(() => {
+                this.isshowmessage = false
+                }, 5000);
             }
         })
     }
