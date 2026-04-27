@@ -20,6 +20,7 @@
                             rounded="lg"
                             color="#C5E1A5" 
                             class="text-green-darken-4 font-weight-bold"
+                            @click="updateparameter()"
                             >
                                 <v-icon start>mdi-leaf</v-icon>
                                 APPLY TO MACHINE
@@ -99,8 +100,8 @@ import axios from 'axios';
         abstractitem:{},
 
         optimization:[
-            {'nodename':'Ijv_set_1','value':'99','name':'第一段射速','unit':'mm/s'},
-            {'nodename':'Ijv_set_2','value':'90','name':'第二段射速','unit':'mm/s'},
+            {'nodename':'Ijv_set1','value':'20','name':'第一段射速','unit':'mm/s'},
+            {'nodename':'Ijv_set2','value':'19','name':'第二段射速','unit':'mm/s'},
         ],
         curvedatalist:[],
         
@@ -159,6 +160,34 @@ import axios from 'axios';
             }
             })
     },
+    async updateparameter(){
+        console.log('ATIVSTE')
+        const token = this.$store.getters.getToken;
+        let command = []
+        this.optimization.forEach((item) =>{
+            command.push({"target":item["nodename"],"value":item["value"]})
+        })
+        let machine_Protocol = "euromap77"
+        const euromap63list = ["TOYO"]
+        if(euromap63list.includes(this.machinename)){
+            machine_Protocol = "euromap63"
+        }
+        const requestbody = {
+           "machine_name":this.machinename,
+           "command":command,
+           "machine_Protocol":machine_Protocol
+        }
+        await axios.post(`${this.$store.getters.getHost}/smc/injectionmachinemes/multicontrol`,requestbody,{
+                headers:{"accesstoken":token}
+            }
+            ).then( (response) => {
+            if (response.data.status=='error'){
+                    console.log('Fail')
+            }else{
+                console.log("UPDATE PARAMETER")
+            }
+        })
+    }
 },
     mounted(){
         var token = this.$cookies.get('accesstoken');
