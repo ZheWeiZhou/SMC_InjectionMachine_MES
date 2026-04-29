@@ -565,12 +565,13 @@ class toyoagent:
 
             
             if self.previous_count < 0:
-                self.previous_count = int(machinedata['cycle_count'])
+                self.previous_count = currentcount
             else:
                 # Determine whether data needs to be uploaded to the database.
                 if self.previous_count != currentcount:
-                    current_time = datetime.now().strftime("%Y-%m-%d  %H:%M:%S")
-                    feedbackdata["updatetime"] = current_time
+                    current_time = datetime.now().strftime("%Y-%m-%d")
+                    update_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    feedbackdata["updatetime"] = update_time
                     self.red.set(f'{self.machineid}_feedback',json.dumps(feedbackdata))
                     self.red.set(f'{self.machineid}_curve',json.dumps(curvedata))
                     print("[Message] Detect machine completed the process, Start to upload data to db ... ")
