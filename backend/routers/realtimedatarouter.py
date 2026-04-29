@@ -194,6 +194,7 @@ class updatepowerinfo_requestBody(BaseModel):
     abstract:Dict[str, Any] = {}
     cal:List[Dict[str, Any]] = []
     powerprediction:List[Dict[str, Any]] = []
+    expectation:List[Dict[str, Any]] = []
 @realtimedatarouter.post("/smc/injectionmachinemes/updatemachinepowerdata")
 async def updatepowerinfo(requestData:updatepowerinfo_requestBody):
     returnData       = {"status":"error"}
@@ -203,13 +204,18 @@ async def updatepowerinfo(requestData:updatepowerinfo_requestBody):
         abstract = requestData.abstract
         cal = requestData.cal
         powerprediction = requestData.powerprediction
+        expectation = requestData.powerprediction
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         machinepowerinfo ={}
         machinepowerinfo["updatetime"] = current_time
         machinepowerinfo["abstract"] = abstract
         machinepowerinfo["curve"] = curve
         machinepowerinfo["cal"] = cal
+        # 用當前機台參數算出來的能耗預測值
         machinepowerinfo["powerprediction"] = powerprediction
+        # 用優化參數算出來的能耗預測值
+        machinepowerinfo["expectation"] = expectation 
+
         red.set(f'{machine_id}_energy',json.dumps(machinepowerinfo))
         returnData = {"status":"success"}
     except:
