@@ -569,7 +569,7 @@ class toyoagent:
             else:
                 # Determine whether data needs to be uploaded to the database.
                 if self.previous_count != currentcount:
-                    current_time = datetime.now().strftime("%Y-%m-%d")
+                    current_time = datetime.now().strftime("%Y-%m-%d  %H:%M:%S")
                     feedbackdata["updatetime"] = current_time
                     self.red.set(f'{self.machineid}_feedback',json.dumps(feedbackdata))
                     self.red.set(f'{self.machineid}_curve',json.dumps(curvedata))
