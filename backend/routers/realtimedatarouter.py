@@ -204,7 +204,7 @@ async def updatepowerinfo(requestData:updatepowerinfo_requestBody):
         abstract = requestData.abstract
         cal = requestData.cal
         powerprediction = requestData.powerprediction
-        expectation = requestData.powerprediction
+        expectation = requestData.expectation
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         machinepowerinfo ={}
         machinepowerinfo["updatetime"] = current_time
