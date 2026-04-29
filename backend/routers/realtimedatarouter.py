@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request
 from pydantic import BaseModel
-from typing import Dict, Any
+from typing import Dict, Any,List
 from sqlalchemy import create_engine, Column, Integer, String,DateTime,text
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
@@ -190,9 +190,10 @@ async def insertdata(machineid:str):
 
 class updatepowerinfo_requestBody(BaseModel):
     machine_name:str
-    curve:Dict[str, Any]
-    abstract:Dict[str, Any]
-    cal:Dict[str, Any]
+    curve:Dict[str, Any] = {}
+    abstract:Dict[str, Any] = {}
+    cal:List[Dict[str, Any]] = []
+    powerprediction:List[Dict[str, Any]] = []
 @realtimedatarouter.post("/smc/injectionmachinemes/updatemachinepowerdata")
 async def updatepowerinfo(requestData:updatepowerinfo_requestBody):
     returnData       = {"status":"error"}
@@ -201,12 +202,14 @@ async def updatepowerinfo(requestData:updatepowerinfo_requestBody):
         curve = requestData.curve
         abstract = requestData.abstract
         cal = requestData.cal
+        powerprediction = requestData.powerprediction
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         machinepowerinfo ={}
         machinepowerinfo["updatetime"] = current_time
         machinepowerinfo["abstract"] = abstract
         machinepowerinfo["curve"] = curve
         machinepowerinfo["cal"] = cal
+        machinepowerinfo["powerprediction"] = powerprediction
         red.set(f'{machine_id}_energy',json.dumps(machinepowerinfo))
         returnData = {"status":"success"}
     except:

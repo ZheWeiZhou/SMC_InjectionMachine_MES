@@ -556,13 +556,11 @@ class toyoagent:
             feedbackdata["Max_ij_speed"] = machinedata["Max_ij_speed"]
             feedbackdata["Min_ij_pressure"] = machinedata["Min_ij_pressure"]
             feedbackdata["Min_ij_speed"] = machinedata["Min_ij_speed"]
-            self.red.set(f'{self.machineid}_feedback',json.dumps(feedbackdata))
             actpressure = [machinedata["Act_ij_pressure1"],machinedata["Act_ij_pressure2"],machinedata["Act_ij_pressure3"],machinedata["Act_ij_pressure4"],machinedata["Act_ij_pressure5"],machinedata["Act_ij_pressure6"],machinedata["Act_ij_pressure7"]]
             actspeed = [machinedata["Act_ij_speed1"],machinedata["Act_ij_speed2"],machinedata["Act_ij_speed3"],machinedata["Act_ij_speed4"],machinedata["Act_ij_speed5"],machinedata["Act_ij_speed6"],machinedata["Act_ij_speed7"]]
             curvedata = {}
             curvedata["actpressure"] = actpressure
             curvedata["actspeed"]    = actspeed
-            self.red.set(f'{self.machineid}_curve',json.dumps(curvedata))
 
 
             
@@ -571,8 +569,12 @@ class toyoagent:
             else:
                 # Determine whether data needs to be uploaded to the database.
                 if self.previous_count != currentcount:
-                    print("[Message] Detect machine completed the process, Start to upload data to db ... ")
                     current_time = datetime.now().strftime("%Y-%m-%d")
+                    feedbackdata["updatetime"] = current_time
+                    self.red.set(f'{self.machineid}_feedback',json.dumps(feedbackdata))
+                    self.red.set(f'{self.machineid}_curve',json.dumps(curvedata))
+                    print("[Message] Detect machine completed the process, Start to upload data to db ... ")
+    
                     current_time = current_time + ' ' +  machinedata["time"]
                     Session = sessionmaker(bind=self.db)
                     session = Session()

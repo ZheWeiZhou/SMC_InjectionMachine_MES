@@ -5,6 +5,7 @@ import json
 import sys
 import os
 from controler.powermeter_handler import PowerMeterCollecter
+from controler.machine_endsignal_handler import MachineEndSignalHandler
 
 
 WebSocketService= APIRouter()
@@ -56,4 +57,27 @@ async def stream_machine_current(websocket: WebSocket, machine_id: str):
     except WebSocketDisconnect:
         print(f"{client_host} disconnet {machine_id} current websocket")
 
+@WebSocketService.websocket("/ws/realtimedata/machine/cycleEndSignal/{machine_id}")
+async def stream_machine_current(websocket: WebSocket, machine_id: str):
+    client_host= websocket.client.host
+    await websocket.accept()
+    lastupdatetime = -1
+    supportmachinelist = ["TOYO","Engel-120"]
+    if machine_id not in supportmachinelist:
+        await websocket.send_json({"error":"Invalid Machine ID"})
+        await websocket.close()
+        return
+    try: 
+       while True:
+           updatetime= MachineEndSignalHandler.getfeedbackupdatetime(machine_id)
+           if lastupdatetime !=-1 and updatetime != lastupdatetime:
+               lastupdatetime = updatetime
+               data= {
+                    "machine_id": machine_id,
+                }
+               await websocket.send_json(data)
+           lastupdatetime = updatetime
+           await asyncio.sleep(0.5)
+    except WebSocketDisconnect:
+        print(f"{client_host} disconnet {machine_id} cycleEndSignal websocket")
            
