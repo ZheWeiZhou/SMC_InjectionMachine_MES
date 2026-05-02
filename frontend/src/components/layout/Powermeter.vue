@@ -9,6 +9,12 @@
                 <v-btn size="x-small" icon="mdi-close" color="blue darken-1" @click="powermeterdialog = false"></v-btn>
             </v-card-title>
             <v-card-text>
+            <v-row>
+                <v-col>
+                    <highcharts :options="createGroupedColumnOptions('製程能耗變化',processhistory.updatetime, processhistory.dataset
+                    ,processhistory.displayunit)" />
+                </v-col>
+            </v-row>
             <v-row v-if="Object.keys(optimization).length > 0" >
                 <v-col>
                     <v-row>
@@ -153,13 +159,66 @@ import axios from 'axios';
         ],
         curvedatalist:[],
         isshowmessage:false,
-        messagetext:''
+        messagetext:'',
+        processhistory:{
+            updatetime:[],
+            dataset:[],
+            template:'',
+            displayunit:'KJ'
+        },
+        categoriestest: ['2026-05-02 11:13', '2026-05-02 11:15', '2026-05-02 11:17', '2026-05-02 11:20', '2026-05-02 11:22'],
+        seriesDatatest:[
+        {
+            name: 'Injection Power Consumption',
+            data: [35, 30, 28, 26, 25, 24]
+        },
+        {
+            name: 'Packing Power Consumption',
+            data: [30, 29, 28, 28, 26, 25]
+        },
+        {
+            name: 'Close mold Power Consumption',
+            data: [35, 30, 28, 26, 25, 24]
+        },
+
+    ]
         
     }),
     methods: {
     sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     },
+    createGroupedColumnOptions(title, categories, seriesData, unit) {
+    return {
+        chart: {
+            type: 'column' // 改為柱狀圖
+        },
+        title: {
+            text: title
+        },
+        xAxis: {
+            categories: categories, // 傳入 ['USA', 'China', ...]
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: unit // 傳入單位，例如 '1000 metric tons (MT)'
+            }
+        },
+        tooltip: {
+            valueSuffix: ` (${unit})` // 滑鼠移上去時顯示單位
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        // seriesData 預期是一個陣列物件: [{ name: 'Corn', data: [...] }, { name: 'Wheat', data: [...] }]
+        series: seriesData 
+        }
+        },
     createChartOptions(title, yData,Unit) {
         const categories = yData.map((_, i) => (i + 1).toString())
         return {
@@ -178,6 +237,36 @@ import axios from 'axios';
                 }]
             }
             },
+    update_processhistory(abstract,dataupdatetime){
+        if(this.processhistory.updatetime.length == 0){
+            this.processhistory.template = abstract
+        }
+        const keystemplate = Object.keys(this.processhistory.template).sort();
+        const keysabstract = Object.keys(abstract).sort();
+        //如果格式檢查失敗，執行初始化重置
+        if (!keystemplate.every((key, index) => key === keysabstract[index])) {
+            this.processhistory.updatetime = [];
+            this.processhistory.dataset = [];
+            this.processhistory.template = abstract;
+        }
+        this.processhistory.updatetime.push(dataupdatetime);
+        if (this.processhistory.updatetime.length > 5) {
+            this.processhistory.updatetime.shift();
+        }
+        for (const item of Object.values(abstract)) {
+            const { name, value } = item;
+            let series = this.processhistory.dataset.find(d => d.name === name);
+            if (!series) {
+                // 若找不到（或剛被清空），則建立新數列
+                this.processhistory.dataset.push({ name: name, data: [value] });
+            } else {
+                series.data.push(value); 
+                if (series.data.length > 5) series.data.shift();
+            }
+        }
+
+
+    },
     async getenergyinfo(){
         const token = this.$store.getters.getToken;
         await axios.get(`${this.$store.getters.getHost}/smc/injectionmachinemes/realtimepower/${this.machinename}`,{
@@ -197,7 +286,6 @@ import axios from 'axios';
                         this.optimization       = rawinfo?.cal ?? {}
                         this.powerprediction = rawinfo?.powerprediction ?? {}
                         this.expectation = rawinfo?.expectation ?? {}
-                        console.log(this.expectation)
                         var new_curvedata = []
                         for (var k of Object.keys(rawinfo["curve"])) {
                             var item = rawinfo.curve[k];
@@ -206,6 +294,8 @@ import axios from 'axios';
                             new_curvedata.push(curveitem);
                         }
                         this.curvedatalist = new_curvedata
+                        this.update_processhistory(this.abstractitem,this.updatetime)
+
                     }
                 } catch (err) {
                     console.log(err);
