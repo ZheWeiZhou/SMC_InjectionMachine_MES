@@ -90,7 +90,7 @@ class DeltaPowerMeterRTUAgent:
         self.comport = comport
         self.baudrate = baudrate
         self.actiondetecter = actiondetecter
-        self.moldcloseactivate = 0
+        self.processactivate = 0
         self.injection_start_index = -1
         self.injection_end_index = -1
         self.packing_start_index = -1
@@ -196,11 +196,20 @@ class DeltaPowerMeterRTUAgent:
             self.red.set(f'PowerMeter_{self.machineID}_realtime_current_',json.dumps(powermeterinfo))
         machinestatus = self.actiondetecter.get_machine_status()
         if machinestatus["MoldOpen"] == False:
-            if self.moldcloseactivate == 0:
-                print('MoldClose')
+            if self.processactivate == False:
+                self.power_curve.append(powermeterinfo["power"])
+                if len(self.power_curve) > 30 :
+                    self.power_curve = self.power_curve[-30:]
+            
+        if machinestatus["Injection"] == True:
+            if self.processactivate == False:
+                print("Process Start")
+                self.processactivate = True
                 self.collectstarttime = time.perf_counter()
-
-            self.moldcloseactivate = 1
+                if self.injection_start_index == -1:
+                    self.injection_start_index = len(self.power_curve)
+        
+        if self.processactivate == True and machinestatus["MoldOpen"] == False:
             self.current_curve_a.append(powermeterinfo["current_a"])
             self.current_curve_b.append(powermeterinfo["current_b"])
             self.current_curve_c.append(powermeterinfo["current_c"])
@@ -208,29 +217,30 @@ class DeltaPowerMeterRTUAgent:
             self.voltage_curve_bc.append(powermeterinfo["voltage_bc"])
             self.voltage_curve_ca.append(powermeterinfo["voltage_ca"])
             self.power_curve.append(powermeterinfo["power"])
-            if machinestatus["Injection"] == True:
-                if self.injection_start_index == -1:
-                    print('Injection Start')
-                    self.injection_start_index = len(self.current_curve_a)  +18
             if machinestatus["Injection"] == False:
                 if self.injection_start_index != -1 and self.injection_end_index == -1:
-                    self.injection_end_index = len(self.current_curve_a)  +18
+                    self.injection_end_index = len(self.power_curve) 
             if machinestatus["Packing"] == True:
                 if self.packing_start_index == -1:
-                    print('Packing Start')
-                    self.packing_start_index = len(self.current_curve_a) +18
+                    self.packing_start_index = len(self.power_curve)
             if machinestatus["Packing"] == False:
                 if self.packing_start_index != -1 and self.packing_end_index == -1:
-                    self.packing_end_index = len(self.current_curve_a)  +18
+                    self.packing_end_index = len(self.power_curve)
         else:
-            if self.moldcloseactivate == 1:
+            if self.processactivate == True:
+                # print("Process Finish")
                 self.collectendtime = time.perf_counter()
                 totaltime = self.collectendtime - self.collectstarttime
-                injectionpowersearchreange = self.power_curve[self.injection_start_index-20:self.injection_start_index]
+
+                # print('injection_start_index',self.injection_start_index)
+                # print('injection_end_index',self.injection_end_index)
+                # print('power_curve',len(self.power_curve))
+                injectionpowersearchreange = self.power_curve[self.injection_start_index:self.packing_start_index+18 ]
                 injectionsigindex = self.modifyinjectionstartindex(injectionpowersearchreange)
-                self.injection_start_index = self.injection_start_index - len(injectionpowersearchreange) + injectionsigindex
-                self.packing_start_index = self.packing_start_index - len(injectionpowersearchreange) + injectionsigindex
-                self.packing_end_index = self.packing_end_index - len(injectionpowersearchreange) + injectionsigindex
+                # print('injectionsigindex',injectionsigindex)
+                self.injection_start_index = self.injection_start_index  + injectionsigindex
+                self.packing_start_index = self.packing_start_index  + injectionsigindex
+                self.packing_end_index = self.packing_end_index  + injectionsigindex
                 injection_power_curve = self.power_curve[self.injection_start_index:self.packing_start_index]
                 packing_power_curve = self.power_curve[self.packing_start_index:self.packing_end_index]
                 open_mold_power_curve = self.power_curve[self.packing_end_index:]
@@ -238,8 +248,8 @@ class DeltaPowerMeterRTUAgent:
                 injectiontotalpower = self.calPower(injection_power_curve,timedelta)
                 packingtotalpower = self.calPower(packing_power_curve,timedelta)
                 openmoldtotalpower = self.calPower(open_mold_power_curve,timedelta)
-                print(f"injectiontotalpower: {injectiontotalpower} Kj, packingtotalpower: {packingtotalpower} Kj, openmoldtotalpower: {openmoldtotalpower} Kj")
-                # vlines_position = [self.injection_start_index, self.packing_start_index, self.packing_end_index]
+                # print(f"injectiontotalpower: {injectiontotalpower} Kj, packingtotalpower: {packingtotalpower} Kj, openmoldtotalpower: {openmoldtotalpower} Kj")
+                vlines_position = [self.injection_start_index, self.packing_start_index, self.packing_end_index]
                 # plot_line_chart(self.power_curve, vlines=vlines_position, title="機台功耗監控")
                 powersummary = {
                     "injectiontotalpower":injectiontotalpower,
@@ -254,7 +264,7 @@ class DeltaPowerMeterRTUAgent:
                 這邊把每個動作的能耗都算完然後上拋
                 """
                 # totalenergy , energycurve = self.calculate_3p_energy_curve_full(self.voltage_curve_ab,self.voltage_curve_bc,self.voltage_curve,totaltime)
-                self.moldcloseactivate = 0
+                self.processactivate = False
                 self.injection_start_index = -1
                 self.injection_end_index = -1
                 self.packing_start_index = -1
@@ -275,7 +285,7 @@ if __name__ == "__main__":
 
     redis_url= "140.135.106.49"
     machineID = "Tachung"
-    agent = DeltaPowerMeterRTUAgent(redis_url,machineID,'COM5',115200,actiondetecter)
+    agent = DeltaPowerMeterRTUAgent(redis_url,machineID,'COM3',115200,actiondetecter)
     agent.conncet()
     while True:
         time.sleep(0.001)
