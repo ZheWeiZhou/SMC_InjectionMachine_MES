@@ -1,6 +1,7 @@
 <template>
-<v-btn class="ml-5" icon @click="powermeterdialog = true">
-    <v-icon color="#39CC64">mdi-leaf</v-icon>
+<v-btn class="ml-5" text @click="powermeterdialog = true">
+    <v-icon left color="#39CC64">mdi-leaf</v-icon>
+    能耗觀測
 </v-btn>
 <!-- POWER METER DIALOG -->
     <v-dialog v-model="powermeterdialog" width="95%" height="150%" transition="dialog-bottom-transition" >
@@ -14,6 +15,63 @@
                     <highcharts :options="createGroupedColumnOptions('製程能耗變化',processhistory.updatetime, processhistory.dataset
                     ,processhistory.displayunit)" />
                 </v-col>
+            </v-row>
+            <v-row >
+                <v-col>
+                    <v-row>
+                        <v-col>
+                    <v-card class="pa-6 mb-4" rounded="xl" variant="flat" color="#F0F4FF">
+                        <div class="d-flex justify-space-between align-center mb-6">
+                        <h3 class="text-h6 font-weight-bold" style="color:#2D3748;" >Initial Parameter
+                            <v-btn
+                            size="small"
+                            elevation="0"
+                            rounded="lg"
+                            class="text-green-darken-4 font-weight-bold"
+                            @click="clearfirststep()"
+                            > 
+                            <v-icon start>mdi-close-circle-outline</v-icon>
+                                Clear
+                            </v-btn>
+                        </h3>
+                        </div>
+                        <div class="d-flex flex-wrap" style="gap: 80px;">
+                        <div  v-for="(item, key) in firsttepparametersetting" :key="key">
+                        <div class="text-right">
+                            <div class="text-caption" style="color:#1E1B4B;">{{ item.name }}</div>
+                            <div class="text-h4 font-weight-bold" style="color:#1E1B4B;">
+                            {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.unit }} </span>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+                    </v-card>
+                    </v-col>
+                    </v-row>
+                </v-col>                  
+            </v-row>
+            <v-row >
+                <v-col>
+                    <v-row>
+                        <v-col>
+                    <v-card class="pa-6 mb-4" rounded="xl" variant="flat" color="#ACD6FF">
+                        <div class="d-flex justify-space-between align-center mb-6">
+                        <h3 class="text-h6 font-weight-bold" style="color:#1E1B4B;" >Current Parameter</h3>
+                        </div>
+                        <div class="d-flex flex-wrap" style="gap: 80px;">
+                        <div  v-for="(item, key) in currentsetting" :key="key">
+                        <div class="text-right">
+                            <div class="text-caption" style="color:#1E1B4B;">{{ item.name }}</div>
+                            <div class="text-h4 font-weight-bold" style="color:#1E1B4B;">
+                            {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.unit }} </span>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+                    </v-card>
+                    </v-col>
+                    </v-row>
+                </v-col>                  
             </v-row>
             <v-row v-if="Object.keys(optimization).length > 0" >
                 <v-col>
@@ -31,7 +89,7 @@
                             @click="updateparameter()"
                             >
                                 <v-icon start>mdi-leaf</v-icon>
-                                APPLY TO MACHINE
+                                Optimization
                             </v-btn>
                         </div>
                         <div class="d-flex flex-wrap" style="gap: 80px;">
@@ -72,35 +130,50 @@
             </v-row>
             <v-row v-if="Object.keys(abstractitem).length > 0">
                 <v-col>
-                    <v-card class="pa-6 mb-4" rounded="xl" variant="flat" color="#F1F8E9">
-                        <div class="d-flex justify-space-between align-center mb-6">
-                        <h3 class="text-h6 font-weight-bold" style="color:#2E7D32;">Power Consumption</h3>
+                    <v-card   class="pa-6 mb-4" rounded="xl" variant="flat" color="#F1F8E9">
+                        <div class="d-flex justify-space-between align-center mb-6" v-if="Object.keys(firsttepabstractitem).length > 0">
+                            <h3 class="text-h6 font-weight-bold" style="color:#844200;">Initial Power Consumption</h3>
                         </div>
-                        <div class="d-flex flex-wrap" style="gap: 80px;">
-                        <div  v-for="(item, key) in abstractitem" :key="key">
-                        <div class="text-right">
-                            <div class="text-caption ">{{ item.name }}</div>
-                            <div class="text-h4 font-weight-bold text-green-accent-3">
-                            {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.Unit  }} </span>
+                        <div class="d-flex flex-wrap" style="gap: 80px;" v-if="Object.keys(firsttepabstractitem).length > 0">
+                            <div  v-for="(item, key) in firsttepabstractitem" :key="key">
+                                <div class="text-right">
+                                    <div class="text-caption">{{ item.name }}</div>
+                                    <div class="text-h4 font-weight-bold" style="color:#844200;">
+                                    {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.Unit  }} </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <v-card class="mt-4"  variant="flat" color="#F1F8E9">
+                        <div class="d-flex justify-space-between align-center mb-6">
+                            <h3 class="text-h6 font-weight-bold" style="color:#2E7D32;">Power Consumption</h3>
                         </div>
+                        <div class="d-flex flex-wrap" style="gap: 80px;">
+                            <div  v-for="(item, key) in abstractitem" :key="key">
+                                <div class="text-right">
+                                    <div class="text-caption ">{{ item.name }}</div>
+                                    <div class="text-h4 font-weight-bold text-green-accent-3">
+                                    {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.Unit  }} </span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        </v-card>
                         <v-card v-if="Object.keys(expectation).length > 0"  class="mt-4"  variant="flat" color="#F1F8E9">
-                        <div class="d-flex justify-space-between align-center mb-6">
-                        <h3 class="text-h6 font-weight-bold" style="color:#2E7D32;">Predicted Energy Consumption</h3>
-                        </div>
-                        <div class="d-flex flex-wrap" style="gap: 80px;">
-                        <div  v-for="(item, key) in expectation" :key="key">
-                        <div class="text-right">
-                            <div class="text-caption ">{{ item.name }}</div>
-                            <div class="text-h4 font-weight-bold text-green-accent-3">
-                            {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.unit  }} </span>
+                            <div class="d-flex justify-space-between align-center mb-6">
+                            <h3 class="text-h6 font-weight-bold" style="color:#2E7D32;">Predicted Energy Consumption</h3>
                             </div>
-                        </div>
-                        </div>
-                        </div>
-                    </v-card>
+                            <div class="d-flex flex-wrap" style="gap: 80px;">
+                            <div  v-for="(item, key) in expectation" :key="key">
+                            <div class="text-right">
+                                <div class="text-caption ">{{ item.name }}</div>
+                                <div class="text-h4 font-weight-bold text-green-accent-3">
+                                {{ Math.round( item.value  * 100 / 100) }} <span class="text-body-2 ml-1">{{ item.unit  }} </span>
+                                </div>
+                            </div>
+                            </div>
+                            </div>
+                        </v-card>
                     </v-card>
                 </v-col>
             </v-row>
@@ -142,9 +215,11 @@ import axios from 'axios';
     
     data: () => ({
         powermeterdialog:false,
+        currentsetting:[],
         updatetime:'',
         abstractitem:{},
-
+        firsttepparametersetting:[],
+        firsttepabstractitem:{},
         optimization:[
             {'nodename':'Ijv_set1','value':'20','name':'第一段射速','unit':'mm/s'},
             {'nodename':'Ijv_set2','value':'19','name':'第二段射速','unit':'mm/s'},
@@ -295,8 +370,12 @@ import axios from 'axios';
                         }
                         this.curvedatalist = new_curvedata
                         this.update_processhistory(this.abstractitem,this.updatetime)
-
                     }
+                    var fiststep = response.data.Data.originstatus
+                    this.firsttepparametersetting = fiststep?.parameter_setting ?? []
+                    this.firsttepabstractitem = fiststep?.abstract ?? {}
+                    this.currentsetting = rawinfo.parameter_setting
+
                 } catch (err) {
                     console.log(err);
                 }
@@ -331,6 +410,20 @@ import axios from 'axios';
                 setTimeout(() => {
                 this.isshowmessage = false
                 }, 5000);
+            }
+        })
+    },
+    async clearfirststep(){
+        const token = this.$store.getters.getToken;
+        const requestbody = {
+           "machine_name":this.machinename,
+        }
+         await axios.post(`${this.$store.getters.getHost}/smc/injectionmachinemes/resetpowerfirststep`,requestbody,{
+                headers:{"accesstoken":token}
+            }
+            ).then( (response) => {
+            if (response.data.status=='error'){
+                    console.log('Fail')
             }
         })
     }

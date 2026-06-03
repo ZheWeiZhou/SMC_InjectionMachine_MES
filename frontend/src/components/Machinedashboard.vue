@@ -19,13 +19,16 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-row class="mt-10 mr-1 ml-1">
+        <PowerMeter v-if="powermeteravailable == 'True' && machineonline == 'Online'" :machinename="machinename"/>
+        <PVT v-if="machineonline == 'Online'" :machinename="machinename"/>
+    </v-row>
     <v-row class="mt-5 mr-1 ml-1">
         <v-col>
             <v-card class="h-100">
                 <v-card-title class="text-h4">Machine Name</v-card-title>
                 <v-card-text class="text-h5">
                     {{machinename}} 
-                    <PowerMeter v-if="powermeteravailable == 'True' && machineonline == 'Online'" :machinename="machinename"/>
                 </v-card-text>
             </v-card>
         </v-col>
@@ -252,13 +255,15 @@ import axios from 'axios';
 import UperNavbar  from './layout/UperNavbar.vue';
 import TroubleShooting  from './layout/Troubleshooting.vue';
 import PowerMeter from './layout/Powermeter.vue'
+import PVT from './layout/PVT.vue'
 import { computed } from 'vue'
   export default {
     name: 'MachineDashboard',
     components: {
             UperNavbar,
             TroubleShooting,
-            PowerMeter
+            PowerMeter,
+            PVT
     },
     data: () => ({
         powermeterdialog:false,

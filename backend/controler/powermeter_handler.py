@@ -14,7 +14,7 @@ class PowerMeterCollecter:
             "current_c":-1,
             "online": False
             }
-        powermeterupdatetime= self.red.get(f"PowerMeter_{machineID}_current_updatetime")
+        powermeterupdatetime= self.red.get(f"PowerMeter_{machineID}_realtime_current_updatetime")
         if powermeterupdatetime is None:
             return current_response
         powermeterupdatetime = powermeterupdatetime.decode('utf-8')
@@ -24,7 +24,7 @@ class PowerMeterCollecter:
         seconds_diff = time_difference.total_seconds()
         if seconds_diff >5:
             return current_response
-        raw_current= self.red.get(f"PowerMeter_{machineID}_current")
+        raw_current= self.red.get(f"PowerMeter_{machineID}_realtime_current")
         if raw_current:
             current_response= json.loads(raw_current)
             current_response["online"]= True
@@ -36,8 +36,8 @@ class PowerMeterCollecter:
             "current_c":[-1],
             "updatetime":-1
             }
-        powermeterupdatetime= self.red.get(f"PowerMeter_{machineID}_currentcurve_updatetime")
-        raw_currentcurve= self.red.get(f"PowerMeter_{machineID}_currentcurve")
+        powermeterupdatetime= self.red.get(f"PowerMeter_{machineID}_realtime_currentcurve_updatetime")
+        raw_currentcurve= self.red.get(f"PowerMeter_{machineID}_realtime_currentcurve")
         if powermeterupdatetime and raw_currentcurve:
             current_curve =json.loads(raw_currentcurve)
             current_curve["updatetime"] =powermeterupdatetime.decode('utf-8')

@@ -100,7 +100,30 @@ async def insertdata(machineid:str):
     try:
         machineenergy   = red.get(f'{machineid}_energy')
         machineenergy   = json.loads(machineenergy)
-        resdata = {"machineenergy":machineenergy}
+        init_power_status = red.get(f'{machineid}_init_power_status')
+        if init_power_status is not None:
+            init_power_status = json.loads(init_power_status)
+        else:
+            init_power_status = {}
+
+        machinestatus   = red.get(f'{machineid}_status')
+        machinestatus   = json.loads(machinestatus)
+        holdingtimeset = machinestatus["holdingtimeset"]
+        holdingpressureset = machinestatus["holdingpressureset"]
+        injection_speed = machinestatus["injection_speed"]
+        parameter_setting = []
+        chinesemaping = ["一","二","三","四","五","六","七"]
+        for i, (key, value) in enumerate(injection_speed.items()):
+            if float(value['value'])>0:
+                parameter_setting.append({"nodename":key,"value":value['value'],"name":f"第{chinesemaping[i]}段射速","unit":"mm/s"})
+        for i, (key, value) in enumerate(holdingpressureset.items()):
+            if float(value['value'])>0:
+                parameter_setting.append({"nodename":key,"value":value['value'],"name":f"第{chinesemaping[i]}段保壓壓力","unit":"bar"})
+        for i, (key, value) in enumerate(holdingtimeset.items()):
+            if float(value['value'])>0:
+                parameter_setting.append({"nodename":key,"value":value['value'],"name":f"第{chinesemaping[i]}段保壓時間","unit":"s"})
+        machineenergy["parameter_setting"] = parameter_setting
+        resdata = {"machineenergy":machineenergy,"originstatus":init_power_status}
         returnData = {"status": "success","Data":resdata}
     except:
         logging.error("Get machine energy API crashed ...")
@@ -207,6 +230,7 @@ async def updatepowerinfo(requestData:updatepowerinfo_requestBody):
         expectation = requestData.expectation
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         machinepowerinfo ={}
+        # Get Machine Setting Parameter
         machinepowerinfo["updatetime"] = current_time
         machinepowerinfo["abstract"] = abstract
         machinepowerinfo["curve"] = curve
@@ -215,15 +239,76 @@ async def updatepowerinfo(requestData:updatepowerinfo_requestBody):
         machinepowerinfo["powerprediction"] = powerprediction
         # 用優化參數算出來的能耗預測值
         machinepowerinfo["expectation"] = expectation 
-
         red.set(f'{machine_id}_energy',json.dumps(machinepowerinfo))
+        machinestatus   = red.get(f'{machine_id}_status')
+        machinestatus   = json.loads(machinestatus)
+        init_power_status = red.get(f'{machine_id}_init_power_status')
+        holdingtimeset = machinestatus["holdingtimeset"]
+        holdingpressureset = machinestatus["holdingpressureset"]
+        injection_speed = machinestatus["injection_speed"]
+        parameter_setting = []
+        chinesemaping = ["一","二","三","四","五","六","七"]
+        for i, (key, value) in enumerate(injection_speed.items()):
+            if float(value['value'])>0:
+                parameter_setting.append({"nodename":key,"value":value['value'],"name":f"第{chinesemaping[i]}段射速","unit":"mm/s"})
+        for i, (key, value) in enumerate(holdingpressureset.items()):
+            if float(value['value'])>0:
+                parameter_setting.append({"nodename":key,"value":value['value'],"name":f"第{chinesemaping[i]}段保壓壓力","unit":"bar"})
+        for i, (key, value) in enumerate(holdingtimeset.items()):
+            if float(value['value'])>0:
+                parameter_setting.append({"nodename":key,"value":value['value'],"name":f"第{chinesemaping[i]}段保壓時間","unit":"s"})
+        red.set(f'{machine_id}_energy',json.dumps(machinepowerinfo))
+        if init_power_status is None:
+            original_step = {
+                "abstract":abstract,
+                "parameter_setting":parameter_setting,
+                "updatetime":current_time
+            }
+            red.set(f'{machine_id}_init_power_status',json.dumps(original_step))
         returnData = {"status":"success"}
+    except Exception as e:
+        print(f"發生錯誤了：{e}")
+    return returnData
+
+
+class reset_originalPowerinfo_requestBody(BaseModel):
+    machine_name:str
+@realtimedatarouter.post("/smc/injectionmachinemes/resetpowerfirststep")
+async def resetpowerinfo(requestData:reset_originalPowerinfo_requestBody):
+    returnData       = {"status":"error"}
+    try:
+        machine_id = requestData.machine_name
+        resetresult = red.delete(f'{machine_id}_init_power_status')
+        if resetresult == 1:
+            returnData = {"status":"success"}
     except:
         pass
     return returnData
 
-
-
-
-
+@realtimedatarouter.get("/smc/injectionmachinemes/pvtcurve/{machineid}")
+async def insertdata(machineid:str):
+    returnData       = {"status":"error","Data":{}}
+    try:
+        curve   = red.get(f'{machineid}_pvt')
+        if curve:
+            curve   = json.loads(curve)
+        else:
+            curve = {
+                "P1":  [],
+                "P2":  [],
+                "P3":  [],
+                "T1":  [],
+                "T2":  [],
+                "T3":  [],
+                "V_support_0":[],
+                "V_support_50":[],
+                "V_support_100":[],
+                "updatetime":''
+            }
+        resdata = {"current":curve}
+        returnData = {"status": "success","Data":resdata}
+    except:
+        logging.error("Get machine pvtcurve crashed ...")
+        pass
+    return returnData
 
