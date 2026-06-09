@@ -22,6 +22,11 @@
     <v-row class="mt-10 mr-1 ml-1">
         <PowerMeter v-if="powermeteravailable == 'True' && machineonline == 'Online'" :machinename="machinename"/>
         <PVT v-if="machineonline == 'Online'" :machinename="machinename"/>
+
+        <v-btn v-if="machineonline == 'Online'&& machinename =='FCS-150'" @click="clickheaterbutton"  class="ml-5" text >
+            <v-icon left  color="#39CC64">mdi-power</v-icon>
+                電熱開關
+        </v-btn>
     </v-row>
     <v-row class="mt-5 mr-1 ml-1">
         <v-col>
@@ -416,6 +421,23 @@ import { computed } from 'vue'
     async changeparameter(){
         if(this.machineonline == "Online"){
             var requestbody = {"machine_name":this.machinename,"target":this.selectparameter,"value":this.parametervalue};
+            const token = this.$store.getters.getToken;
+            await axios.post(`${this.$store.getters.getHost}/smc/injectionmachinemes/control`,requestbody,{
+                    headers:{"accesstoken":token}
+                }
+                ).then( (response) => {
+                    if (response.data.status=='error'){
+                        console.log('edit parameter fail')
+                }
+                else{
+                    console.log('edit parameter success')
+                }
+                })
+        }
+    },
+    async clickheaterbutton(){
+        if(this.machineonline == "Online"){
+            var requestbody = {"machine_name":this.machinename,"target":"heater_button","value":"1"};
             const token = this.$store.getters.getToken;
             await axios.post(`${this.$store.getters.getHost}/smc/injectionmachinemes/control`,requestbody,{
                     headers:{"accesstoken":token}

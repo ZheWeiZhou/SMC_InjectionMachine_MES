@@ -106,6 +106,7 @@ class fcsagent:
             "cooling_time":{'nodeid':'ns=4;s=APPL.CoolingTime1.sv_dCoolingTime','factor':1000000,'type':'int64'},
             "storage_pressure_set":{'nodeid':'ns=4;s=APPL.Injection1.sv_ConstChargePressure.Output.rOutputValue','factor':1,'type':'float'},
             "vp_position_set":{'nodeid':'ns=4;s=APPL.Injection1.sv_CutOffParams.rPositionThreshold','factor':1.5204,'type':'float'},
+            "heater_button":{'nodeid':'ns=4;s=APPL.HeatingNozzle1.di_ButtonHeatingOn','factor':1,'type':'button'}
         }
         
     def connect(self):  
@@ -154,10 +155,18 @@ class fcsagent:
             elif datatype == 'int64':
                 value = int(value)
                 data_value.Value = ua.Variant(value, ua.VariantType.Int64)
+            elif datatype == 'button':
+                value = bool(int(value))
+                data_value.Value = ua.Variant(value, ua.VariantType.Boolean)
+                self.worker.get_node(nodeid).set_value(data_value)
+                value = bool(int(0))
+                data_value.Value = ua.Variant(value, ua.VariantType.Boolean)
+
             data_value.ServerTimestamp = None
             data_value.SourceTimestamp = None
             data_value.StatusCode = ua.StatusCode(ua.StatusCodes.Good)
             self.worker.get_node(nodeid).set_value(data_value)
+            
         try:
             injection_postion= copy.deepcopy(self.machinestatus["injection_pos"])
             if "injection_volume" in target:
