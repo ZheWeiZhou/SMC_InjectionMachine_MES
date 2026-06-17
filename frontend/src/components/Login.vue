@@ -72,7 +72,7 @@
             var token = response.data.Data.token;
             this.$cookies.set('accesstoken', token, '1d');
             setTimeout(() => {
-             this.$router.push({ name: 'MachineOverview' });}, 1000);
+             this.$router.push({ name: 'MachineOverviewV2' });}, 1000);
          
         }
       })
