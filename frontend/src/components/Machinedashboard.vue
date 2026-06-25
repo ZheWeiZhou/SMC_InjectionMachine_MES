@@ -80,7 +80,7 @@
               </div>
 
               <!-- Zones Flex Layout -->
-              <div class="d-flex flex-wrap flex-row-reverse justify-space-around">
+              <div class="d-flex flex-wrap justify-space-around">
                 <v-card 
                   v-for="([key, value], index) in barreltempset" 
                   :key="key" 
@@ -551,12 +551,14 @@ import { computed } from 'vue'
                     this.offlinecolor = "#C8CAD3"
                 }
                 if ('barrel_temp_set' in resdata["machinestatus"]){
-                    this.barreltempset = Object.entries(resdata["machinestatus"]['barrel_temp_set']);
+                    this.barreltempset = Object.entries(resdata["machinestatus"]['barrel_temp_set'])
+                        .sort((a, b) => b[0].localeCompare(a[0], undefined, { numeric: true }));
                     this.barrelsetgap = computed(() => 100/ (this.barreltempset.length + 1))
                     this.barrelsetgetX = (index) => this.barrelsetgap * (index + 1)
                 }
                 if ('barrel_temp_real' in resdata["machinestatus"]){
-                    this.barreltempact = Object.entries(resdata["machinestatus"]['barrel_temp_real']);
+                    this.barreltempact = Object.entries(resdata["machinestatus"]['barrel_temp_real'])
+                        .sort((a, b) => b[0].localeCompare(a[0], undefined, { numeric: true }));
                 }
                 if ('injection_pos' in resdata["machinestatus"]){
                     this.ijpos = Object.entries(resdata["machinestatus"]['injection_pos']);
