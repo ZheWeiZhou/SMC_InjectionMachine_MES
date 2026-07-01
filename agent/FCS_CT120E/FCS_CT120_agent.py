@@ -39,18 +39,14 @@ class fcsagent:
         self.machinefeedback  = {}
         self.machinecurve     = {}
         self.db = create_engine("postgresql://postgres:postgres@192.168.1.50:5432/cax")
-        self.nodemap = {
-        }
-        self.cycle_counter = 0
-        self.has_plastic = False
+        self.nodemap = {}
         
     def connect(self):  
         url="opc.tcp://"+self.machineaddress
         self.worker=Client(url)
         try:
             self.worker.connect()
-            self.cycle_counter  = self.worker.get_node("ns=2;i=21131").get_value()
-            print("[MESSAGE] Success connect to Machine")
+            print("[MESSAGE] Success connect to Engel")
             def callback(ch, method, properties, body):
                 command = json.loads(body.decode())
                 self.parametersetting(command["Target"],command["Value"])
@@ -76,7 +72,7 @@ class fcsagent:
             print("[MESSAGE] Activate Rabbit MQ ..")
         except Exception as e:
             print(e)
-            print("[ERROR] Connect to Engel fail")
+            print("[ERROR] Connect to machine fail")
     
     def parametersetting(self,target,value):
         access_node = list(self.nodemap.keys())
@@ -128,21 +124,7 @@ class fcsagent:
 
         
             
-    def getmachinestatus(self):
-        injection_signal = self.worker.get_node("ns=2;i=21147").get_value()
-        holding_signal   = self.worker.get_node("ns=2;i=21146").get_value()
-        plastic_signal   = self.worker.get_node("ns=2;i=21148").get_value()
-        cycle_counter    = self.worker.get_node("ns=2;i=21131").get_value()
-        moldclosing      = self.worker.get_node("ns=2;i=21159").get_value()
-        if plastic_signal ==1:
-            self.has_plastic = True
-        if moldclosing ==1 or injection_signal==1 or holding_signal==1 or plastic_signal ==1:
-            return True
-        else:
-            if self.processactivate == True and self.has_plastic == False:
-                return True
-            return False
-
+        
 
     def productpredict(self,input):
         print("[MESSAGE] Start to predict product quality")
@@ -163,31 +145,31 @@ class fcsagent:
         print(f'[Message] model predict response: {modelresponse}')
     def collectdata(self):
         # Check processstatus
-        processstatus                      = self.getmachinestatus()
+        processstatus                      = False
         # barrel temp
         barrel_temp_set = {}
-        barrel_temp1_set                      = self.worker.get_node("ns=2;i=20555").get_value() / 10
+        barrel_temp1_set                      = self.worker.get_node("ns=2;i=21183").get_value() / 10
         barrel_temp_set["barrel_temp1_set"]   = {"value":barrel_temp1_set,"edit":"none"}
-        barrel_temp2_set                      = self.worker.get_node("ns=2;i=20544").get_value() / 10
+        barrel_temp2_set                      = self.worker.get_node("ns=2;i=21185").get_value() / 10
         barrel_temp_set["barrel_temp2_set"]   = {"value":barrel_temp2_set,"edit":"none"}
-        barrel_temp3_set                      = self.worker.get_node("ns=2;i=20533").get_value() / 10
+        barrel_temp3_set                      = self.worker.get_node("ns=2;i=21186").get_value() / 10
         barrel_temp_set["barrel_temp3_set"]   = {"value":barrel_temp3_set,"edit":"none"}
-        barrel_temp4_set                      = self.worker.get_node("ns=2;i=20522").get_value() / 10
+        barrel_temp4_set                      = self.worker.get_node("ns=2;i=21187").get_value() / 10
         barrel_temp_set["barrel_temp4_set"]   = {"value":barrel_temp4_set,"edit":"none"}
-        barrel_temp5_set                      = self.worker.get_node("ns=2;i=20500").get_value() / 10
+        barrel_temp5_set                      = self.worker.get_node("ns=2;i=21188").get_value() / 10
         barrel_temp_set["barrel_temp5_set"]   = {"value":barrel_temp4_set,"edit":"none"}
         self.machinestatus["barrel_temp_set"] = barrel_temp_set
 
         barrel_temp_real = {}
-        barrel_temp1_real                      = self.worker.get_node("ns=2;i=21188").get_value() / 10
+        barrel_temp1_real                      = self.worker.get_node("ns=2;i=20497").get_value() / 10
         barrel_temp_real["barrel_temp1_real"]  = {"value":barrel_temp1_real,"edit":"none"}
-        barrel_temp2_real                      = self.worker.get_node("ns=2;i=21187").get_value() / 10
+        barrel_temp2_real                      = self.worker.get_node("ns=2;i=20519").get_value() / 10
         barrel_temp_real["barrel_temp2_real"]  = {"value":barrel_temp2_real,"edit":"none"}
-        barrel_temp3_real                      = self.worker.get_node("ns=2;i=21186").get_value() / 10
+        barrel_temp3_real                      = self.worker.get_node("ns=2;i=20530").get_value() / 10
         barrel_temp_real["barrel_temp3_real"]  = {"value":barrel_temp3_real,"edit":"none"}
-        barrel_temp4_real                      = self.worker.get_node("ns=2;i=21185").get_value() / 10
+        barrel_temp4_real                      = self.worker.get_node("ns=2;i=20541").get_value() / 10
         barrel_temp_real["barrel_temp4_real"]  = {"value":barrel_temp4_real,"edit":"none"}
-        barrel_temp5_real                      = self.worker.get_node("ns=2;i=21183").get_value() / 10
+        barrel_temp5_real                      = self.worker.get_node("ns=2;i=20552").get_value() / 10
         barrel_temp_real["barrel_temp5_real"]  = {"value":barrel_temp5_real,"edit":"none"}
         self.machinestatus["barrel_temp_real"] = barrel_temp_real
 
@@ -371,8 +353,6 @@ class fcsagent:
                 self.actpressurecurve = []
                 self.actspeedcurve    = []
                 self.screwposition    = []
-                self.processactivate = False
-                self.has_plastic = False
         #Get current time
         current_time        = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         self.red.set(f'{self.machineid}_updatetime',current_time)
