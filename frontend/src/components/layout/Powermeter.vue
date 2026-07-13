@@ -7,14 +7,14 @@
     @click="powermeterdialog = true"
   >
     <v-icon left color="#10B981" class="mr-2 pulse-icon">mdi-leaf</v-icon>
-    能耗觀測
+    {{ t('obsBtn') }}
   </v-btn>
 
   <!-- POWER METER DIALOG -->
   <v-dialog 
     v-model="powermeterdialog" 
-    max-width="1400px" 
-    width="95%"
+    max-width="1680px" 
+    width="98vw"
     scrollable
     transition="dialog-bottom-transition"
     class="energy-dashboard-dialog"
@@ -25,23 +25,37 @@
         <div class="d-flex align-center">
           <v-icon size="28" color="#10B981" class="mr-3">mdi-chart-bell-curve-cumulative</v-icon>
           <div>
-            <h2 class="text-h5 font-weight-bold gradient-title mb-0">能耗監控與優化決策系統</h2>
+            <h2 class="text-h5 font-weight-bold gradient-title mb-0">{{ t('title') }}</h2>
             <div class="text-caption text-grey-darken-1 d-flex align-center mt-1">
               <span class="pulse-dot mr-2"></span>
-              <span>即時觀測中</span>
+              <span>{{ t('realtime') }}</span>
               <span class="mx-2">•</span>
               <v-icon size="14" class="mr-1">mdi-clock-outline</v-icon>
-              <span>最後更新: {{ updatetime || '取得資料中...' }}</span>
+              <span>{{ t('lastUpdate') }}: {{ updatetime || t('fetching') }}</span>
             </div>
           </div>
         </div>
-        <v-btn 
-          size="small" 
-          icon="mdi-close" 
-          variant="tonal"
-          color="grey-darken-2" 
-          @click="powermeterdialog = false"
-        ></v-btn>
+        <div class="d-flex align-center">
+          <span class="text-caption text-grey-darken-2 mr-3 font-weight-medium">
+            {{ lang === 'zh' ? '語言：中文' : 'Lang: English' }}
+          </span>
+          <v-btn
+            size="small"
+            variant="tonal"
+            color="#10B981"
+            class="mr-3 font-weight-bold text-caption rounded-lg"
+            @click="lang = (lang === 'zh' ? 'en' : 'zh')"
+          >
+            {{ lang === 'zh' ? '切換為 English' : 'Switch to 中文' }}
+          </v-btn>
+          <v-btn 
+            size="small" 
+            icon="mdi-close" 
+            variant="tonal"
+            color="grey-darken-2" 
+            @click="powermeterdialog = false"
+          ></v-btn>
+        </div>
       </v-card-title>
 
       <v-divider></v-divider>
@@ -56,10 +70,10 @@
               <v-card class="dashboard-card pa-5" elevation="1">
                 <div class="card-header-bar mb-4">
                   <span class="card-header-decorator"></span>
-                  <h3 class="text-subtitle-1 font-weight-bold">歷史製程能耗趨勢</h3>
+                  <h3 class="text-subtitle-1 font-weight-bold">{{ t('historyTrend') }}</h3>
                 </div>
                 <div class="chart-container">
-                  <highcharts :options="createGroupedColumnOptions('製程能耗變化', processhistory.updatetime, processhistory.dataset, processhistory.displayunit)" />
+                  <highcharts :key="lang" :options="createGroupedColumnOptions(t('historyChartTitle'), processhistory.updatetime, processhistory.dataset.map(s => ({ ...s, name: tName(s.name) })), processhistory.displayunit)" />
                 </div>
               </v-card>
             </v-col>
@@ -73,10 +87,10 @@
                   <div class="d-flex justify-space-between align-center">
                     <div class="d-flex align-center">
                       <v-icon color="white" class="mr-2">mdi-tune-variant</v-icon>
-                      <h3 class="text-subtitle-1 font-weight-bold">生產設定參數對照</h3>
+                      <h3 class="text-subtitle-1 font-weight-bold">{{ t('paramContrast') }}</h3>
                     </div>
                     <!-- Clear Initial Parameter Button -->
-                    <v-btn v-if="firsttepparametersetting.length > 0" size="x-small" variant="flat" color="white" class="text-indigo-darken-4 font-weight-black" rounded="pill" @click="clearfirststep()"><v-icon size="12" class="mr-1">mdi-refresh</v-icon> 重設初始值</v-btn>
+                    <v-btn v-if="firsttepparametersetting.length > 0" size="x-small" variant="flat" color="white" class="text-indigo-darken-4 font-weight-black" rounded="pill" @click="clearfirststep()"><v-icon size="12" class="mr-1">mdi-refresh</v-icon> {{ t('resetInit') }}</v-btn>
                   </div>
                 </div>
 
@@ -85,7 +99,7 @@
                     <!-- Initial Parameters Column -->
                     <v-col cols="12" sm="6" class="border-right pr-sm-4 mb-4 mb-sm-0">
                       <div class="text-subtitle-2 font-weight-bold text-grey-darken-2 mb-3 d-flex align-center">
-                        <span class="param-status-dot bg-indigo-lighten-2 mr-2"></span> 初始設定值
+                        <span class="param-status-dot bg-indigo-lighten-2 mr-2"></span> {{ t('initSettings') }}
                       </div>
                       <div v-if="firsttepparametersetting.length > 0" class="d-flex flex-wrap gap-2">
                         <div 
@@ -94,7 +108,7 @@
                           class="param-item pa-3 rounded-lg flex-grow-1"
                           style="min-width: 140px; max-width: calc(33.3% - 8px);"
                         >
-                          <div class="param-label">{{ item.name }}</div>
+                          <div class="param-label">{{ tName(item.name, item) }}</div>
                           <div class="param-val-group mt-1">
                             <span class="param-value text-indigo-darken-4 font-weight-bold">{{ Math.round(item.value * 100) / 100 }}</span>
                             <span class="param-unit">{{ item.unit }}</span>
@@ -102,14 +116,14 @@
                         </div>
                       </div>
                       <div v-else class="text-center py-6 text-grey text-caption">
-                        無初始參數紀錄
+                        {{ t('noInitRecord') }}
                       </div>
                     </v-col>
 
                     <!-- Current Parameters Column -->
                     <v-col cols="12" sm="6" class="pl-sm-4">
                       <div class="text-subtitle-2 font-weight-bold text-grey-darken-2 mb-3 d-flex align-center">
-                        <span class="param-status-dot bg-light-blue mr-2"></span> 當前設定值
+                        <span class="param-status-dot bg-light-blue mr-2"></span> {{ t('currentSettings') }}
                       </div>
                       <div v-if="currentsetting && currentsetting.length > 0" class="d-flex flex-wrap gap-2">
                         <div 
@@ -118,7 +132,7 @@
                           class="param-item pa-3 rounded-lg flex-grow-1"
                           style="min-width: 140px; max-width: calc(33.3% - 8px);"
                         >
-                          <div class="param-label">{{ item.name }}</div>
+                          <div class="param-label">{{ tName(item.name, item) }}</div>
                           <div class="param-val-group mt-1">
                             <span class="param-value text-light-blue-darken-4 font-weight-bold">{{ Math.round(item.value * 100) / 100 }}</span>
                             <span class="param-unit">{{ item.unit }}</span>
@@ -126,7 +140,7 @@
                         </div>
                       </div>
                       <div v-else class="text-center py-6 text-grey text-caption">
-                        載入當前參數中...
+                        {{ t('loadingParams') }}
                       </div>
                     </v-col>
                   </v-row>
@@ -142,13 +156,13 @@
                 <div class="pa-5 card-gradient-green text-white d-flex justify-space-between align-center">
                   <div class="d-flex align-center">
                     <v-icon color="white" class="mr-2">mdi-leaf</v-icon>
-                    <h3 class="text-subtitle-1 font-weight-bold">智能節能優化建議</h3>
+                    <h3 class="text-subtitle-1 font-weight-bold">{{ t('smartSuggestions') }}</h3>
                   </div>
-                  <v-btn size="small" elevation="2" rounded="pill" color="white" class="text-green-darken-4 font-weight-black" @click="updateparameter()"><v-icon size="16" start class="mr-1">mdi-flash-outline</v-icon> 一鍵套用優化</v-btn>
+                  <v-btn size="small" elevation="2" rounded="pill" color="white" class="text-green-darken-4 font-weight-black" @click="updateparameter()"><v-icon size="16" start class="mr-1">mdi-flash-outline</v-icon> {{ t('applyOpt') }}</v-btn>
                 </div>
 
                 <div class="pa-5 bg-white">
-                  <div class="section-title-sm mb-3">參數調整建議</div>
+                  <div class="section-title-sm mb-3">{{ t('paramAdjustSuggestions') }}</div>
                   <div class="d-flex flex-wrap gap-2">
                     <div 
                       v-for="(item, key) in optimization" 
@@ -156,7 +170,7 @@
                       class="optimization-tag pa-3 rounded-lg flex-grow-1"
                       style="min-width: 140px; max-width: calc(25% - 8px);"
                     >
-                      <div class="opt-name">{{ item.name }}</div>
+                      <div class="opt-name">{{ tName(item.name, item) }}</div>
                       <div class="opt-val mt-1">
                         <span class="font-weight-black text-green-darken-3">{{ Math.round(item.value * 100) / 100 }}</span>
                         <span class="text-caption ml-1">{{ item.unit }}</span>
@@ -166,7 +180,7 @@
 
                   <div v-if="isshowmessage" class="message-banner mt-3 pa-2 rounded text-center">
                     <v-icon size="16" color="success" class="mr-1">mdi-check-circle</v-icon>
-                    <span class="text-caption success-text font-weight-medium">{{ messagetext }}</span>
+                    <span class="text-caption success-text font-weight-medium">{{ tName(messagetext) }}</span>
                   </div>
                 </div>
               </v-card>
@@ -180,7 +194,7 @@
                 <div class="pa-5 card-gradient-dark text-white">
                   <div class="d-flex align-center">
                     <v-icon color="white" class="mr-2">mdi-chart-donut</v-icon>
-                    <h3 class="text-subtitle-1 font-weight-bold">製程能耗指標監控</h3>
+                    <h3 class="text-subtitle-1 font-weight-bold">{{ t('metricMonitoring') }}</h3>
                   </div>
                 </div>
 
@@ -189,7 +203,7 @@
                     <!-- Initial Power Consumption -->
                     <v-col cols="12" md="4" class="border-right pr-md-4 mb-4 mb-md-0" v-if="Object.keys(firsttepabstractitem).length > 0">
                       <div class="metric-block-title text-orange-darken-4 mb-3">
-                        <v-icon size="16" class="mr-1">mdi-history</v-icon> 初始製程能耗
+                        <v-icon size="16" class="mr-1">mdi-history</v-icon> {{ t('initEnergy') }}
                       </div>
                       <div class="d-flex flex-wrap gap-2">
                         <div 
@@ -198,7 +212,7 @@
                           class="metric-item pa-3 rounded-lg flex-grow-1"
                           style="min-width: 130px;"
                         >
-                          <span class="metric-label">{{ item.name }}</span>
+                          <span class="metric-label">{{ tName(item.name, item) }}</span>
                           <span class="metric-val text-orange-darken-3 font-weight-bold mt-1">
                             {{ Math.round(item.value * 100) / 100 }} <span class="metric-unit ml-1">{{ item.Unit }}</span>
                           </span>
@@ -209,7 +223,7 @@
                     <!-- Current Power Consumption -->
                     <v-col cols="12" :md="Object.keys(firsttepabstractitem).length > 0 ? 4 : 6" class="border-right px-md-4 mb-4 mb-md-0">
                       <div class="metric-block-title text-green-darken-3 mb-3">
-                        <v-icon size="16" class="mr-1">mdi-flash-circle</v-icon> 當前實際能耗
+                        <v-icon size="16" class="mr-1">mdi-flash-circle</v-icon> {{ t('currentEnergy') }}
                       </div>
                       <div class="d-flex flex-wrap gap-2">
                         <div 
@@ -218,7 +232,7 @@
                           class="metric-item pa-3 rounded-lg flex-grow-1"
                           style="min-width: 130px;"
                         >
-                          <span class="metric-label">{{ item.name }}</span>
+                          <span class="metric-label">{{ tName(item.name, item) }}</span>
                           <span class="metric-val text-green-darken-2 font-weight-black mt-1">
                             {{ Math.round(item.value * 100) / 100 }} <span class="metric-unit ml-1">{{ item.Unit }}</span>
                           </span>
@@ -229,7 +243,7 @@
                     <!-- Expectation (Predicted Energy Consumption under Optimization) -->
                     <v-col cols="12" :md="Object.keys(firsttepabstractitem).length > 0 ? 4 : 6" class="pl-md-4" v-if="Object.keys(expectation).length > 0">
                       <div class="metric-block-title text-teal-darken-3 mb-3">
-                        <v-icon size="16" class="mr-1">mdi-lightning-bolt-outline</v-icon> 優化後節能預測
+                        <v-icon size="16" class="mr-1">mdi-lightning-bolt-outline</v-icon> {{ t('optPrediction') }}
                       </div>
                       <div class="d-flex flex-wrap gap-2">
                         <div 
@@ -238,7 +252,7 @@
                           class="metric-item pa-3 rounded-lg flex-grow-1"
                           style="min-width: 130px;"
                         >
-                          <span class="metric-label">{{ item.name }}</span>
+                          <span class="metric-label">{{ tName(item.name, item) }}</span>
                           <span class="metric-val text-teal-darken-2 font-weight-black mt-1">
                             {{ Math.round(item.value * 100) / 100 }} <span class="metric-unit ml-1">{{ item.unit }}</span>
                           </span>
@@ -258,7 +272,7 @@
                 <div class="card-header-bar mb-4 d-flex justify-space-between align-center">
                   <div class="d-flex align-center">
                     <span class="card-header-decorator-blue"></span>
-                    <h3 class="text-subtitle-1 font-weight-bold">Power Curve</h3>
+                    <h3 class="text-subtitle-1 font-weight-bold">{{ t('powerCurve') }}</h3>
                   </div>
                 </div>
                 
@@ -270,13 +284,13 @@
                     class="py-2"
                   >
                     <div class="sub-chart-wrapper pa-2 rounded-lg border">
-                      <highcharts :options="createChartOptions(item.Title, item.Data, item.Unit)" />
+                      <highcharts :key="lang + '_' + item.Title" :options="createChartOptions(tName(item.Title, item), item.Data, item.Unit)" />
                     </div>
                   </v-col>
                 </v-row>
                 <div v-else class="text-center py-8 text-grey">
                   <v-icon size="40" color="grey-lighten-1" class="mb-2">mdi-chart-line-none</v-icon>
-                  <p>目前尚無即時物理曲線數據</p>
+                  <p>{{ t('noCurveData') }}</p>
                 </div>
               </v-card>
             </v-col>
@@ -298,6 +312,161 @@ export default {
   },
   
   data: () => ({
+    lang: 'zh',
+    dict: {
+      zh: {
+        obsBtn: '能耗觀測',
+        title: '能耗監控與優化決策系統',
+        realtime: '即時觀測中',
+        lastUpdate: '最後更新',
+        fetching: '取得資料中...',
+        historyTrend: '歷史製程能耗趨勢',
+        historyChartTitle: '製程能耗變化',
+        paramContrast: '生產設定參數對照',
+        resetInit: '重設初始值',
+        initSettings: '初始設定值',
+        currentSettings: '當前設定值',
+        noInitRecord: '無初始參數紀錄',
+        loadingParams: '載入當前參數中...',
+        smartSuggestions: '智能節能優化建議',
+        applyOpt: '一鍵套用優化',
+        paramAdjustSuggestions: '參數調整建議',
+        metricMonitoring: '製程能耗指標監控',
+        initEnergy: '初始製程能耗',
+        currentEnergy: '當前實際能耗',
+        optPrediction: '優化後節能預測',
+        noCurveData: '目前尚無即時物理曲線數據',
+        paramSuccess: '參數更新成功',
+        powerCurve: '即時物理曲線',
+        metrics: {
+          "Plasticize Power Consumption": "塑化能耗",
+          "Close mold Power Consumption": "關模能耗",
+          "Injection Power Consumption": "射出能耗",
+          "Total Power Consumption": "總耗電",
+          "plasticmotorenergy": "塑化馬達能耗",
+          "closemoldenergy": "關模能耗",
+          "injection_energy": "射出能耗",
+          "total": "總能耗",
+          "filling_energy": "充填能耗",
+          "holding_energy": "保壓能耗",
+          "plastic_energy": "塑化能耗",
+          "moldclose_energy": "關模能耗",
+          "total_energy": "總能耗",
+          "Motor Power": "馬達功率",
+          "Heater Power": "電熱功率",
+          "motorpower": "馬達功率",
+          "heaterpower": "電熱功率",
+          "Parameter updates success": "參數更新成功",
+          "充填能耗": "充填能耗",
+          "保壓能耗": "保壓能耗",
+          "塑化能耗": "塑化能耗",
+          "關模能耗": "關模能耗",
+          "總耗電": "總耗電",
+          "Current A": "電流 A",
+          "Current B": "電流 B",
+          "Current C": "電流 C",
+          "Voltage AB": "電壓 AB",
+          "Voltage BC": "電壓 BC",
+          "Voltage CA": "電壓 CA",
+          "current_curve_a": "電流 A",
+          "current_curve_b": "電流 B",
+          "current_curve_c": "電流 C",
+          "voltage_curve_ab": "電壓 AB",
+          "voltage_curve_bc": "電壓 BC",
+          "voltage_curve_ca": "電壓 CA"
+        }
+      },
+      en: {
+        obsBtn: 'Energy Observation',
+        title: 'Energy Monitoring & Optimization Decision System',
+        realtime: 'Real-time Observing',
+        lastUpdate: 'Last Update',
+        fetching: 'Fetching...',
+        historyTrend: 'Historical Process Energy Trend',
+        historyChartTitle: 'Process Energy Changes',
+        paramContrast: 'Production Parameter Contrast',
+        resetInit: 'Reset Initial Value',
+        initSettings: 'Initial Settings',
+        currentSettings: 'Current Settings',
+        noInitRecord: 'No Initial Parameter Record',
+        loadingParams: 'Loading Current Parameters...',
+        smartSuggestions: 'Smart Energy Optimization Suggestions',
+        applyOpt: 'Apply Optimization',
+        paramAdjustSuggestions: 'Parameter Adjustment Suggestions',
+        metricMonitoring: 'Process Energy Metric Monitoring',
+        initEnergy: 'Initial Process Energy',
+        currentEnergy: 'Current Actual Energy',
+        optPrediction: 'Optimized Energy Prediction',
+        noCurveData: 'No real-time physical curve data currently available',
+        paramSuccess: 'Parameter updates success',
+        powerCurve: 'Power Curve',
+        metrics: {
+          "Plasticize Power Consumption": "Plasticize Power Consumption",
+          "Close mold Power Consumption": "Close Mold Power Consumption",
+          "Injection Power Consumption": "Injection Power Consumption",
+          "Total Power Consumption": "Total Power Consumption",
+          "plasticmotorenergy": "Plasticize Motor Energy",
+          "closemoldenergy": "Close Mold Energy",
+          "injection_energy": "Injection Energy",
+          "total": "Total Energy",
+          "filling_energy": "Filling Energy",
+          "holding_energy": "Holding Energy",
+          "plastic_energy": "Plasticize Energy",
+          "moldclose_energy": "Close Mold Energy",
+          "total_energy": "Total Energy",
+          "Motor Power": "Motor Power",
+          "Heater Power": "Heater Power",
+          "motorpower": "Motor Power",
+          "heaterpower": "Heater Power",
+          "Parameter updates success": "Parameter updates success",
+          "充填能耗": "Filling Energy",
+          "保壓能耗": "Holding Energy",
+          "塑化能耗": "Plasticize Energy",
+          "關模能耗": "Mold Close Energy",
+          "總耗電": "Total Energy",
+          "第一段射速": "1st Injection Speed",
+          "第二段射速": "2nd Injection Speed",
+          "第三段射速": "3rd Injection Speed",
+          "第四段射速": "4th Injection Speed",
+          "第五段射速": "5th Injection Speed",
+          "第六段射速": "6th Injection Speed",
+          "第七段射速": "7th Injection Speed",
+          "第一段保壓壓力": "1st Holding Pressure",
+          "第二段保壓壓力": "2nd Holding Pressure",
+          "第三段保壓壓力": "3rd Holding Pressure",
+          "第四段保壓壓力": "4th Holding Pressure",
+          "第五段保壓壓力": "5th Holding Pressure",
+          "第六段保壓壓力": "6th Holding Pressure",
+          "第七段保壓壓力": "7th Holding Pressure",
+          "第一段保壓時間": "1st Holding Time",
+          "第二段保壓時間": "2nd Holding Time",
+          "第三段保壓時間": "3rd Holding Time",
+          "轉換位置": "V/P Switch Position",
+          "冷卻時間": "Cooling Time",
+          "射出壓力": "Injection Pressure Setting",
+          "第一段背壓": "1st Back Pressure",
+          "第二段背壓": "2nd Back Pressure",
+          "第三段背壓": "3rd Back Pressure",
+          "鎖模力": "Clamp Force",
+          "第四段保壓時間": "4th Holding Time",
+          "第五段保壓時間": "5th Holding Time",
+          "第六段保壓時間": "6th Holding Time",
+          "第七段保壓時間": "7th Holding Time",
+          "Current A": "Current A",
+          "Current B": "Current B",
+          "Current C": "Current C",
+          "Voltage AB": "Voltage AB",
+          "Voltage BC": "Voltage BC",
+          "Voltage CA": "Voltage CA",
+          "current_curve_a": "Current A",
+          "current_curve_b": "Current B",
+          "current_curve_c": "Current C",
+          "voltage_curve_ab": "Voltage AB",
+          "voltage_curve_bc": "Voltage BC",
+          "voltage_curve_ca": "Voltage CA"
+        }
+      }
+    },
     powermeterdialog: false,
     currentsetting: [],
     updatetime: '',
@@ -305,16 +474,16 @@ export default {
     firsttepparametersetting: [],
     firsttepabstractitem: {},
     optimization: [
-      { 'nodename': 'Ijv_set1', 'value': '20', 'name': '第一段射速', 'unit': 'mm/s' },
-      { 'nodename': 'Ijv_set2', 'value': '19', 'name': '第二段射速', 'unit': 'mm/s' },
+      { 'nodename': 'Ijv_set1', 'value': '20', 'name': '第一段射速','enname': 'First Injection Velocity', 'unit': 'mm/s' },
+      { 'nodename': 'Ijv_set2', 'value': '19', 'name': '第二段射速','enname': 'Second Injection Velocity', 'unit': 'mm/s' },
     ],
     powerprediction: [
-      { 'nodename': '', 'value': '20000', 'name': '充填能耗', 'unit': 'J' },
-      { 'nodename': '', 'value': '19000', 'name': '保壓能耗', 'unit': 'J' },
+      { 'nodename': '', 'value': '20000', 'name': '充填能耗','enname': 'Plasticize Power Consumption', 'unit': 'J' },
+      { 'nodename': '', 'value': '19000', 'name': '保壓能耗','enname': 'Holding Power Consumption', 'unit': 'J' },
     ],
     expectation: [
-      { 'nodename': '', 'value': '21000', 'name': '充填能耗', 'unit': 'J' },
-      { 'nodename': '', 'value': '19000', 'name': '保壓能耗', 'unit': 'J' },
+      { 'nodename': '', 'value': '21000', 'name': '充填能耗','enname': 'Plasticize Power Consumption', 'unit': 'J' },
+      { 'nodename': '', 'value': '19000', 'name': '保壓能耗','enname': 'Holding Power Consumption', 'unit': 'J' },
     ],
     curvedatalist: [],
     isshowmessage: false,
@@ -342,6 +511,19 @@ export default {
     ]
   }),
   methods: {
+    t(key) {
+      return this.dict[this.lang]?.[key] || key;
+    },
+    tName(name, item = null) {
+      if (!name) return '';
+      if (this.lang === 'en') {
+        if (item && item.enname) {
+          return item.enname;
+        }
+        return this.dict[this.lang]?.metrics?.[name] || (item && item.name) || name;
+      }
+      return this.dict[this.lang]?.metrics?.[name] || name;
+    },
     sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
@@ -496,7 +678,7 @@ export default {
         let series = this.processhistory.dataset.find(d => d.name === name);
         if (!series) {
           // 若找不到（或剛被清空），則建立新數列
-          this.processhistory.dataset.push({ name: name, data: [value] });
+          this.processhistory.dataset.push({ name: name, enname: item.enname, data: [value] });
         } else {
           series.data.push(value); 
           if (series.data.length > 5) series.data.shift();
@@ -524,7 +706,7 @@ export default {
               for (var k of Object.keys(rawinfo["curve"])) {
                 var item = rawinfo.curve[k];
                 var ydata = item.value.map(item => parseFloat(item));
-                var curveitem = { "Title": item.name, "Data": ydata, "Unit": item.Unit };
+                var curveitem = { "Title": item.name, "enname": item.enname, "Data": ydata, "Unit": item.Unit };
                 new_curvedata.push(curveitem);
               }
               this.curvedatalist = new_curvedata
