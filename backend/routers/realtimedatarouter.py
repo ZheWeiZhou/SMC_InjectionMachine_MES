@@ -211,6 +211,70 @@ async def insertdata(machineid:str):
         pass
     return returnData
 
+# ==========================================
+# API Request Body 結構說明與範例：
+# {
+#     "machine_name": "Engel-120",                       # 機台名稱 (str)
+#     "curve": {                                          # 即時曲線數據 (Dict[str, Dict])
+#         "motorpower": {
+#             "value": [12.5, 13.2, 14.1],                # 數值列表 (List[float])
+#             "name": "Motor Power",                      # 顯示名稱 (str)
+#             "Unit": "kW"                                # 單位 (str)
+#         },
+#         "heaterpower": {
+#             "value": [2.1, 2.1, 2.2],
+#             "name": "Heater Power",
+#             "Unit": "kW"
+#         }
+#     },
+#     "abstract": {                                       # 能耗統計指標 (Dict[str, Dict])
+#         "plasticmotorenergy": {
+#             "value": 150000.0,                          # 能耗數值 (float)
+#             "name": "Plasticize Power Consumption",     # 顯示名稱 (str)
+#             "Unit": "J"                                 # 單位 (str)
+#         },
+#         "closemoldenergy": {
+#             "value": 85000.0,
+#             "name": "Close mold Power Consumption",
+#             "Unit": "J"
+#         },
+#         "injection_energy": {
+#             "value": 110000.0,
+#             "name": "Injection Power Consumption",
+#             "Unit": "J"
+#         },
+#         "total": {
+#             "value": 345000.0,
+#             "name": "Total Power Consumption",
+#             "Unit": "J"
+#         }
+#     },
+#     "cal": [                                            # 智能節能優化參數建議 (List[Dict])
+#         {
+#             "nodename": "Ijv_set1",                     # 節點名稱 (str)
+#             "value": "20",                              # 設定數值 (str/float)
+#             "name": "第一段射速",                       # 參數中文名稱 (str)
+#             "unit": "mm/s"                              # 單位 (str)
+#         }
+#     ],
+#     "powerprediction": [                                # 當前設定之能耗預測 (List[Dict])
+#         {
+#             "nodename": "",
+#             "value": "20000",
+#             "name": "充填能耗",
+#             "unit": "J"
+#         }
+#     ],
+#     "expectation": [                                    # 優化後節能預測 (List[Dict])
+#         {
+#             "nodename": "",
+#             "value": "21000",
+#             "name": "充填能耗",
+#             "unit": "J"
+#         }
+#     ]
+# }
+# ==========================================
 class updatepowerinfo_requestBody(BaseModel):
     machine_name:str
     curve:Dict[str, Any] = {}
