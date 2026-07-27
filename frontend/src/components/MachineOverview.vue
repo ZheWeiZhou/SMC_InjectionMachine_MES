@@ -208,12 +208,22 @@ import UperNavbar  from './layout/UperNavbar.vue';
             this.$router.push({ name: 'Login' });
         }
         else{
-        this.getmachineonlinestatus();
-        this.timer=setInterval(this.getmachineonlinestatus,1000);     
+            if (this.timer) clearInterval(this.timer);
+            this.getmachineonlinestatus();
+            this.timer=setInterval(this.getmachineonlinestatus,1000);     
         }
     },
-    beforeDestory(){
-      clearInterval(this.timer);
-  },    
+    beforeUnmount(){
+      if (this.timer) {
+        clearInterval(this.timer);
+        this.timer = null;
+      }
+    },
+    unmounted(){
+      if (this.timer) {
+        clearInterval(this.timer);
+        this.timer = null;
+      }
+    }
   }
 </script>

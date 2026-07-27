@@ -444,6 +444,15 @@ import axios from 'axios';
         this.manualslovetimeline.push(timelinedata);
     }  
 },
+    watch: {
+        machinename() {
+            this.processlineslovetimeline = [];
+            this.manualslovetimeline = [];
+            this.processlinesloveabstract = {"DefectReason":"None","SloveAbstract":[]};
+            this.manualsloveabstract = {"DefectReason":"None","SloveAbstract":[]};
+            this.getprocesslinestatus();
+        }
+    },
     mounted(){
         var token = this.$cookies.get('accesstoken');
         if (!token){
@@ -454,12 +463,23 @@ import axios from 'axios';
             this.$router.push({ name: 'MachineOverview' });
         }
         else{
-        this.processlinetimer = setInterval(this.getprocesslinestatus,1000)
+            if (this.processlinetimer) clearInterval(this.processlinetimer);
+            this.getprocesslinestatus();
+            this.processlinetimer = setInterval(this.getprocesslinestatus,1000);
         }
     },
-    beforeDestory(){
-      clearInterval(this.processlinetimer);
-  },    
+    beforeUnmount(){
+        if (this.processlinetimer) {
+            clearInterval(this.processlinetimer);
+            this.processlinetimer = null;
+        }
+    },
+    unmounted(){
+        if (this.processlinetimer) {
+            clearInterval(this.processlinetimer);
+            this.processlinetimer = null;
+        }
+    }
   }
 </script>
 

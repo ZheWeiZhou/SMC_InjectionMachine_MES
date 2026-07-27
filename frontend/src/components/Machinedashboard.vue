@@ -765,6 +765,24 @@ import { computed } from 'vue'
         })
         }
 },
+    watch: {
+        machinename(newVal, oldVal) {
+            if (newVal !== oldVal) {
+                this.barreltempset = [];
+                this.barreltempact = [];
+                this.ijpos = [];
+                this.ispe = [];
+                this.ijprelist = [];
+                this.holdp = [];
+                this.holdt = [];
+                this.backpressure = [];
+                this.feedbacktabledata = [];
+                this.curvedatalist = [];
+                this.getmachinedata();
+                this.checktroubleshhotingavailable();
+            }
+        }
+    },
     mounted(){
         var token = this.$cookies.get('accesstoken');
         if (!token){
@@ -775,14 +793,24 @@ import { computed } from 'vue'
             this.$router.push({ name: 'MachineOverview' });
         }
         else{
-        this.getmachinedata();
-        this.timer=setInterval(this.getmachinedata,1000);
-        this.checktroubleshhotingavailable();
+            if (this.timer) clearInterval(this.timer);
+            this.getmachinedata();
+            this.timer=setInterval(this.getmachinedata,1000);
+            this.checktroubleshhotingavailable();
         }
     },
-    beforeDestory(){
-      clearInterval(this.timer);
-  },    
+    beforeUnmount(){
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+    },
+    unmounted(){
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+    }
   }
 </script>
 

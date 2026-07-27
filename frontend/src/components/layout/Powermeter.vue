@@ -766,6 +766,22 @@ export default {
       })
     }
   },
+  watch: {
+    machinename() {
+      this.updatetime = '';
+      this.curvedatalist = [];
+      this.abstractitem = {};
+      this.firsttepabstractitem = {};
+      this.currentsetting = [];
+      this.processhistory = {
+        updatetime: [],
+        dataset: [],
+        template: '',
+        displayunit: 'KJ'
+      };
+      this.getenergyinfo();
+    }
+  },
   mounted() {
     var token = this.$cookies.get('accesstoken');
     if (!token) {
@@ -775,11 +791,22 @@ export default {
     if (!namecheck) {
       this.$router.push({ name: 'MachineOverview' });
     } else {
+      if (this.getenergyinfotimer) clearInterval(this.getenergyinfotimer);
+      this.getenergyinfo();
       this.getenergyinfotimer = setInterval(this.getenergyinfo, 1000);
     }
   },
   beforeUnmount() {
-    clearInterval(this.getenergyinfotimer);
+    if (this.getenergyinfotimer) {
+      clearInterval(this.getenergyinfotimer);
+      this.getenergyinfotimer = null;
+    }
+  },
+  unmounted() {
+    if (this.getenergyinfotimer) {
+      clearInterval(this.getenergyinfotimer);
+      this.getenergyinfotimer = null;
+    }
   }
 }
 </script>

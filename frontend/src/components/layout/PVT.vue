@@ -119,6 +119,14 @@ import axios from 'axios';
             })
     }
     },
+    watch: {
+        machinename() {
+            this.updatetime = '';
+            this.chartxlist = [];
+            this.chartylist = [];
+            this.getpvtinfo();
+        }
+    },
     mounted(){
         var token = this.$cookies.get('accesstoken');
         if (!token){
@@ -129,12 +137,23 @@ import axios from 'axios';
             this.$router.push({ name: 'MachineOverview' });
         }
         else{
+            if (this.getenergyinfotimer) clearInterval(this.getenergyinfotimer);
+            this.getpvtinfo();
             this.getenergyinfotimer=setInterval(this.getpvtinfo,1000);
         }
     },
-    beforeDestory(){
-      clearInterval(this.getenergyinfotimer);
-  },    
+    beforeUnmount(){
+        if (this.getenergyinfotimer) {
+            clearInterval(this.getenergyinfotimer);
+            this.getenergyinfotimer = null;
+        }
+    },
+    unmounted(){
+        if (this.getenergyinfotimer) {
+            clearInterval(this.getenergyinfotimer);
+            this.getenergyinfotimer = null;
+        }
+    }
   }
 </script>
 
