@@ -21,9 +21,13 @@ realtimedatarouter = APIRouter()
 engine = create_engine(envparameter["db_url"])
 Base = declarative_base()
 
-
-
-
+class PowerMeterData(Base):
+    __tablename__ = 'PowerMeterData'
+    id               = Column(Integer, primary_key=True)
+    created_at       = Column(DateTime(timezone=False), server_default=func.now())
+    machine_name     = Column(String)
+    abstract         = Column(String)
+    curve            = Column(String)
 
 @realtimedatarouter.get("/smc/injectionmachinemes/realtimedata/{machineid}")
 async def insertdata(machineid:str):
@@ -329,6 +333,24 @@ async def updatepowerinfo(requestData:updatepowerinfo_requestBody):
                 "updatetime":current_time
             }
             red.set(f'{machine_id}_init_power_status',json.dumps(original_step))
+
+        # 存入 DB PowerMeterData
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        try:
+            insert_sql = PowerMeterData.__table__.insert().values(
+                machine_name = machine_id,
+                abstract     = json.dumps(abstract, ensure_ascii=False) if isinstance(abstract, (dict, list)) else str(abstract),
+                curve        = json.dumps(curve, ensure_ascii=False) if isinstance(curve, (dict, list)) else str(curve)
+            )
+            session.execute(insert_sql)
+            session.commit()
+        except Exception as db_err:
+            session.rollback()
+            logging.error(f"Save power meter data to DB failed: {db_err}")
+        finally:
+            session.close()
+
         returnData = {"status":"success"}
     except Exception as e:
         print(f"發生錯誤了：{e}")

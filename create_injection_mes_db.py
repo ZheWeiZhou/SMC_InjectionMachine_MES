@@ -5,7 +5,7 @@ from sqlalchemy.sql import func
 from datetime import datetime
 import uuid
 import bcrypt 
-engine = create_engine("postgresql://postgres:postgres@127.0.0.1:5432/cax", echo=True)
+engine = create_engine("postgresql://postgres:postgres@140.135.106.49:5432/cax", echo=True)
 Base = declarative_base()
 
 class MachineHistory(Base):
@@ -43,6 +43,14 @@ class BayesianNetworkTrainData(Base):
     created_at       = Column(DateTime(timezone = False), server_default=func.now())
     machine_name     = Column(String)
     model_result     = Column(String) 
+
+class PowerMeterData(Base):
+    __tablename__ = 'PowerMeterData'
+    id               = Column(Integer,primary_key=True)
+    created_at       = Column(DateTime(timezone = False), server_default=func.now())
+    machine_name     = Column(String)
+    abstract         = Column(String)
+    curve            = Column(String) 
 # Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
 
