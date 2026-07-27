@@ -326,17 +326,22 @@ async def updatepowerinfo(requestData:updatepowerinfo_requestBody):
             if float(value['value'])>0:
                 parameter_setting.append({"nodename":key,"value":value['value'],"name":f"第{chinesemaping[i]}段保壓時間","unit":"s"})
         red.set(f'{machine_id}_energy',json.dumps(machinepowerinfo))
+        init_power_status = red.get(f'{machine_id}_init_power_status')
+
         if init_power_status is None:
             original_step = {
-                "abstract":abstract,
-                "parameter_setting":parameter_setting,
-                "updatetime":current_time
+                "abstract": abstract,
+                "curve": curve,
+                "parameter_setting": parameter_setting,
+                "updatetime": current_time,
+                "created_at": current_time
             }
-            red.set(f'{machine_id}_init_power_status',json.dumps(original_step))
+            red.set(f'{machine_id}_init_power_status', json.dumps(original_step, ensure_ascii=False))
 
         # 存入 Redis List (高頻定時器快取，減輕 DB 負擔)
         try:
             power_item = {
+                "created_at": current_time,
                 "abstract": abstract,
                 "curve": curve
             }

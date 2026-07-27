@@ -202,7 +202,7 @@ async def getpowermeterdata(machinename: str, limit: int = 5):
             # 2. 備援：若 Redis 無快取則從 DB 撈取，並同步回寫至 Redis 快取 (Cache-Aside Pattern)
             fetch_limit = max(limit, 50)
             sql = f'''
-                SELECT abstract, curve 
+                SELECT created_at, abstract, curve 
                 FROM "PowerMeterData" 
                 WHERE machine_name = '{machinename}' 
                 ORDER BY created_at DESC 
@@ -214,6 +214,7 @@ async def getpowermeterdata(machinename: str, limit: int = 5):
                 for row in result.mappings():
                     abstract_val = row['abstract']
                     curve_val = row['curve']
+                    created_at_val = str(row['created_at']) if row['created_at'] else ''
                     if isinstance(abstract_val, str) and abstract_val:
                         try:
                             abstract_val = json.loads(abstract_val)
@@ -226,6 +227,7 @@ async def getpowermeterdata(machinename: str, limit: int = 5):
                             pass
                     
                     item = {
+                        "created_at": created_at_val,
                         "abstract": abstract_val,
                         "curve": curve_val
                     }

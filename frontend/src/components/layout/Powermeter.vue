@@ -68,12 +68,29 @@
           <v-row class="mb-6">
             <v-col cols="12">
               <v-card class="dashboard-card pa-5" elevation="1">
-                <div class="card-header-bar mb-4">
-                  <span class="card-header-decorator"></span>
-                  <h3 class="text-subtitle-1 font-weight-bold">{{ t('historyTrend') }}</h3>
+                <div class="card-header-bar mb-4 d-flex justify-space-between align-center">
+                  <div class="d-flex align-center">
+                    <span class="card-header-decorator"></span>
+                    <h3 class="text-subtitle-1 font-weight-bold">{{ t('historyTrend') }}</h3>
+                  </div>
+                  <!-- Select History Limit Dropdown -->
+                  <div class="d-flex align-center" style="min-width: 160px; width: 175px;">
+                    <v-select
+                      v-model="historyLimit"
+                      :items="historyLimitOptions"
+                      item-title="title"
+                      item-value="value"
+                      :label="t('selectLimit')"
+                      density="compact"
+                      variant="outlined"
+                      hide-details
+                      class="text-caption font-weight-bold"
+                      @update:model-value="fetchHistoryData"
+                    ></v-select>
+                  </div>
                 </div>
                 <div class="chart-container">
-                  <highcharts :key="lang" :options="createGroupedColumnOptions(t('historyChartTitle'), processhistory.updatetime, processhistory.dataset.map(s => ({ ...s, name: tName(s.name) })), processhistory.displayunit)" />
+                  <highcharts :key="lang + '_' + historyLimit + '_' + (firsttepdatetime || 'init')" :options="createGroupedColumnOptions(t('historyChartTitle'), processhistory.updatetime, processhistory.dataset.map(s => ({ ...s, name: tName(s.name) })), processhistory.displayunit)" />
                 </div>
               </v-card>
             </v-col>
@@ -338,6 +355,7 @@ export default {
         noCurveData: '目前尚無即時物理曲線數據',
         paramSuccess: '參數更新成功',
         powerCurve: '即時物理曲線',
+        selectLimit: '顯示筆數',
         metrics: {
           "Plasticize Power Consumption": "塑化能耗",
           "Close mold Power Consumption": "關模能耗",
@@ -400,6 +418,7 @@ export default {
         noCurveData: 'No real-time physical curve data currently available',
         paramSuccess: 'Parameter updates success',
         powerCurve: 'Power Curve',
+        selectLimit: 'Records',
         metrics: {
           "Plasticize Power Consumption": "Plasticize Power Consumption",
           "Close mold Power Consumption": "Close Mold Power Consumption",
@@ -467,49 +486,40 @@ export default {
         }
       }
     },
+    historyLimit: 5,
     powermeterdialog: false,
     currentsetting: [],
     updatetime: '',
     abstractitem: {},
     firsttepparametersetting: [],
     firsttepabstractitem: {},
-    optimization: [
-      { 'nodename': 'Ijv_set1', 'value': '20', 'name': '第一段射速','enname': 'First Injection Velocity', 'unit': 'mm/s' },
-      { 'nodename': 'Ijv_set2', 'value': '19', 'name': '第二段射速','enname': 'Second Injection Velocity', 'unit': 'mm/s' },
-    ],
-    powerprediction: [
-      { 'nodename': '', 'value': '20000', 'name': '充填能耗','enname': 'Plasticize Power Consumption', 'unit': 'J' },
-      { 'nodename': '', 'value': '19000', 'name': '保壓能耗','enname': 'Holding Power Consumption', 'unit': 'J' },
-    ],
-    expectation: [
-      { 'nodename': '', 'value': '21000', 'name': '充填能耗','enname': 'Plasticize Power Consumption', 'unit': 'J' },
-      { 'nodename': '', 'value': '19000', 'name': '保壓能耗','enname': 'Holding Power Consumption', 'unit': 'J' },
-    ],
+    firsttepcurve: {},
+    firsttepdatetime: '',
+    optimization: [],
+    powerprediction: [],
+    expectation: [],
     curvedatalist: [],
     isshowmessage: false,
     messagetext: '',
+    historyRawRecords: [],
     processhistory: {
       updatetime: [],
       dataset: [],
       template: '',
       displayunit: 'KJ'
-    },
-    categoriestest: ['2026-05-02 11:13', '2026-05-02 11:15', '2026-05-02 11:17', '2026-05-02 11:20', '2026-05-02 11:22'],
-    seriesDatatest: [
-      {
-        name: 'Injection Power Consumption',
-        data: [35, 30, 28, 26, 25, 24]
-      },
-      {
-        name: 'Packing Power Consumption',
-        data: [30, 29, 28, 28, 26, 25]
-      },
-      {
-        name: 'Close mold Power Consumption',
-        data: [35, 30, 28, 26, 25, 24]
-      },
-    ]
+    }
   }),
+  computed: {
+    historyLimitOptions() {
+      const suffix = this.lang === 'en' ? ' Records' : ' 筆';
+      return [
+        { title: `5${suffix}`, value: 5 },
+        { title: `10${suffix}`, value: 10 },
+        { title: `20${suffix}`, value: 20 },
+        { title: `30${suffix}`, value: 30 }
+      ];
+    }
+  },
   methods: {
     t(key) {
       return this.dict[this.lang]?.[key] || key;
@@ -532,6 +542,7 @@ export default {
         chart: {
           type: 'column',
           backgroundColor: 'transparent',
+          height: 320,
           style: {
             fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
           }
@@ -550,7 +561,15 @@ export default {
           categories: categories,
           crosshair: true,
           labels: {
-            style: { color: '#64748b' }
+            useHTML: true,
+            style: { color: '#64748b' },
+            formatter: function() {
+              const val = this.value || '';
+              if (val.includes('★ 初始基準')) {
+                return `<span style="color:#d97706; font-weight:bold; background-color:#fef3c7; padding:2px 6px; border-radius:8px; border:1px solid #fde68a;">${val}</span>`;
+              }
+              return val;
+            }
           },
           lineColor: '#e2e8f0'
         },
@@ -595,23 +614,37 @@ export default {
       }
     },
     createChartOptions(title, yData, Unit) {
-      const categories = yData.map((_, i) => (i + 1).toString())
+      let seriesData = [];
+      let maxLen = 0;
+
+      if (Array.isArray(yData) && yData.length > 0 && typeof yData[0] === 'object' && yData[0].data) {
+        seriesData = yData;
+        seriesData.forEach(s => {
+          if (s.data && s.data.length > maxLen) maxLen = s.data.length;
+        });
+      } else if (Array.isArray(yData)) {
+        seriesData = [{ name: title, data: yData, lineWidth: 2 }];
+        maxLen = yData.length;
+      }
+
+      const categories = Array.from({ length: maxLen }, (_, i) => (i + 1).toString());
+
       return {
         chart: { 
           type: 'spline',
           backgroundColor: 'transparent',
-          height: 240,
+          height: 280,
           style: {
             fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
           }
         },
-        colors: ['#10b981'],
+        colors: ['#64748b', '#94a3b8', '#cbd5e1', '#f59e0b', '#3b82f6', '#10b981', '#ec4899', '#8b5cf6', '#14b8a6'],
         title: { 
           text: title,
           align: 'left',
           style: {
             color: '#334155',
-            fontSize: '13px',
+            fontSize: '14px',
             fontWeight: '600'
           }
         },
@@ -644,46 +677,173 @@ export default {
           borderWidth: 1,
           borderColor: '#e2e8f0',
           shadow: true,
+          shared: true,
           valueSuffix: ` ${Unit}`
         },
-        legend: { enabled: false },
-        series: [{
-          name: title,
-          data: yData,
-          lineWidth: 2,
-          marker: {
-            enabled: false
+        legend: {
+          enabled: seriesData.length > 1,
+          align: 'right',
+          verticalAlign: 'top',
+          itemStyle: { fontSize: '11px', color: '#475569' }
+        },
+        series: seriesData
+      }
+    },
+    renderHistoryChartFromRecords(records) {
+      this.processhistory.updatetime = [];
+      this.processhistory.dataset = [];
+      this.processhistory.template = '';
+
+      const curveGroup = {};
+
+      records.forEach((rec, idx) => {
+        const abstract = rec.abstract || {};
+        const curve = rec.curve || {};
+        const isLatest = idx === records.length - 1;
+        const rawTime = rec.created_at || rec.updatetime || '';
+        const formattedTime = rawTime ? this.formatUtcToLocal(rawTime) : `#${idx + 1}`;
+
+        let isInitial = rec.isInitBaseline || false;
+        if (!isInitial) {
+          if (this.firsttepdatetime && rawTime && rawTime === this.firsttepdatetime) {
+            isInitial = true;
+          } else if (this.firsttepabstractitem && Object.keys(this.firsttepabstractitem).length > 0 && abstract) {
+            const initKeys = Object.keys(this.firsttepabstractitem);
+            if (initKeys.length > 0) {
+              isInitial = initKeys.every(k => {
+                const initVal = this.firsttepabstractitem[k]?.value;
+                const curVal = abstract[k]?.value;
+                return initVal !== undefined && curVal !== undefined && Math.abs(parseFloat(initVal) - parseFloat(curVal)) < 0.001;
+              });
+            }
           }
-        }]
+        }
+
+        let labelTag = '';
+        if (isInitial) {
+          labelTag += ' ★ 初始基準';
+        }
+        if (isLatest && !isInitial) {
+          labelTag += ' (最新)';
+        }
+
+        const timeLabel = `${formattedTime}${labelTag}`;
+        const recordLabel = timeLabel;
+
+        if (!this.processhistory.template && Object.keys(abstract).length > 0) {
+          this.processhistory.template = abstract;
+        }
+        this.processhistory.updatetime.push(timeLabel);
+
+        for (const item of Object.values(abstract)) {
+          const { name, value } = item;
+          let series = this.processhistory.dataset.find(d => d.name === name);
+          if (!series) {
+            this.processhistory.dataset.push({ name: name, enname: item.enname, data: [value] });
+          } else {
+            series.data.push(value);
+          }
+        }
+
+        for (const k of Object.keys(curve)) {
+          const item = curve[k];
+          if (!item || !item.value) continue;
+          const ydata = item.value.map(val => parseFloat(val));
+          if (!curveGroup[k]) {
+            curveGroup[k] = {
+              Title: item.name || k,
+              enname: item.enname || item.name || k,
+              Unit: item.Unit || '',
+              Series: []
+            };
+          }
+
+          let seriesColor = '#94a3b8';
+          let seriesWidth = 1.5;
+          let seriesDash = 'Dot';
+          let seriesZIndex = 1;
+
+          if (isLatest) {
+            seriesColor = '#10b981'; // 鮮豔翠綠 (最新一筆)
+            seriesWidth = 3.5;
+            seriesDash = 'Solid';
+            seriesZIndex = 10;
+          } else if (isInitial) {
+            seriesColor = '#f59e0b'; // 黃金琥珀 (初始基準筆)
+            seriesWidth = 3.0;
+            seriesDash = 'ShortDash';
+            seriesZIndex = 9;
+          }
+
+          curveGroup[k].Series.push({
+            name: recordLabel,
+            data: ydata,
+            color: seriesColor,
+            lineWidth: seriesWidth,
+            dashStyle: seriesDash,
+            zIndex: seriesZIndex
+          });
+        }
+      });
+
+      const new_curvedata = [];
+      for (const k of Object.keys(curveGroup)) {
+        const grp = curveGroup[k];
+        new_curvedata.push({
+          Title: grp.Title,
+          enname: grp.enname,
+          Unit: grp.Unit,
+          Data: grp.Series
+        });
+      }
+      if (new_curvedata.length > 0) {
+        this.curvedatalist = new_curvedata;
       }
     },
     update_processhistory(abstract, dataupdatetime) {
-      if (this.processhistory.updatetime.length == 0) {
-        this.processhistory.template = abstract
-      }
-      const keystemplate = Object.keys(this.processhistory.template).sort();
-      const keysabstract = Object.keys(abstract).sort();
-      // 如果格式檢查失敗，執行初始化重置
-      if (!keystemplate.every((key, index) => key === keysabstract[index])) {
-        this.processhistory.updatetime = [];
-        this.processhistory.dataset = [];
-        this.processhistory.template = abstract;
-      }
-      this.processhistory.updatetime.push(dataupdatetime);
-      if (this.processhistory.updatetime.length > 5) {
-        this.processhistory.updatetime.shift();
-      }
-      for (const item of Object.values(abstract)) {
-        const { name, value } = item;
-        let series = this.processhistory.dataset.find(d => d.name === name);
-        if (!series) {
-          // 若找不到（或剛被清空），則建立新數列
-          this.processhistory.dataset.push({ name: name, enname: item.enname, data: [value] });
-        } else {
-          series.data.push(value); 
-          if (series.data.length > 5) series.data.shift();
+      if (!abstract || Object.keys(abstract).length === 0) return;
+      const rawTime = dataupdatetime;
+
+      let currentRecords = this.historyRawRecords ? this.historyRawRecords.slice() : [];
+      const initTime = this.firsttepdatetime || '';
+
+      const newRec = {
+        created_at: rawTime,
+        abstract: abstract,
+        isLatest: true
+      };
+
+      // 計算非初始動態紀錄筆數
+      const nonInitRecords = currentRecords.filter(r => {
+        const rTime = r.created_at || r.updatetime || '';
+        const isInit = (initTime && rTime === initTime) || r.isInitBaseline;
+        return !isInit;
+      });
+
+      // 動態歷史筆數達到選定的 historyLimit 時，剔除最舊的動態筆
+      if (nonInitRecords.length >= this.historyLimit) {
+        const oldestNonInitIdx = currentRecords.findIndex(r => {
+          const rTime = r.created_at || r.updatetime || '';
+          const isInit = (initTime && rTime === initTime) || r.isInitBaseline;
+          return !isInit;
+        });
+
+        if (oldestNonInitIdx !== -1) {
+          currentRecords.splice(oldestNonInitIdx, 1);
         }
       }
+
+      currentRecords.push(newRec);
+
+      // 嚴格依時間升冪排序 (舊 -> 新，時間軸 100% 正確)
+      currentRecords.sort((a, b) => {
+        const tA = new Date(a.created_at || a.updatetime || 0).getTime();
+        const tB = new Date(b.created_at || b.updatetime || 0).getTime();
+        return tA - tB;
+      });
+
+      this.historyRawRecords = currentRecords;
+      this.renderHistoryChartFromRecords(currentRecords);
     },
     async getenergyinfo() {
       const token = this.$store.getters.getToken;
@@ -715,6 +875,8 @@ export default {
             var fiststep = response.data.Data.originstatus
             this.firsttepparametersetting = fiststep?.parameter_setting ?? []
             this.firsttepabstractitem = fiststep?.abstract ?? {}
+            this.firsttepcurve = fiststep?.curve ?? {}
+            this.firsttepdatetime = fiststep?.created_at || fiststep?.updatetime || ''
             this.currentsetting = rawinfo?.parameter_setting ?? []
           } catch (err) {
             console.log(err);
@@ -762,11 +924,93 @@ export default {
       }).then((response) => {
         if (response.data.status == 'error') {
           console.log('Fail')
+        } else {
+          // 清空本地的初始基準狀態
+          this.firsttepparametersetting = [];
+          this.firsttepabstractitem = {};
+          this.firsttepcurve = {};
+          this.firsttepdatetime = '';
+
+          // 重新刷圖表，立即移除直方圖與曲線圖上的舊初始基準
+          this.fetchHistoryData();
         }
       })
+    },
+    async fetchHistoryData() {
+      const token = this.$store.getters.getToken;
+      if (!this.machinename) return;
+      try {
+        const response = await axios.get(
+          `${this.$store.getters.getHost}/smc/injectionmachinemes/history/powermeterdata/${this.machinename}/${this.historyLimit}`,
+          { headers: { "accesstoken": token } }
+        );
+        if (response.data.status === 'success' && response.data.Data) {
+          let records = response.data.Data.slice();
+
+          // 確保「初始基準筆」永遠包含在直方圖中 (保留最新 N 筆 + 1 筆初始基準)
+          if (this.firsttepabstractitem && Object.keys(this.firsttepabstractitem).length > 0) {
+            const initTime = this.firsttepdatetime || '';
+            const hasInitInRecords = records.some(r => {
+              const rTime = r.created_at || r.updatetime || '';
+              return initTime && rTime === initTime;
+            });
+
+            if (!hasInitInRecords) {
+              const initRec = {
+                created_at: initTime,
+                abstract: this.firsttepabstractitem,
+                curve: this.firsttepcurve || {},
+                isInitBaseline: true
+              };
+              records.push(initRec); // 不剔除最新 N 筆，成為 N + 1 筆
+            }
+          }
+
+          // 嚴格依時間升冪排序 (舊 -> 新，時間軸 100% 正確)
+          records.sort((a, b) => {
+            const tA = new Date(a.created_at || a.updatetime || 0).getTime();
+            const tB = new Date(b.created_at || b.updatetime || 0).getTime();
+            return tA - tB;
+          });
+
+          this.historyRawRecords = records;
+          this.renderHistoryChartFromRecords(records);
+        }
+      } catch (err) {
+        console.log('Fetch history powermeter data failed:', err);
+      }
+    },
+    formatUtcToLocal(utcStr) {
+      if (!utcStr) return '';
+      try {
+        let isoStr = String(utcStr).trim();
+        if (!isoStr.includes('T') && isoStr.includes(' ')) {
+          isoStr = isoStr.replace(' ', 'T');
+        }
+        if (!isoStr.endsWith('Z') && !isoStr.includes('+')) {
+          isoStr += 'Z';
+        }
+        const d = new Date(isoStr);
+        if (isNaN(d.getTime())) {
+          return utcStr;
+        }
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const hours = String(d.getHours()).padStart(2, '0');
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+        const seconds = String(d.getSeconds()).padStart(2, '0');
+        return `${month}-${day} ${hours}:${minutes}:${seconds}`;
+      } catch (err) {
+        return utcStr;
+      }
     }
   },
   watch: {
+    firsttepdatetime(val) {
+      if (val) {
+        this.fetchHistoryData();
+      }
+    },
     machinename() {
       this.updatetime = '';
       this.curvedatalist = [];
@@ -779,7 +1023,13 @@ export default {
         template: '',
         displayunit: 'KJ'
       };
+      this.fetchHistoryData();
       this.getenergyinfo();
+    },
+    powermeterdialog(val) {
+      if (val) {
+        this.fetchHistoryData();
+      }
     }
   },
   mounted() {
@@ -792,6 +1042,7 @@ export default {
       this.$router.push({ name: 'MachineOverview' });
     } else {
       if (this.getenergyinfotimer) clearInterval(this.getenergyinfotimer);
+      this.fetchHistoryData();
       this.getenergyinfo();
       this.getenergyinfotimer = setInterval(this.getenergyinfo, 1000);
     }
