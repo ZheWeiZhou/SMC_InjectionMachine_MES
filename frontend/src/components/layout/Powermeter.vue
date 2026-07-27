@@ -800,7 +800,7 @@ export default {
         this.curvedatalist = new_curvedata;
       }
     },
-    update_processhistory(abstract, dataupdatetime) {
+    update_processhistory(abstract, dataupdatetime, curve) {
       if (!abstract || Object.keys(abstract).length === 0) return;
       const rawTime = dataupdatetime;
 
@@ -810,18 +810,18 @@ export default {
       const newRec = {
         created_at: rawTime,
         abstract: abstract,
+        curve: curve || {},
         isLatest: true
       };
 
-      // 計算非初始動態紀錄筆數
-      const nonInitRecords = currentRecords.filter(r => {
-        const rTime = r.created_at || r.updatetime || '';
-        const isInit = (initTime && rTime === initTime) || r.isInitBaseline;
-        return !isInit;
-      });
+      currentRecords.push(newRec);
 
-      // 動態歷史筆數達到選定的 historyLimit 時，剔除最舊的動態筆
-      if (nonInitRecords.length >= this.historyLimit) {
+      // 判斷是否有「外掛的初始基準筆 (isInitBaseline === true)」
+      const hasExtraInitBaseline = currentRecords.some(r => r.isInitBaseline);
+      const maxAllowedLength = hasExtraInitBaseline ? (this.historyLimit + 1) : this.historyLimit;
+
+      // 當長度超過允許的上限 (N 或 N+1) 時，剔除最舊的「非初始」動態筆
+      if (currentRecords.length > maxAllowedLength) {
         const oldestNonInitIdx = currentRecords.findIndex(r => {
           const rTime = r.created_at || r.updatetime || '';
           const isInit = (initTime && rTime === initTime) || r.isInitBaseline;
@@ -830,10 +830,10 @@ export default {
 
         if (oldestNonInitIdx !== -1) {
           currentRecords.splice(oldestNonInitIdx, 1);
+        } else {
+          currentRecords.shift();
         }
       }
-
-      currentRecords.push(newRec);
 
       // 嚴格依時間升冪排序 (舊 -> 新，時間軸 100% 正確)
       currentRecords.sort((a, b) => {
@@ -862,15 +862,17 @@ export default {
               this.optimization = rawinfo?.cal ?? {}
               this.powerprediction = rawinfo?.powerprediction ?? {}
               this.expectation = rawinfo?.expectation ?? {}
-              var new_curvedata = []
-              for (var k of Object.keys(rawinfo["curve"])) {
-                var item = rawinfo.curve[k];
-                var ydata = item.value.map(item => parseFloat(item));
-                var curveitem = { "Title": item.name, "enname": item.enname, "Data": ydata, "Unit": item.Unit };
-                new_curvedata.push(curveitem);
+              if (!this.historyRawRecords || this.historyRawRecords.length === 0) {
+                var new_curvedata = []
+                for (var k of Object.keys(rawinfo["curve"])) {
+                  var item = rawinfo.curve[k];
+                  var ydata = item.value.map(item => parseFloat(item));
+                  var curveitem = { "Title": item.name, "enname": item.enname, "Data": ydata, "Unit": item.Unit };
+                  new_curvedata.push(curveitem);
+                }
+                this.curvedatalist = new_curvedata
               }
-              this.curvedatalist = new_curvedata
-              this.update_processhistory(this.abstractitem, this.updatetime)
+              this.update_processhistory(this.abstractitem, this.updatetime, rawinfo.curve)
             }
             var fiststep = response.data.Data.originstatus
             this.firsttepparametersetting = fiststep?.parameter_setting ?? []
@@ -947,12 +949,23 @@ export default {
         if (response.data.status === 'success' && response.data.Data) {
           let records = response.data.Data.slice();
 
-          // 確保「初始基準筆」永遠包含在直方圖中 (保留最新 N 筆 + 1 筆初始基準)
+          // 確保「初始基準筆」永遠包含在直方圖中 (不在最新 N 筆時外掛 1 筆成 N + 1 筆)
           if (this.firsttepabstractitem && Object.keys(this.firsttepabstractitem).length > 0) {
             const initTime = this.firsttepdatetime || '';
             const hasInitInRecords = records.some(r => {
               const rTime = r.created_at || r.updatetime || '';
-              return initTime && rTime === initTime;
+              if (initTime && rTime === initTime) return true;
+              if (r.abstract && this.firsttepabstractitem) {
+                const initKeys = Object.keys(this.firsttepabstractitem);
+                if (initKeys.length > 0) {
+                  return initKeys.every(k => {
+                    const initVal = this.firsttepabstractitem[k]?.value;
+                    const curVal = r.abstract[k]?.value;
+                    return initVal !== undefined && curVal !== undefined && Math.abs(parseFloat(initVal) - parseFloat(curVal)) < 0.001;
+                  });
+                }
+              }
+              return false;
             });
 
             if (!hasInitInRecords) {
@@ -962,7 +975,7 @@ export default {
                 curve: this.firsttepcurve || {},
                 isInitBaseline: true
               };
-              records.push(initRec); // 不剔除最新 N 筆，成為 N + 1 筆
+              records.push(initRec); // 不在 N 筆內，加入成為 N + 1 筆
             }
           }
 
@@ -1006,8 +1019,8 @@ export default {
     }
   },
   watch: {
-    firsttepdatetime(val) {
-      if (val) {
+    firsttepdatetime(val, oldVal) {
+      if (val && val !== oldVal) {
         this.fetchHistoryData();
       }
     },
