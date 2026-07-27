@@ -334,7 +334,18 @@ async def updatepowerinfo(requestData:updatepowerinfo_requestBody):
             }
             red.set(f'{machine_id}_init_power_status',json.dumps(original_step))
 
-        # 存入 DB PowerMeterData
+        # 存入 Redis List (高頻定時器快取，減輕 DB 負擔)
+        try:
+            power_item = {
+                "abstract": abstract,
+                "curve": curve
+            }
+            red.lpush(f'PowerMeter_{machine_id}_history', json.dumps(power_item, ensure_ascii=False))
+            red.ltrim(f'PowerMeter_{machine_id}_history', 0, 99)
+        except Exception as redis_err:
+            logging.error(f"Push power data to Redis failed: {redis_err}")
+
+        # 存入 DB PowerMeterData (永久歷史紀錄)
         Session = sessionmaker(bind=engine)
         session = Session()
         try:

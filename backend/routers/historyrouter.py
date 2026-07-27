@@ -7,6 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import logging
 import json
+import redis
 logging.basicConfig(
     level=logging.INFO,  # 可改為 DEBUG、WARNING、ERROR、CRITICAL
     format='%(levelname)s - %(asctime)s - %(message)s'
@@ -14,6 +15,7 @@ logging.basicConfig(
 
 with open('config.json', 'r', encoding='utf-8') as f:
     envparameter = json.load(f)
+red = redis.Redis(host=envparameter["red_url"],port=6379,db=0)
 historyrouter = APIRouter()
 
 engine = create_engine(envparameter["db_url"])
@@ -186,33 +188,60 @@ async def getpowermeterdata(machinename: str, limit: int = 5):
     returnData = {"status": "error", "Data": []}
     try:
         resdata = []
-        sql = f'''
-            SELECT abstract, curve 
-            FROM "PowerMeterData" 
-            WHERE machine_name = '{machinename}' 
-            ORDER BY created_at DESC 
-            LIMIT {limit}
-        '''
-        with engine.connect() as connection:
-            result = connection.execute(text(sql))
-            for row in result.mappings():
-                abstract_val = row['abstract']
-                curve_val = row['curve']
-                if isinstance(abstract_val, str) and abstract_val:
-                    try:
-                        abstract_val = json.loads(abstract_val)
-                    except Exception:
-                        pass
-                if isinstance(curve_val, str) and curve_val:
-                    try:
-                        curve_val = json.loads(curve_val)
-                    except Exception:
-                        pass
-                
-                resdata.append({
-                    "abstract": abstract_val,
-                    "curve": curve_val
-                })
+        # 1. 優先從 Redis List 中撈取 (高頻讀取速度快且不佔用 DB 資源)
+        redis_key = f'PowerMeter_{machinename}_history'
+        raw_items = red.lrange(redis_key, 0, limit - 1)
+        
+        if raw_items:
+            for item in raw_items:
+                try:
+                    resdata.append(json.loads(item.decode('utf-8')))
+                except Exception:
+                    pass
+        else:
+            # 2. 備援：若 Redis 無快取則從 DB 撈取，並同步回寫至 Redis 快取 (Cache-Aside Pattern)
+            fetch_limit = max(limit, 50)
+            sql = f'''
+                SELECT abstract, curve 
+                FROM "PowerMeterData" 
+                WHERE machine_name = '{machinename}' 
+                ORDER BY created_at DESC 
+                LIMIT {fetch_limit}
+            '''
+            db_items_for_redis = []
+            with engine.connect() as connection:
+                result = connection.execute(text(sql))
+                for row in result.mappings():
+                    abstract_val = row['abstract']
+                    curve_val = row['curve']
+                    if isinstance(abstract_val, str) and abstract_val:
+                        try:
+                            abstract_val = json.loads(abstract_val)
+                        except Exception:
+                            pass
+                    if isinstance(curve_val, str) and curve_val:
+                        try:
+                            curve_val = json.loads(curve_val)
+                        except Exception:
+                            pass
+                    
+                    item = {
+                        "abstract": abstract_val,
+                        "curve": curve_val
+                    }
+                    db_items_for_redis.append(item)
+
+            # 同步回寫至 Redis 快取
+            if db_items_for_redis:
+                try:
+                    red.delete(redis_key)
+                    for item in db_items_for_redis:
+                        red.rpush(redis_key, json.dumps(item, ensure_ascii=False))
+                    red.ltrim(redis_key, 0, 99)
+                except Exception as redis_write_err:
+                    logging.error(f"Write back to Redis failed: {redis_write_err}")
+
+            resdata = db_items_for_redis[:limit]
         returnData = {"status": "success", "Data": resdata}
     except Exception as e:
         print(e)
