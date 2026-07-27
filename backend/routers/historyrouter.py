@@ -34,6 +34,14 @@ class BayesianNetworkTrainData(Base):
     machine_name = Column(String)
     model_result = Column(String)
 
+class PowerMeterData(Base):
+    __tablename__ = 'PowerMeterData'
+    id               = Column(Integer, primary_key=True)
+    created_at       = Column(DateTime(timezone=False), server_default=func.now())
+    machine_name     = Column(String)
+    abstract         = Column(String)
+    curve            = Column(String)
+
 class inserthistorydata_requestBody(BaseModel):
     machine_name:str
     machine_setting:str
@@ -170,6 +178,47 @@ async def gethistorydata(requsetData:getHistoryData_requestBody):
     except Exception as e:
         print(e)
     return returnData
+
+
+@historyrouter.get("/smc/injectionmachinemes/history/powermeterdata/{machinename}/{limit}")
+@historyrouter.get("/smc/injectionmachinemes/history/powermeterdata/{machinename}")
+async def getpowermeterdata(machinename: str, limit: int = 5):
+    returnData = {"status": "error", "Data": []}
+    try:
+        resdata = []
+        sql = f'''
+            SELECT abstract, curve 
+            FROM "PowerMeterData" 
+            WHERE machine_name = '{machinename}' 
+            ORDER BY created_at DESC 
+            LIMIT {limit}
+        '''
+        with engine.connect() as connection:
+            result = connection.execute(text(sql))
+            for row in result.mappings():
+                abstract_val = row['abstract']
+                curve_val = row['curve']
+                if isinstance(abstract_val, str) and abstract_val:
+                    try:
+                        abstract_val = json.loads(abstract_val)
+                    except Exception:
+                        pass
+                if isinstance(curve_val, str) and curve_val:
+                    try:
+                        curve_val = json.loads(curve_val)
+                    except Exception:
+                        pass
+                
+                resdata.append({
+                    "abstract": abstract_val,
+                    "curve": curve_val
+                })
+        returnData = {"status": "success", "Data": resdata}
+    except Exception as e:
+        print(e)
+        logging.error(f"Get powermeterdata failed: {e}")
+    return returnData
+
 
 
 
