@@ -34,7 +34,7 @@
         <PowerMeter v-if="powermeteravailable == 'True' && machineonline == 'Online'" :machinename="machinename"/>
         <PVT v-if="machineonline == 'Online'" :machinename="machinename"/>
 
-        <v-btn v-if="machineonline == 'Online'&& machinename =='FCS-150'" @click="clickheaterbutton"  class="ml-5" text >
+        <v-btn v-if="machineonline == 'Online' && (machinename == 'FCS-150' || machinename == 'FCS-Mucell')" @click="clickheaterbutton"  class="ml-5" text >
             <v-icon left  color="#39CC64">mdi-power</v-icon>
                 電熱開關
         </v-btn>
