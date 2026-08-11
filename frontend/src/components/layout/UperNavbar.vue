@@ -49,6 +49,17 @@
         <v-icon start size="small">mdi-chart-timeline-variant</v-icon>
         歷史數據分析
       </v-btn>
+
+      <v-btn
+        v-if="isAdmin"
+        to="/user-management"
+        variant="text"
+        class="nav-tab-btn"
+        :class="{ 'active-tab': $route.name === 'UserManagement' }"
+      >
+        <v-icon start size="small">mdi-account-cog-outline</v-icon>
+        使用者管理
+      </v-btn>
     </div>
 
     <v-spacer></v-spacer>
@@ -67,6 +78,24 @@
         目前機台: {{ selectedMachine }}
       </v-chip>
     </v-scale-transition>
+
+    <!-- Current Logged-in User Badge -->
+    <v-chip
+      v-if="currentUserAccount"
+      color="cyan-accent-2"
+      variant="tonal"
+      class="mr-4 px-3 font-weight-bold d-none d-sm-flex"
+    >
+      <v-icon start size="small" color="cyan-accent-2">mdi-account-circle</v-icon>
+      {{ currentUserName || currentUserAccount }}
+      <v-chip
+        size="x-small"
+        :color="currentUserRole === 'admin' ? 'purple-accent-3' : 'cyan-accent-3'"
+        class="ml-2 font-weight-bold text-caption"
+      >
+        {{ currentUserRole ? currentUserRole.toUpperCase() : 'USER' }}
+      </v-chip>
+    </v-chip>
 
     <!-- Digital Clock (Visible on md and up) -->
     <div class="d-none d-lg-flex flex-column align-end justify-center mr-6 text-right time-display">
@@ -97,7 +126,11 @@
     <div class="drawer-header px-6 py-8 d-flex flex-column align-center border-b border-opacity-10 border-white">
       <v-img :src="require('@/assets/logo.svg')" max-width="64" class="mb-4 brand-logo-anim" />
       <h3 class="text-h6 font-weight-black text-white mb-1">SMC MES</h3>
-      <p class="text-caption text-cyan-accent-2 mb-0">射出機智慧監控系統</p>
+      <p class="text-caption text-cyan-accent-2 mb-2">射出機智慧監控系統</p>
+      <v-chip v-if="currentUserAccount" size="small" color="cyan-accent-3" variant="outlined" class="font-weight-bold">
+        <v-icon start size="x-small">mdi-account-circle</v-icon>
+        {{ currentUserName || currentUserAccount }} ({{ currentUserRole.toUpperCase() }})
+      </v-chip>
     </div>
 
     <v-list nav dense class="px-3 py-4 text-left">
@@ -117,6 +150,16 @@
         title="歷史數據 / History"
         class="mb-2 rounded-lg list-nav-item"
         :active="$route.name === 'HistoryDashboard'"
+      ></v-list-item>
+
+      <v-list-item
+        v-if="isAdmin"
+        link
+        to="/user-management"
+        prepend-icon="mdi-account-cog-outline"
+        title="使用者管理 / Users"
+        class="mb-2 rounded-lg list-nav-item"
+        :active="$route.name === 'UserManagement'"
       ></v-list-item>
       
       <v-list-item
@@ -158,9 +201,19 @@ export default {
     drawer: false,
     currentTime: '',
     selectedMachine: '',
+    currentUserAccount: '',
+    currentUserName: '',
+    currentUserRole: '',
     timer: null,
     cookieTimer: null
   }),
+  computed: {
+    isAdmin() {
+      const role = this.currentUserRole || this.$cookies.get('userrole');
+      const account = this.currentUserAccount || this.$cookies.get('useraccount');
+      return role === 'admin' || account === 'admin';
+    }
+  },
   methods: {
     updateTime() {
       const now = new Date();
@@ -174,6 +227,9 @@ export default {
     },
     checkSelectedMachine() {
       this.selectedMachine = this.$cookies.get('setSelectMachine') || '';
+      this.currentUserAccount = this.$cookies.get('useraccount') || '';
+      this.currentUserName = this.$cookies.get('username') || this.currentUserAccount;
+      this.currentUserRole = this.$cookies.get('userrole') || (this.currentUserAccount === 'admin' ? 'admin' : 'user');
     },
     goToMachineDashboard() {
       if (this.selectedMachine) {

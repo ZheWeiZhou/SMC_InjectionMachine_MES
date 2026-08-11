@@ -116,7 +116,10 @@ export default {
             this.error_message = '登入失敗，請檢查帳號與密碼';
           } else {
             const token = response.data.Data.token;
+            const role = response.data.Data.role || (this.account === 'admin' ? 'admin' : 'user');
             this.$cookies.set('accesstoken', token, '1d');
+            this.$cookies.set('userrole', role, '1d');
+            this.$cookies.set('useraccount', this.account, '1d');
             setTimeout(() => {
               this.$router.push({ name: 'MachineOverviewV2' });
             }, 500); // Reduced delay to feel snappier

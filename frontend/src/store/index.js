@@ -5,8 +5,7 @@ export default createStore({
   state() {
     return {
       token: '',
-      // host: process.env.VUE_APP_HOST || 'http://140.135.106.49:8000',
-      host: process.env.VUE_APP_HOST || '/api',
+      host: process.env.VUE_APP_HOST || 'http://140.135.106.49:8000',
       selectmachine: cookies.get('setSelectMachine') || 'Engel-120'
     }
   },
