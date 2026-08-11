@@ -6,14 +6,14 @@ export default createStore({
     return {
       token: '',
       // host: '/api',
-      host: 'http://140.135.106.49:8000',
-      selectmachine: cookies.get('setSelectMachine')  || 'Engel-120'
+      host: process.env.VUE_APP_HOST || 'http://140.135.106.49:8000',
+      selectmachine: cookies.get('setSelectMachine') || 'Engel-120'
     }
   },
   mutations: {
     setSelectMachine(state, name) {
       state.selectmachine = name
-      
+
     },
     clearToken(state) {
       state.token = ''
@@ -24,8 +24,8 @@ export default createStore({
       var token = cookies.get('accesstoken');
       return token
     },
-    getselectmachine(state){
-      
+    getselectmachine(state) {
+
       return state.selectmachine
     },
     isLoggedIn() {
@@ -33,7 +33,7 @@ export default createStore({
       return !!token
     },
     getHost(state) {
-        return state.host
+      return state.host
     }
   }
 })

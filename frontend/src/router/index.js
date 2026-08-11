@@ -3,6 +3,7 @@ import LoginPage from '@/components/Login';
 import MachineDashboard from '@/components/Machinedashboard';
 import HistoryDashboard from '@/components/HistoryDashboard';
 import MachineOverviewPageV2 from '@/components/MachineOverviewV2';
+import PowerMeterPage from '@/components/Powermeter.vue';
 import { createRouter, createWebHistory } from 'vue-router'
 
 
@@ -31,6 +32,11 @@ const routes = [
     path: '/history',
     name: 'HistoryDashboard',
     component: HistoryDashboard
+  },
+  {
+    path: '/powermeter',
+    name: 'PowerMeter',
+    component: PowerMeterPage
   },
 ];
 

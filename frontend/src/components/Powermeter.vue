@@ -1,28 +1,23 @@
 <template>
-  <!-- Premium Energy Observation Trigger Button -->
-  <v-btn 
-    class="energy-obs-btn px-5 py-2 font-weight-bold ml-5" 
-    elevation="2" 
-    rounded="lg"
-    @click="powermeterdialog = true"
-  >
-    <v-icon left color="#10B981" class="mr-2 pulse-icon">mdi-leaf</v-icon>
-    {{ t('obsBtn') }}
-  </v-btn>
+  <div class="powermeter-page bg-slate-gray pa-4" style="min-height: 100vh;">
+    <!-- Top Global Navbar -->
+    <v-row class="mb-2">
+      <UperNavbar />
+    </v-row>
 
-  <!-- POWER METER DIALOG -->
-  <v-dialog 
-    v-model="powermeterdialog" 
-    max-width="1680px" 
-    width="98vw"
-    scrollable
-    transition="dialog-bottom-transition"
-    class="energy-dashboard-dialog"
-  >
-    <v-card class="dashboard-root-card">
+    <!-- POWER METER MAIN CARD -->
+    <v-card class="dashboard-root-card mx-auto" style="max-width: 1780px; width: 100%; border-radius: 16px;">
       <!-- Premium Glassmorphism Header -->
       <v-card-title class="d-flex justify-space-between align-center px-6 py-4 dashboard-header">
         <div class="d-flex align-center">
+          <v-btn
+            icon="mdi-arrow-left"
+            variant="tonal"
+            color="#10B981"
+            class="mr-4"
+            @click="goBack"
+            title="返回機台看板"
+          ></v-btn>
           <v-icon size="28" color="#10B981" class="mr-3">mdi-chart-bell-curve-cumulative</v-icon>
           <div>
             <h2 class="text-h5 font-weight-bold gradient-title mb-0">{{ t('title') }}</h2>
@@ -32,6 +27,8 @@
               <span class="mx-2">•</span>
               <v-icon size="14" class="mr-1">mdi-clock-outline</v-icon>
               <span>{{ t('lastUpdate') }}: {{ updatetime || t('fetching') }}</span>
+              <span class="mx-2" v-if="activeMachineName">•</span>
+              <v-chip v-if="activeMachineName" size="small" color="#10B981" class="font-weight-bold text-white">{{ activeMachineName }}</v-chip>
             </div>
           </div>
         </div>
@@ -49,12 +46,14 @@
             {{ lang === 'zh' ? '切換為 English' : 'Switch to 中文' }}
           </v-btn>
           <v-btn 
-            size="small" 
-            icon="mdi-close" 
+            prepend-icon="mdi-arrow-left" 
             variant="tonal"
             color="grey-darken-2" 
-            @click="powermeterdialog = false"
-          ></v-btn>
+            class="font-weight-bold text-caption rounded-lg"
+            @click="goBack"
+          >
+            返回看板
+          </v-btn>
         </div>
       </v-card-title>
 
@@ -316,18 +315,21 @@
         </v-container>
       </v-card-text>
     </v-card>
-  </v-dialog>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
+import UperNavbar from './layout/UperNavbar.vue';
 
 export default {
   name: 'PowerMeter',
+  components: {
+    UperNavbar,
+  },
   props: {
     machinename: String,
   },
-  
   data: () => ({
     lang: 'zh',
     dict: {
@@ -510,6 +512,9 @@ export default {
     }
   }),
   computed: {
+    activeMachineName() {
+      return this.machinename || this.$route?.query?.machine || this.$cookies?.get('setSelectMachine') || '';
+    },
     historyLimitOptions() {
       const suffix = this.lang === 'en' ? ' Records' : ' 筆';
       return [
@@ -845,9 +850,17 @@ export default {
       this.historyRawRecords = currentRecords;
       this.renderHistoryChartFromRecords(currentRecords);
     },
+    goBack() {
+      if (window.history.length > 1) {
+        this.$router.back();
+      } else {
+        this.$router.push({ name: 'MachineDashboard', query: { machine: this.activeMachineName } });
+      }
+    },
     async getenergyinfo() {
       const token = this.$store.getters.getToken;
-      await axios.get(`${this.$store.getters.getHost}/smc/injectionmachinemes/realtimepower/${this.machinename}`, {
+      if (!this.activeMachineName) return;
+      await axios.get(`${this.$store.getters.getHost}/smc/injectionmachinemes/realtimepower/${this.activeMachineName}`, {
         headers: { "accesstoken": token }
       }).then((response) => {
         if (response.data.status == 'error') {
@@ -894,11 +907,11 @@ export default {
       })
       let machine_Protocol = "euromap77"
       const euromap63list = ["TOYO"]
-      if (euromap63list.includes(this.machinename)) {
+      if (euromap63list.includes(this.activeMachineName)) {
         machine_Protocol = "euromap63"
       }
       const requestbody = {
-        "machine_name": this.machinename,
+        "machine_name": this.activeMachineName,
         "command": command,
         "machine_Protocol": machine_Protocol
       }
@@ -919,7 +932,7 @@ export default {
     async clearfirststep() {
       const token = this.$store.getters.getToken;
       const requestbody = {
-        "machine_name": this.machinename,
+        "machine_name": this.activeMachineName,
       }
       await axios.post(`${this.$store.getters.getHost}/smc/injectionmachinemes/resetpowerfirststep`, requestbody, {
         headers: { "accesstoken": token }
@@ -940,10 +953,10 @@ export default {
     },
     async fetchHistoryData() {
       const token = this.$store.getters.getToken;
-      if (!this.machinename) return;
+      if (!this.activeMachineName) return;
       try {
         const response = await axios.get(
-          `${this.$store.getters.getHost}/smc/injectionmachinemes/history/powermeterdata/${this.machinename}/${this.historyLimit}`,
+          `${this.$store.getters.getHost}/smc/injectionmachinemes/history/powermeterdata/${this.activeMachineName}/${this.historyLimit}`,
           { headers: { "accesstoken": token } }
         );
         if (response.data.status === 'success' && response.data.Data) {
@@ -1024,7 +1037,7 @@ export default {
         this.fetchHistoryData();
       }
     },
-    machinename() {
+    activeMachineName() {
       this.updatetime = '';
       this.curvedatalist = [];
       this.abstractitem = {};
@@ -1038,21 +1051,21 @@ export default {
       };
       this.fetchHistoryData();
       this.getenergyinfo();
-    },
-    powermeterdialog(val) {
-      if (val) {
-        this.fetchHistoryData();
-      }
     }
   },
   mounted() {
     var token = this.$cookies.get('accesstoken');
     if (!token) {
       this.$router.push({ name: 'Login' });
+      return;
     }
-    var namecheck = this.$cookies.get('setSelectMachine');
-    if (!namecheck) {
-      this.$router.push({ name: 'MachineOverview' });
+    var queryMachine = this.$route?.query?.machine;
+    if (queryMachine) {
+      this.$cookies.set('setSelectMachine', queryMachine);
+    }
+    var target = this.activeMachineName;
+    if (!target) {
+      this.$router.push({ name: 'MachineOverviewV2' });
     } else {
       if (this.getenergyinfotimer) clearInterval(this.getenergyinfotimer);
       this.fetchHistoryData();

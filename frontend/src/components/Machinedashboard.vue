@@ -31,7 +31,16 @@
       </v-card>
     </v-dialog>
     <v-row class="mt-10 mr-1 ml-1">
-        <PowerMeter v-if="powermeteravailable == 'True' && machineonline == 'Online'" :machinename="machinename"/>
+        <v-btn 
+            v-if="powermeteravailable == 'True' && machineonline == 'Online'" 
+            class="energy-obs-btn px-5 py-2 font-weight-bold ml-5" 
+            elevation="2" 
+            rounded="lg"
+            @click="navigateToPowermeter"
+        >
+            <v-icon left color="#10B981" class="mr-2 pulse-icon">mdi-leaf</v-icon>
+            能耗觀測
+        </v-btn>
         <PVT v-if="machineonline == 'Online'" :machinename="machinename"/>
 
         <v-btn v-if="machineonline == 'Online' && (machinename == 'FCS-150' || machinename == 'FCS-Mucell')" @click="clickheaterbutton"  class="ml-5" text >
@@ -460,12 +469,33 @@
   
 
 <style scoped>
+.energy-obs-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  transition: all 0.3s ease;
+}
+
+.energy-obs-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+  background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+}
+
+.pulse-icon {
+  animation: leaf-pulse 2s infinite ease-in-out;
+}
+
+@keyframes leaf-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
 </style>
   <script>
 import axios from 'axios';
 import UperNavbar  from './layout/UperNavbar.vue';
 import TroubleShooting  from './layout/Troubleshooting.vue';
-import PowerMeter from './layout/Powermeter.vue'
 import PVT from './layout/PVT.vue'
 import { computed } from 'vue'
   export default {
@@ -473,7 +503,6 @@ import { computed } from 'vue'
     components: {
             UperNavbar,
             TroubleShooting,
-            PowerMeter,
             PVT
     },
     data: () => ({
@@ -514,6 +543,9 @@ import { computed } from 'vue'
         powermeteravailable : "Faslse",
     }),
     methods: {
+        navigateToPowermeter() {
+            this.$router.push({ path: '/powermeter', query: { machine: this.machinename } });
+        },
         createChartOptions(title, yData) {
             const categories = yData.map((_, i) => (i + 1).toString())
             return {

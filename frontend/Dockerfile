@@ -3,9 +3,11 @@ FROM node:20-bookworm-slim as build-stage
 
 WORKDIR /app
 
+RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
+
 COPY ./package.json /app/
-COPY ./package-lock.json /app/package-lock.json
-RUN npm install
+COPY ./pnpm-lock.yaml /app/pnpm-lock.yaml
+RUN pnpm install --frozen-lockfile
 
 COPY ./public /app/public
 COPY ./src /app/src
@@ -13,7 +15,10 @@ COPY ./babel.config.js /app/babel.config.js
 COPY ./vue.config.js /app/vue.config.js
 COPY ./jsconfig.json /app/jsconfig.json
 
-RUN npm run build
+ARG VUE_APP_HOST
+ENV VUE_APP_HOST=$VUE_APP_HOST
+
+RUN pnpm run build
 
 FROM nginx:alpine
 
