@@ -2,7 +2,7 @@ services:
 
   postgresql:
     container_name: "Injection-Machine-Database"
-    image: postgres
+    image: postgres:17
     restart: always
     ports:
       - "5432:5432"
@@ -47,7 +47,10 @@ services:
     
   frontend:
     container_name: "Frontend"
-    build: ./frontend
+    build:
+      context: ./frontend
+    environment:
+      VUE_APP_HOST: "http://localhost:8000"
     restart: always
     ports:
       - "8080:8080"
